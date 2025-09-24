@@ -71,6 +71,40 @@ Add the following to your `ios/Runner/Info.plist`:
 <string>This app needs camera access for liveness verification</string>
 ```
 
+## 📱 Platform Support
+
+- **iOS**: 10.0+ with Metal support
+- **Android**: API level 21+ (Android 5.0)
+- **Flutter**: 3.0.0 or higher
+- **Dart**: 2.17 or higher
+- **Camera Permissions**: Automatically requested with proper error handling
+- **ML Kit**: Google ML Kit Face Detection API
+- **Hardware**: Front-facing camera required
+
+### Supported Architectures
+
+- **Android**: arm64-v8a, armeabi-v7a, x86_64
+- **iOS**: arm64, x86_64 (simulator)
+
+## 🔄 Status Management
+
+The package supports three main states:
+
+- **`LivenessStatus.init`**: Shows camera preview with liveness detection
+- **`LivenessStatus.success`**: Shows success asset/animation
+- **`LivenessStatus.fail`**: Shows fail asset with retry button
+
+## 🎭 Custom Assets
+
+Replace default success/fail assets:
+
+```dart
+LivenessCheckTheme(
+  successAsset: 'packages/your_package/assets/custom_success.png',
+  failAsset: 'packages/your_package/assets/custom_fail.png',
+)
+```
+
 ## ⚡ Quick Start
 
 ### Basic Usage
@@ -532,40 +566,6 @@ const LivenessCheckMessages(
   multipleFacesDetected: 'Se detectaron múltiples rostros. Solo una persona.',
   livenessCheckPassed: '¡Verificación exitosa!',
   tryAgainButtonText: 'Intentar Nuevamente',
-)
-```
-
-## 📱 Platform Support
-
-- **iOS**: 10.0+ with Metal support
-- **Android**: API level 21+ (Android 5.0)
-- **Flutter**: 3.0.0 or higher
-- **Dart**: 2.17 or higher
-- **Camera Permissions**: Automatically requested with proper error handling
-- **ML Kit**: Google ML Kit Face Detection API
-- **Hardware**: Front-facing camera required
-
-### Supported Architectures
-
-- **Android**: arm64-v8a, armeabi-v7a, x86_64
-- **iOS**: arm64, x86_64 (simulator)
-
-## 🔄 Status Management
-
-The package supports three main states:
-
-- **`LivenessStatus.init`**: Shows camera preview with liveness detection
-- **`LivenessStatus.success`**: Shows success asset/animation
-- **`LivenessStatus.fail`**: Shows fail asset with retry button
-
-## 🎭 Custom Assets
-
-Replace default success/fail assets:
-
-```dart
-LivenessCheckTheme(
-  successAsset: 'packages/your_package/assets/custom_success.png',
-  failAsset: 'packages/your_package/assets/custom_fail.png',
 )
 ```
 
