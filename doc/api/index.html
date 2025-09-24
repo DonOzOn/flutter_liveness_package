@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="flutter_liveness_check API docs, for the Dart programming language.">
+  <title>flutter_liveness_check - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://example.com">flutter_liveness_check package</a></li>
+  </ol>
+  <div class="self-name">flutter_liveness_check</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="-flutter-liveness-check-package">🎭 Flutter Liveness Check Package</h1>
+<p>A comprehensive Flutter package for face liveness detection with fully customizable UI, AppBar configuration, error handling, and advanced features. Built with ML Kit for accurate face detection, this package provides a complete solution for secure identity verification in mobile applications.</p>
+<p><a href="https://pub.dev/packages/flutter_liveness_check"><img src="https://img.shields.io/pub/v/flutter_liveness_check.svg" alt="pub package"></a>
+<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+<a href="https://flutter.dev/"><img src="https://img.shields.io/badge/platform-flutter-blue.svg" alt="Platform"></a></p>
+<h2 id="-features">✨ Features</h2>
+<ul>
+<li><strong>📷 Real-time Face Detection</strong> - ML Kit powered liveness verification</li>
+<li><strong>🎨 Fully Customizable UI</strong> - Comprehensive theming and styling options</li>
+<li><strong>🔧 Flexible AppBar</strong> - Custom titles, back buttons, and complete AppBar control</li>
+<li><strong>📊 Status Management</strong> - Init, success, and fail states with asset replacement</li>
+<li><strong>🔄 Retry Logic</strong> - Configurable maximum attempts with callbacks</li>
+<li><strong>🌍 Localization Support</strong> - Customizable messages and button text</li>
+<li><strong>🎯 Error Handling</strong> - Type-safe error enums with detailed error information</li>
+<li><strong>🎭 Custom Widgets</strong> - Custom bottom widgets and loading overlays</li>
+<li><strong>✏️ Font Customization</strong> - Set custom font family for all text elements</li>
+<li><strong>🔍 Quality Detection</strong> - Advanced blur and lighting analysis</li>
+</ul>
+<h2 id="-table-of-contents">📋 Table of Contents</h2>
+<ul>
+<li><a href="#-installation">Installation</a></li>
+<li><a href="#-quick-start">Quick Start</a></li>
+<li><a href="#-features">Features</a></li>
+<li><a href="#-complete-configuration-reference">Complete Configuration Reference</a></li>
+<li><a href="#-usage-examples">Usage Examples</a></li>
+<li><a href="#-theming-examples">Theming Examples</a></li>
+<li><a href="#-error-handling">Error Handling</a></li>
+<li><a href="#-localization">Localization</a></li>
+<li><a href="#-platform-support">Platform Support</a></li>
+<li><a href="#-performance-tips">Performance Tips</a></li>
+<li><a href="#-best-practices">Best Practices</a></li>
+<li><a href="#-migration-guide">Migration Guide</a></li>
+<li><a href="#-contributing">Contributing</a></li>
+<li><a href="#-license">License</a></li>
+</ul>
+<h2 id="-installation">🚀 Installation</h2>
+<p>Add this to your package's <code>pubspec.yaml</code> file:</p>
+<pre class="language-yaml"><code class="language-yaml">dependencies:
+  flutter_liveness_check: ^1.0.0
+</code></pre>
+<p>Then run:</p>
+<pre class="language-bash"><code class="language-bash">flutter pub get
+</code></pre>
+<h3 id="platform-setup">Platform Setup</h3>
+<h4 id="android">Android</h4>
+<p>Add the following permissions to your <code>android/app/src/main/AndroidManifest.xml</code>:</p>
+<pre class="language-xml"><code class="language-xml">&lt;uses-permission android:name="android.permission.CAMERA" /&gt;
+&lt;uses-permission android:name="android.permission.INTERNET" /&gt;
+</code></pre>
+<h4 id="ios">iOS</h4>
+<p>Add the following to your <code>ios/Runner/Info.plist</code>:</p>
+<pre class="language-xml"><code class="language-xml">&lt;key&gt;NSCameraUsageDescription&lt;/key&gt;
+&lt;string&gt;This app needs camera access for liveness verification&lt;/string&gt;
+</code></pre>
+<h2 id="-quick-start">⚡ Quick Start</h2>
+<h3 id="basic-usage">Basic Usage</h3>
+<pre class="language-dart"><code class="language-dart">import 'package:flutter/material.dart';
+import 'package:flutter_liveness_check/flutter_liveness_check.dart';
+
+class MyLivenessCheck extends StatefulWidget {
+  @override
+  State&lt;MyLivenessCheck&gt; createState() =&gt; _MyLivenessCheckState();
+}
+
+class _MyLivenessCheckState extends State&lt;MyLivenessCheck&gt; {
+  LivenessStatus _status = LivenessStatus.init;
+
+  @override
+  Widget build(BuildContext context) {
+    return LivenessCheckScreen(
+      config: LivenessCheckConfig(
+        status: _status,
+        appBarConfig: const AppBarConfig(
+          title: 'Face Verification',
+          showBackButton: true,
+        ),
+        callbacks: LivenessCheckCallbacks(
+          onSuccess: () =&gt; setState(() =&gt; _status = LivenessStatus.success),
+          onError: (error) =&gt; setState(() =&gt; _status = LivenessStatus.fail),
+          onTryAgain: () =&gt; setState(() =&gt; _status = LivenessStatus.init),
+        ),
+      ),
+    );
+  }
+}
+</code></pre>
+<h2 id="-complete-configuration-reference">📖 Complete Configuration Reference</h2>
+<h3 id="livenesscheckconfig">LivenessCheckConfig</h3>
+<p>Main configuration container for all customization options:</p>
+<pre class="language-dart"><code class="language-dart">LivenessCheckConfig(
+  // AppBar Configuration
+  appBarConfig: AppBarConfig(),
+
+  // UI Components
+  customBottomWidget: Widget?,
+  customLoadingWidget: Widget?,
+
+  // Visual Theme
+  theme: LivenessCheckTheme(),
+
+  // Behavior Settings
+  settings: LivenessCheckSettings(),
+
+  // Text &amp; Localization
+  messages: LivenessCheckMessages(),
+
+  // Event Callbacks
+  callbacks: LivenessCheckCallbacks(),
+
+  // Status &amp; Loading
+  status: LivenessStatus.init,
+  showLoading: false,
+  placeholder: "Please smile or blink eye 3 time",
+)
+</code></pre>
+<h3 id="appbarconfig---complete-appbar-control">AppBarConfig - Complete AppBar Control</h3>
+<pre class="language-dart"><code class="language-dart">AppBarConfig(
+  // Basic Properties
+  title: 'Custom Title',
+  centerTitle: true,
+  backgroundColor: Colors.blue,
+  elevation: 4.0,
+
+  // Back Button Control
+  showBackButton: true,           // Show/hide back button
+  automaticallyImplyLeading: true, // Flutter's automatic leading
+  customBackIcon: IconButton(     // Custom back widget
+    icon: Icon(Icons.close),
+    onPressed: () =&gt; Navigator.pop(context),
+  ),
+
+  // Text Styling
+  titleStyle: TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  ),
+)
+</code></pre>
+<h3 id="livenesschecktheme---visual-customization">LivenessCheckTheme - Visual Customization</h3>
+<pre class="language-dart"><code class="language-dart">LivenessCheckTheme(
+  // Colors
+  backgroundColor: Colors.white,
+  primaryColor: Colors.blue,
+  successColor: Colors.green,
+  errorColor: Colors.red,
+  textColor: Colors.black,
+
+  // Circle Styling
+  borderStyle: CircleBorderStyle.solid, // or CircleBorderStyle.dashed
+  borderColor: Colors.blue,
+  borderWidth: 4.0,
+  circleSize: 0.7, // 0.0 to 1.0
+  cameraPadding: 8.0,
+
+  // Dashed Border (when borderStyle = dashed)
+  dashLength: 10.0,
+  dashGap: 6.0,
+
+  // Button Colors
+  btnRetryBGColor: Colors.blue,
+  btnTextRetryColor: Colors.white,
+
+  // Typography
+  fontFamily: 'CustomFont',
+  titleTextStyle: TextStyle(),
+  messageTextStyle: TextStyle(),
+  errorTextStyle: TextStyle(),
+  successTextStyle: TextStyle(),
+
+  // Assets
+  successAsset: 'assets/custom_success.png',
+  failAsset: 'assets/custom_fail.png',
+)
+</code></pre>
+<h3 id="livenesscheckcallbacks---event-handling">LivenessCheckCallbacks - Event Handling</h3>
+<pre class="language-dart"><code class="language-dart">LivenessCheckCallbacks(
+  // Basic Events
+  onSuccess: () {
+    print('Liveness check passed!');
+  },
+  onError: (String errorMessage) {
+    print('Error: $errorMessage');
+  },
+  onCancel: () {
+    print('User cancelled');
+  },
+
+  // Advanced Events
+  onErrorWithType: (LivenessCheckError errorType, String message) {
+    switch (errorType) {
+      case LivenessCheckError.noFaceDetected:
+        // Handle no face error
+        break;
+      case LivenessCheckError.cameraPermissionDenied:
+        // Handle permission error
+        break;
+      // ... handle other error types
+    }
+  },
+
+  // Photo &amp; Progress
+  onPhotoTaken: (String imagePath) {
+    print('Photo saved: $imagePath');
+  },
+  onProgressUpdate: (int blinkCount, bool isSmiling) {
+    print('Progress: $blinkCount blinks, smiling: $isSmiling');
+  },
+
+  // Retry Logic
+  onTryAgain: () {
+    print('User retrying');
+  },
+  onMaxRetryReached: (int attemptCount) {
+    print('Max attempts reached: $attemptCount');
+  },
+)
+</code></pre>
+<h3 id="livenesschecksettings---behavior-configuration">LivenessCheckSettings - Behavior Configuration</h3>
+<pre class="language-dart"><code class="language-dart">LivenessCheckSettings(
+  // Liveness Requirements
+  requiredBlinkCount: 3,
+  requireSmile: false,
+
+  // UI Controls
+  showProgress: true,
+  showErrorMessage: true,
+  showTryAgainButton: true,
+
+  // Behavior
+  autoNavigateOnSuccess: true,
+  maxRetryAttempts: 3,
+  processingTimeout: Duration(seconds: 30),
+
+  // Layout
+  circlePositionY: 0.38, // Vertical position (0.0 to 1.0)
+)
+</code></pre>
+<h3 id="livenesscheckmessages---text-customization">LivenessCheckMessages - Text Customization</h3>
+<pre class="language-dart"><code class="language-dart">LivenessCheckMessages(
+  // AppBar
+  title: 'Liveness Check',
+
+  // Status Messages
+  initializingCamera: 'Initializing camera...',
+  noFaceDetected: 'No face detected. Please position your face in the circle.',
+  multipleFacesDetected: 'Multiple faces detected. Only one person allowed.',
+  livenessCheckPassed: 'Liveness check passed! Taking photo...',
+
+  // Quality Messages
+  moveCloserToCamera: 'Move closer to camera or hold device steady.',
+  holdStill: 'Hold still. Face features not clear.',
+  imageTooBlurry: 'Image too blurry. Hold device steady.',
+  poorLighting: 'Poor lighting conditions.',
+
+  // Error Messages
+  failedToCapture: 'Failed to capture photo',
+  cameraPermissionDenied: 'Camera permission denied',
+  failedToInitializeCamera: 'Failed to initialize camera',
+
+  // UI Text
+  tryAgainButtonText: 'Try Again',
+  takingPhoto: 'Taking photo...',
+)
+</code></pre>
+<h2 id="-usage-examples">🎯 Usage Examples</h2>
+<h3 id="1-no-back-button-example">1. No Back Button Example</h3>
+<pre class="language-dart"><code class="language-dart">LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    appBarConfig: const AppBarConfig(
+      title: 'Secure Verification',
+      showBackButton: false, // Hide back button
+    ),
+    customBottomWidget: Container(
+      padding: const EdgeInsets.all(16),
+      child: ElevatedButton(
+        onPressed: () =&gt; Navigator.pop(context),
+        child: const Text('Done'),
+      ),
+    ),
+  ),
+)
+</code></pre>
+<h3 id="2-custom-back-icon-with-confirmation">2. Custom Back Icon with Confirmation</h3>
+<pre class="language-dart"><code class="language-dart">LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    appBarConfig: AppBarConfig(
+      title: 'Identity Verification',
+      showBackButton: true,
+      customBackIcon: IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) =&gt; AlertDialog(
+              title: const Text('Cancel Verification?'),
+              content: const Text('Are you sure you want to cancel?'),
+              actions: [
+                TextButton(
+                  onPressed: () =&gt; Navigator.pop(context),
+                  child: const Text('No'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close dialog
+                    Navigator.pop(context); // Close liveness screen
+                  },
+                  child: const Text('Yes'),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    ),
+  ),
+)
+</code></pre>
+<h3 id="3-banking-app-integration">3. Banking App Integration</h3>
+<pre class="language-dart"><code class="language-dart">LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    appBarConfig: AppBarConfig(
+      title: 'SecureBank Verification',
+      backgroundColor: const Color(0xFF1565C0),
+      titleStyle: const TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+      showBackButton: true,
+      customBackIcon: CustomBackButton(
+        onPressed: () =&gt; _handleBankingCancel(context),
+      ),
+    ),
+    theme: const LivenessCheckTheme(
+      primaryColor: Color(0xFF1565C0),
+      borderStyle: CircleBorderStyle.dashed,
+      fontFamily: 'Roboto',
+    ),
+    callbacks: LivenessCheckCallbacks(
+      onErrorWithType: (errorType, message) {
+        _handleBankingError(errorType, message);
+      },
+      onSuccess: () =&gt; _proceedToBankingApp(),
+    ),
+  ),
+)
+</code></pre>
+<h3 id="4-e-commerce-kyc">4. E-commerce KYC</h3>
+<pre class="language-dart"><code class="language-dart">LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    appBarConfig: const AppBarConfig(
+      title: 'Account Verification',
+      showBackButton: false, // No back button for KYC
+    ),
+    settings: const LivenessCheckSettings(
+      requiredBlinkCount: 2,
+      requireSmile: true,
+      maxRetryAttempts: 5,
+    ),
+    theme: const LivenessCheckTheme(
+      primaryColor: Color(0xFFFF6B35),
+      borderStyle: CircleBorderStyle.solid,
+      circleSize: 0.75,
+    ),
+    customBottomWidget: _buildKYCInstructions(),
+    callbacks: LivenessCheckCallbacks(
+      onSuccess: () =&gt; _submitKYCData(),
+      onMaxRetryReached: (count) =&gt; _showKYCFailure(count),
+    ),
+  ),
+)
+</code></pre>
+<h3 id="5-custom-loading--error-handling">5. Custom Loading &amp; Error Handling</h3>
+<pre class="language-dart"><code class="language-dart">LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    showLoading: _isProcessing,
+    customLoadingWidget: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CircularProgressIndicator(color: Colors.purple),
+        const SizedBox(height: 16),
+        const Text('Processing verification...'),
+      ],
+    ),
+    callbacks: LivenessCheckCallbacks(
+      onErrorWithType: (errorType, message) {
+        switch (errorType) {
+          case LivenessCheckError.cameraPermissionDenied:
+            _showPermissionDialog();
+            break;
+          case LivenessCheckError.poorLighting:
+            _showLightingTips();
+            break;
+          default:
+            _showGenericError(message);
+        }
+      },
+    ),
+  ),
+)
+</code></pre>
+<h2 id="-theming-examples">🎨 Theming Examples</h2>
+<h3 id="dark-theme">Dark Theme</h3>
+<pre class="language-dart"><code class="language-dart">const LivenessCheckTheme(
+  backgroundColor: Color(0xFF1E1E1E),
+  primaryColor: Colors.purple,
+  successColor: Colors.teal,
+  errorColor: Colors.orange,
+  textColor: Colors.white,
+  overlayColor: Color(0xFF1E1E1E),
+  borderStyle: CircleBorderStyle.dashed,
+  dashLength: 12.0,
+  dashGap: 8.0,
+)
+</code></pre>
+<h3 id="corporate-theme">Corporate Theme</h3>
+<pre class="language-dart"><code class="language-dart">const LivenessCheckTheme(
+  backgroundColor: Color(0xFFF8F9FA),
+  primaryColor: Color(0xFF1565C0),
+  successColor: Color(0xFF2E7D32),
+  errorColor: Color(0xFFD32F2F),
+  fontFamily: 'Corporate-Font',
+  borderWidth: 6,
+  circleSize: 0.8,
+)
+</code></pre>
+<h2 id="-error-handling">🔧 Error Handling</h2>
+<p>The package provides type-safe error handling with detailed error information:</p>
+<pre class="language-dart"><code class="language-dart">// Error Types
+enum LivenessCheckError {
+  cameraPermissionDenied,
+  cameraInitializationFailed,
+  noFaceDetected,
+  multipleFacesDetected,
+  imageBlurry,
+  faceNotClear,
+  moveCloserToCamera,
+  poorLighting,
+  photoCaptureFailed,
+  processingTimeout,
+  unknownError,
+}
+
+// Usage
+LivenessCheckCallbacks(
+  onErrorWithType: (LivenessCheckError errorType, String message) {
+    // Handle specific error types
+    _analytics.logError(errorType.toString(), message);
+    _showUserFriendlyError(errorType);
+  },
+)
+</code></pre>
+<h2 id="-localization">🌍 Localization</h2>
+<p>Easily localize all text by providing custom messages:</p>
+<pre class="language-dart"><code class="language-dart">// Spanish Localization
+const LivenessCheckMessages(
+  title: 'Verificación de Vida',
+  noFaceDetected: 'No se detectó rostro. Posicione su cara en el círculo.',
+  multipleFacesDetected: 'Se detectaron múltiples rostros. Solo una persona.',
+  livenessCheckPassed: '¡Verificación exitosa!',
+  tryAgainButtonText: 'Intentar Nuevamente',
+)
+</code></pre>
+<h2 id="-platform-support">📱 Platform Support</h2>
+<ul>
+<li><strong>iOS</strong>: 10.0+ with Metal support</li>
+<li><strong>Android</strong>: API level 21+ (Android 5.0)</li>
+<li><strong>Flutter</strong>: 3.0.0 or higher</li>
+<li><strong>Dart</strong>: 2.17 or higher</li>
+<li><strong>Camera Permissions</strong>: Automatically requested with proper error handling</li>
+<li><strong>ML Kit</strong>: Google ML Kit Face Detection API</li>
+<li><strong>Hardware</strong>: Front-facing camera required</li>
+</ul>
+<h3 id="supported-architectures">Supported Architectures</h3>
+<ul>
+<li><strong>Android</strong>: arm64-v8a, armeabi-v7a, x86_64</li>
+<li><strong>iOS</strong>: arm64, x86_64 (simulator)</li>
+</ul>
+<h2 id="-status-management">🔄 Status Management</h2>
+<p>The package supports three main states:</p>
+<ul>
+<li><strong><code>LivenessStatus.init</code></strong>: Shows camera preview with liveness detection</li>
+<li><strong><code>LivenessStatus.success</code></strong>: Shows success asset/animation</li>
+<li><strong><code>LivenessStatus.fail</code></strong>: Shows fail asset with retry button</li>
+</ul>
+<h2 id="-custom-assets">🎭 Custom Assets</h2>
+<p>Replace default success/fail assets:</p>
+<pre class="language-dart"><code class="language-dart">LivenessCheckTheme(
+  successAsset: 'packages/your_package/assets/custom_success.png',
+  failAsset: 'packages/your_package/assets/custom_fail.png',
+)
+</code></pre>
+<h2 id="-performance-tips">⚡ Performance Tips</h2>
+<h3 id="optimize-for-better-performance">Optimize for Better Performance</h3>
+<ol>
+<li>
+<p><strong>Camera Settings</strong></p>
+<pre class="language-dart"><code class="language-dart">// Use medium resolution for better performance
+ResolutionPreset.medium // Default and recommended
+</code></pre>
+</li>
+<li>
+<p><strong>Memory Management</strong></p>
+<pre class="language-dart"><code class="language-dart">// Dispose properly when done
+@override
+void dispose() {
+  // Liveness screen handles disposal automatically
+  super.dispose();
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Frame Processing</strong></p>
+<pre class="language-dart"><code class="language-dart">LivenessCheckSettings(
+  processingTimeout: Duration(seconds: 20), // Adjust based on device performance
+)
+</code></pre>
+</li>
+<li>
+<p><strong>Quality Detection</strong></p>
+<ul>
+<li>Enable quality detection to guide users for better images</li>
+<li>Use appropriate lighting conditions</li>
+<li>Ensure device stability during capture</li>
+</ul>
+</li>
+</ol>
+<h3 id="battery-optimization">Battery Optimization</h3>
+<ul>
+<li>Camera operations are automatically suspended when app goes to background</li>
+<li>Face detection stops when liveness check is complete</li>
+<li>ML Kit resources are released when screen is disposed</li>
+</ul>
+<h2 id="-troubleshooting">🔧 Troubleshooting</h2>
+<h3 id="common-issues">Common Issues</h3>
+<h4 id="camera-permission-denied">Camera Permission Denied</h4>
+<pre class="language-dart"><code class="language-dart">LivenessCheckCallbacks(
+  onErrorWithType: (errorType, message) {
+    if (errorType == LivenessCheckError.cameraPermissionDenied) {
+      // Guide user to settings
+      _showPermissionSettingsDialog();
+    }
+  },
+)
+</code></pre>
+<h4 id="poor-detection-quality">Poor Detection Quality</h4>
+<pre class="language-dart"><code class="language-dart">LivenessCheckCallbacks(
+  onErrorWithType: (errorType, message) {
+    switch (errorType) {
+      case LivenessCheckError.poorLighting:
+        _showLightingTips();
+        break;
+      case LivenessCheckError.imageBlurry:
+        _showStabilityTips();
+        break;
+      case LivenessCheckError.moveCloserToCamera:
+        _showDistanceTips();
+        break;
+    }
+  },
+)
+</code></pre>
+<h4 id="multiple-faces-detected">Multiple Faces Detected</h4>
+<ul>
+<li>Ensure only one person is visible in the camera frame</li>
+<li>Check for reflections or images in the background</li>
+</ul>
+<h3 id="debug-mode">Debug Mode</h3>
+<p>Enable debug logging for development:</p>
+<pre class="language-dart"><code class="language-dart">// Add this in your main.dart for debug builds
+import 'package:flutter/foundation.dart';
+
+void main() {
+  if (kDebugMode) {
+    // Debug prints are automatically enabled in the package
+  }
+  runApp(MyApp());
+}
+</code></pre>
+<h2 id="-migration-guide">🚨 Migration Guide</h2>
+<p>If upgrading from a version that used <code>customHeader</code>, replace it with <code>appBarConfig</code>:</p>
+<pre class="language-dart"><code class="language-dart">// Before
+LivenessCheckConfig(
+  customHeader: AppBar(title: Text('Custom')),
+)
+
+// After
+LivenessCheckConfig(
+  appBarConfig: AppBarConfig(
+    title: 'Custom',
+    showBackButton: true,
+  ),
+)
+</code></pre>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="enhence_light_checker">
+  <span class="name"><a href="enhence_light_checker/">enhence_light_checker</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="flutter_liveness_check">
+  <span class="name"><a href="flutter_liveness_check/">flutter_liveness_check</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="liveness_check_config">
+  <span class="name"><a href="liveness_check_config/">liveness_check_config</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="liveness_check_errors">
+  <span class="name"><a href="liveness_check_errors/">liveness_check_errors</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="liveness_check_screen">
+  <span class="name"><a href="liveness_check_screen/">liveness_check_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="liveness_result_screen">
+  <span class="name"><a href="liveness_result_screen/">liveness_result_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="dashed_circle_painter">
+  <span class="name"><a href="widget_dashed_circle_painter/">widget/dashed_circle_painter</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="https://example.com">flutter_liveness_check package</a></li>
+</ol>
+
+    <h5 class="hidden-xs"><span class="package-name">flutter_liveness_check</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="enhence_light_checker/">enhence_light_checker</a></li>
+      <li><a href="flutter_liveness_check/">flutter_liveness_check</a></li>
+      <li><a href="liveness_check_config/">liveness_check_config</a></li>
+      <li><a href="liveness_check_errors/">liveness_check_errors</a></li>
+      <li><a href="liveness_check_screen/">liveness_check_screen</a></li>
+      <li><a href="liveness_result_screen/">liveness_result_screen</a></li>
+      <li><a href="widget_dashed_circle_painter/">widget/dashed_circle_painter</a></li>
+</ol>
+
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+</main>
+<footer>
+  <span class="no-break">
+    flutter_liveness_check
+      0.0.1
+  </span>
+  
+</footer>
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

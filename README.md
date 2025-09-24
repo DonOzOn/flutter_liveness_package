@@ -1,6 +1,10 @@
-# Flutter Liveness Check Package
+# 🎭 Flutter Liveness Check Package
 
-A comprehensive Flutter package for face liveness detection with fully customizable UI, AppBar configuration, error handling, and advanced features like dashed borders, retry limits, and asset replacement.
+A comprehensive Flutter package for face liveness detection with fully customizable UI, AppBar configuration, error handling, and advanced features. Built with ML Kit for accurate face detection, this package provides a complete solution for secure identity verification in mobile applications.
+
+[![pub package](https://img.shields.io/pub/v/flutter_liveness_check.svg)](https://pub.dev/packages/flutter_liveness_check)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Platform](https://img.shields.io/badge/platform-flutter-blue.svg)](https://flutter.dev/)
 
 ## ✨ Features
 
@@ -15,7 +19,59 @@ A comprehensive Flutter package for face liveness detection with fully customiza
 - **✏️ Font Customization** - Set custom font family for all text elements
 - **🔍 Quality Detection** - Advanced blur and lighting analysis
 
-## 🚀 Quick Start
+## 📋 Table of Contents
+
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [Features](#-features)
+- [Complete Configuration Reference](#-complete-configuration-reference)
+- [Usage Examples](#-usage-examples)
+- [Theming Examples](#-theming-examples)
+- [Error Handling](#-error-handling)
+- [Localization](#-localization)
+- [Platform Support](#-platform-support)
+- [Performance Tips](#-performance-tips)
+- [Best Practices](#-best-practices)
+- [Migration Guide](#-migration-guide)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+## 🚀 Installation
+
+Add this to your package's `pubspec.yaml` file:
+
+```yaml
+dependencies:
+  flutter_liveness_check: ^1.0.0
+```
+
+Then run:
+
+```bash
+flutter pub get
+```
+
+### Platform Setup
+
+#### Android
+
+Add the following permissions to your `android/app/src/main/AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.INTERNET" />
+```
+
+#### iOS
+
+Add the following to your `ios/Runner/Info.plist`:
+
+```xml
+<key>NSCameraUsageDescription</key>
+<string>This app needs camera access for liveness verification</string>
+```
+
+## ⚡ Quick Start
 
 ### Basic Usage
 
@@ -481,10 +537,18 @@ const LivenessCheckMessages(
 
 ## 📱 Platform Support
 
-- **iOS**: 10.0+
-- **Android**: API level 21+
-- **Camera Permissions**: Automatically handled
-- **ML Kit**: Face Detection API
+- **iOS**: 10.0+ with Metal support
+- **Android**: API level 21+ (Android 5.0)
+- **Flutter**: 3.0.0 or higher
+- **Dart**: 2.17 or higher
+- **Camera Permissions**: Automatically requested with proper error handling
+- **ML Kit**: Google ML Kit Face Detection API
+- **Hardware**: Front-facing camera required
+
+### Supported Architectures
+
+- **Android**: arm64-v8a, armeabi-v7a, x86_64
+- **iOS**: arm64, x86_64 (simulator)
 
 ## 🔄 Status Management
 
@@ -505,14 +569,98 @@ LivenessCheckTheme(
 )
 ```
 
-## 📋 Best Practices
+## ⚡ Performance Tips
 
-1. **Always handle errors**: Implement `onErrorWithType` for better user experience
-2. **Provide clear instructions**: Use custom bottom widgets for user guidance
-3. **Test different lighting**: Use quality detection callbacks to guide users
-4. **Customize for your brand**: Use consistent colors and fonts with your app
-5. **Handle permissions**: Gracefully handle camera permission denials
-6. **Accessibility**: Ensure custom widgets follow accessibility guidelines
+### Optimize for Better Performance
+
+1. **Camera Settings**
+   ```dart
+   // Use medium resolution for better performance
+   ResolutionPreset.medium // Default and recommended
+   ```
+
+2. **Memory Management**
+   ```dart
+   // Dispose properly when done
+   @override
+   void dispose() {
+     // Liveness screen handles disposal automatically
+     super.dispose();
+   }
+   ```
+
+3. **Frame Processing**
+   ```dart
+   LivenessCheckSettings(
+     processingTimeout: Duration(seconds: 20), // Adjust based on device performance
+   )
+   ```
+
+4. **Quality Detection**
+   - Enable quality detection to guide users for better images
+   - Use appropriate lighting conditions
+   - Ensure device stability during capture
+
+### Battery Optimization
+
+- Camera operations are automatically suspended when app goes to background
+- Face detection stops when liveness check is complete
+- ML Kit resources are released when screen is disposed
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### Camera Permission Denied
+```dart
+LivenessCheckCallbacks(
+  onErrorWithType: (errorType, message) {
+    if (errorType == LivenessCheckError.cameraPermissionDenied) {
+      // Guide user to settings
+      _showPermissionSettingsDialog();
+    }
+  },
+)
+```
+
+#### Poor Detection Quality
+```dart
+LivenessCheckCallbacks(
+  onErrorWithType: (errorType, message) {
+    switch (errorType) {
+      case LivenessCheckError.poorLighting:
+        _showLightingTips();
+        break;
+      case LivenessCheckError.imageBlurry:
+        _showStabilityTips();
+        break;
+      case LivenessCheckError.moveCloserToCamera:
+        _showDistanceTips();
+        break;
+    }
+  },
+)
+```
+
+#### Multiple Faces Detected
+- Ensure only one person is visible in the camera frame
+- Check for reflections or images in the background
+
+### Debug Mode
+
+Enable debug logging for development:
+
+```dart
+// Add this in your main.dart for debug builds
+import 'package:flutter/foundation.dart';
+
+void main() {
+  if (kDebugMode) {
+    // Debug prints are automatically enabled in the package
+  }
+  runApp(MyApp());
+}
+```
 
 ## 🚨 Migration Guide
 
@@ -532,15 +680,3 @@ LivenessCheckConfig(
   ),
 )
 ```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please read our contributing guidelines and submit pull requests.
-
-## 📄 License
-
-This package is released under the MIT License. See LICENSE file for details.
-
----
-
-**Made with ❤️ by the Flutter Community**

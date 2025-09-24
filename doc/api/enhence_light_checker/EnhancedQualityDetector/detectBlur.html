@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the detectBlur method from the EnhancedQualityDetector class, for the Dart programming language.">
+  <title>detectBlur method - EnhancedQualityDetector class - enhence_light_checker library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">flutter_liveness_check</a></li>
+    <li><a href="../../enhence_light_checker/">enhence_light_checker.dart</a></li>
+    <li><a href="../../enhence_light_checker/EnhancedQualityDetector-class.html">EnhancedQualityDetector</a></li>
+    <li class="self-crumb">detectBlur static method</li>
+  </ol>
+  <div class="self-name">detectBlur</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="enhence_light_checker&#47;EnhancedQualityDetector-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">detectBlur</span> static method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype"><a href="../../enhence_light_checker/BlurDetectionResult-class.html">BlurDetectionResult</a></span>
+<span class="name ">detectBlur</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="detectBlur-param-cameraImage"><span class="type-annotation"><a href="https://pub.dev/documentation/camera/0.11.2/camera/CameraImage-class.html">CameraImage</a></span> <span class="parameter-name">cameraImage</span>, </span></li>
+<li><span class="parameter" id="detectBlur-param-face"><span class="type-annotation"><a href="https://pub.dev/documentation/google_mlkit_face_detection/0.13.1/google_mlkit_face_detection/Face-class.html">Face</a></span> <span class="parameter-name">face</span>, {</span></li>
+<li><span class="parameter" id="detectBlur-param-threshold"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">threshold</span> = <span class="default-value">_blurThreshold</span>, </span></li>
+</ol>})
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Enhanced blur detection with much more forgiving logic</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">static BlurDetectionResult detectBlur(
+  CameraImage cameraImage,
+  Face face, {
+  double threshold = _blurThreshold,
+}) {
+  try {
+    &#47;&#47; Method 1: Face size check (more lenient)
+    final faceArea = face.boundingBox.width * face.boundingBox.height;
+    final isSmallFace = faceArea &lt; _minFaceSize;
+
+    &#47;&#47; Method 2: Face landmark stability (more lenient)
+    final landmarkStability = _checkLandmarkStability(face);
+
+    &#47;&#47; Method 3: Laplacian variance (skip if causing issues)
+    double laplacianVariance = 0.0;
+    bool skipLaplacianCheck = false; &#47;&#47; Add option to skip this check
+
+    if (!skipLaplacianCheck &amp;&amp;
+        (cameraImage.format.group == ImageFormatGroup.yuv420 ||
+            cameraImage.format.group == ImageFormatGroup.nv21)) {
+      laplacianVariance = _calculateLaplacianVariance(
+        cameraImage,
+        face.boundingBox,
+      );
+    }
+
+    &#47;&#47; NEW: Much more forgiving combination logic
+    &#47;&#47; Only mark as blurry if MULTIPLE conditions are bad, not just one
+    int badConditions = 0;
+
+    if (isSmallFace) badConditions++;
+    if (!landmarkStability) badConditions++;
+    if (!skipLaplacianCheck &amp;&amp;
+        laplacianVariance &gt; 0 &amp;&amp;
+        laplacianVariance &lt; threshold) {
+      badConditions++;
+    }
+
+    &#47;&#47; Only consider blurry if at least 2 conditions are bad AND face is very small
+    final isBlurry = badConditions &gt;= 2 &amp;&amp; isSmallFace;
+
+    return BlurDetectionResult(
+      isBlurry: isBlurry,
+      faceArea: faceArea,
+      laplacianVariance: laplacianVariance,
+      landmarkStability: landmarkStability,
+      confidence: _calculateBlurConfidence(
+        faceArea,
+        laplacianVariance,
+        landmarkStability,
+      ),
+      debugInfo: BlurDebugInfo(
+        isSmallFace: isSmallFace,
+        badConditions: badConditions,
+        skipLaplacianCheck: skipLaplacianCheck,
+      ),
+    );
+  } catch (e) {
+    debugPrint(&#39;Error in blur detection: $e&#39;);
+    return BlurDetectionResult(
+      isBlurry: false, &#47;&#47; Default to NOT blurry on error
+      faceArea: 0,
+      laplacianVariance: 0,
+      landmarkStability: false,
+      confidence: 0.0,
+      debugInfo: BlurDebugInfo(
+        isSmallFace: true,
+        badConditions: 0,
+        skipLaplacianCheck: true,
+      ),
+    );
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">flutter_liveness_check</a></li>
+    <li><a href="../../enhence_light_checker/">enhence_light_checker</a></li>
+    <li><a href="../../enhence_light_checker/EnhancedQualityDetector-class.html">EnhancedQualityDetector</a></li>
+    <li class="self-crumb">detectBlur static method</li>
+</ol>
+
+    <h5>EnhancedQualityDetector class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    flutter_liveness_check
+      0.0.1
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

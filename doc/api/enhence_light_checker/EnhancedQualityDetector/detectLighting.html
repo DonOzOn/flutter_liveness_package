@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the detectLighting method from the EnhancedQualityDetector class, for the Dart programming language.">
+  <title>detectLighting method - EnhancedQualityDetector class - enhence_light_checker library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">flutter_liveness_check</a></li>
+    <li><a href="../../enhence_light_checker/">enhence_light_checker.dart</a></li>
+    <li><a href="../../enhence_light_checker/EnhancedQualityDetector-class.html">EnhancedQualityDetector</a></li>
+    <li class="self-crumb">detectLighting static method</li>
+  </ol>
+  <div class="self-name">detectLighting</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="enhence_light_checker&#47;EnhancedQualityDetector-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">detectLighting</span> static method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype"><a href="../../enhence_light_checker/LightingDetectionResult-class.html">LightingDetectionResult</a></span>
+<span class="name ">detectLighting</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="detectLighting-param-cameraImage"><span class="type-annotation"><a href="https://pub.dev/documentation/camera/0.11.2/camera/CameraImage-class.html">CameraImage</a></span> <span class="parameter-name">cameraImage</span>, </span></li>
+<li><span class="parameter" id="detectLighting-param-face"><span class="type-annotation"><a href="https://pub.dev/documentation/google_mlkit_face_detection/0.13.1/google_mlkit_face_detection/Face-class.html">Face</a></span> <span class="parameter-name">face</span></span></li>
+</ol>)
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Much more lenient lighting detection</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">static LightingDetectionResult detectLighting(
+  CameraImage cameraImage,
+  Face face,
+) {
+  try {
+    final faceRect = face.boundingBox;
+
+    &#47;&#47; Extract face region from camera image
+    final facePixels = _extractFacePixels(cameraImage, faceRect);
+    if (facePixels.isEmpty) {
+      return LightingDetectionResult(
+        isGoodLighting: true, &#47;&#47; Default to good lighting if can&#39;t analyze
+        avgBrightness: 128, &#47;&#47; Neutral value
+        contrast: 30,
+        overexposureRatio: 0.0,
+        underexposureRatio: 0.0,
+        issue: null, &#47;&#47; No issue if can&#39;t analyze
+      );
+    }
+
+    &#47;&#47; Calculate lighting metrics
+    final avgBrightness = _calculateAverageBrightness(facePixels);
+    final contrast = _calculateContrast(facePixels);
+    final overexposureRatio = _calculateOverexposureRatio(facePixels);
+    final underexposureRatio = _calculateUnderexposureRatio(facePixels);
+
+    &#47;&#47; Much more lenient lighting requirements
+    LightingIssue? issue;
+    bool isGoodLighting = true;
+    &#47;&#47; Only fail lighting if it&#39;s REALLY bad
+    if (avgBrightness &lt; _minBrightness &amp;&amp; contrast &lt; 5) {
+      issue = LightingIssue.tooWarm;
+      isGoodLighting = false;
+    } else if (avgBrightness &gt; _maxBrightness &amp;&amp; overexposureRatio &gt; 0.6) {
+      issue = LightingIssue.tooBright;
+      isGoodLighting = false;
+    } else if (contrast &lt; 5 &amp;&amp; avgBrightness &lt; 40) {
+      &#47;&#47; Much stricter
+      issue = LightingIssue.lowContrast;
+      isGoodLighting = false;
+    } else if (overexposureRatio &gt; _maxOverexposureRatio &amp;&amp;
+        avgBrightness &gt; 200) {
+      issue = LightingIssue.overexposed;
+      isGoodLighting = false;
+    } else if (underexposureRatio &gt; _maxUnderexposureRatio &amp;&amp;
+        avgBrightness &lt; 30) {
+      issue = LightingIssue.underexposed;
+      isGoodLighting = false;
+    }
+
+    return LightingDetectionResult(
+      isGoodLighting: isGoodLighting,
+      avgBrightness: avgBrightness,
+      contrast: contrast,
+      overexposureRatio: overexposureRatio,
+      underexposureRatio: underexposureRatio,
+      issue: issue,
+    );
+  } catch (e) {
+    debugPrint(&#39;Error in lighting detection: $e&#39;);
+    return LightingDetectionResult(
+      isGoodLighting: true, &#47;&#47; Default to good lighting on error
+      avgBrightness: 128,
+      contrast: 30,
+      overexposureRatio: 0.0,
+      underexposureRatio: 0.0,
+      issue: null,
+    );
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">flutter_liveness_check</a></li>
+    <li><a href="../../enhence_light_checker/">enhence_light_checker</a></li>
+    <li><a href="../../enhence_light_checker/EnhancedQualityDetector-class.html">EnhancedQualityDetector</a></li>
+    <li class="self-crumb">detectLighting static method</li>
+</ol>
+
+    <h5>EnhancedQualityDetector class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    flutter_liveness_check
+      0.0.1
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+
