@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_liveness_check/flutter_liveness_check.dart';
 
@@ -19,68 +21,18 @@ class _CustomWidgetExampleState extends State<CustomWidgetExample> {
         config: LivenessCheckConfig(
           status: _currentStatus,
           placeholder: "Custom header and bottom widgets example",
-
-          // Custom header widget
-          customHeader: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.blue.shade600, Colors.blue.shade800],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+          appBarConfig: const AppBarConfig(
+            title: 'Liveness Check',
+            elevation: 1,
+            backgroundColor: Colors.white,
+            titleStyle: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
             ),
-            child: SafeArea(
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text(
-                          'Identity Verification',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          'Step 2 of 3 - Liveness Check',
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.8),
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      'Attempt ${_attemptCount + 1}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            centerTitle: true,
+            automaticallyImplyLeading: true,
           ),
-
           // Custom bottom widget (only shown when not in fail state with try again button)
           customBottomWidget: _currentStatus != LivenessStatus.fail
               ? Container(
@@ -184,7 +136,7 @@ class _CustomWidgetExampleState extends State<CustomWidgetExample> {
           showLoading: false, // Dynamic loading control
 
           messages: const LivenessCheckMessages(
-            title: '',  // Empty since we have custom header
+            title: '', // Empty since we have custom header
             tryAgainButtonText: 'Try Again',
             noFaceDetected: 'Please position your face in the circle',
             livenessCheckPassed: 'Verification successful!',
@@ -204,7 +156,10 @@ class _CustomWidgetExampleState extends State<CustomWidgetExample> {
                     builder: (context) => AlertDialog(
                       title: Row(
                         children: [
-                          Icon(Icons.check_circle, color: Colors.green.shade600),
+                          Icon(
+                            Icons.check_circle,
+                            color: Colors.green.shade600,
+                          ),
                           const SizedBox(width: 8),
                           const Text('Verification Complete'),
                         ],
@@ -282,7 +237,9 @@ class _CustomWidgetExampleState extends State<CustomWidgetExample> {
             },
 
             onProgressUpdate: (blinkCount, isSmiling) {
-              print('Liveness progress: $blinkCount blinks, smiling: $isSmiling');
+              debugPrint(
+                'Liveness progress: $blinkCount blinks, smiling: $isSmiling',
+              );
             },
           ),
         ),

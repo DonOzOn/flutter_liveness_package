@@ -1,10 +1,14 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_liveness_check/flutter_liveness_check.dart';
 
 void main() {
   group('Integration Tests', () {
-    testWidgets('Complete liveness flow simulation', (WidgetTester tester) async {
+    testWidgets('Complete liveness flow simulation', (
+      WidgetTester tester,
+    ) async {
       LivenessStatus currentStatus = LivenessStatus.init;
       bool isLoading = false;
       int retryCount = 0;
@@ -149,8 +153,8 @@ void main() {
         MaterialApp(
           home: LivenessCheckScreen(
             config: LivenessCheckConfig(
-              customHeader: AppBar(
-                title: Text('Custom Verification'),
+              appBarConfig: AppBarConfig(
+                title: 'Custom Verification',
                 backgroundColor: Colors.purple,
               ),
               customBottomWidget: Container(
@@ -210,9 +214,7 @@ void main() {
                 btnTextRetryColor: Colors.white,
               ),
               status: LivenessStatus.fail,
-              settings: LivenessCheckSettings(
-                showTryAgainButton: true,
-              ),
+              settings: LivenessCheckSettings(showTryAgainButton: true),
             ),
           ),
         ),
@@ -223,7 +225,9 @@ void main() {
       expect(find.text('Try Again'), findsOneWidget);
     });
 
-    testWidgets('Messages localization integration test', (WidgetTester tester) async {
+    testWidgets('Messages localization integration test', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: LivenessCheckScreen(
@@ -239,9 +243,7 @@ void main() {
                 moveCloserToCamera: 'Di chuyển gần camera hơn',
               ),
               status: LivenessStatus.fail,
-              settings: LivenessCheckSettings(
-                showTryAgainButton: true,
-              ),
+              settings: LivenessCheckSettings(showTryAgainButton: true),
               placeholder: 'Vui lòng đặt khuôn mặt vào vòng tròn',
             ),
           ),
@@ -253,7 +255,9 @@ void main() {
       expect(find.text('Vui lòng đặt khuôn mặt vào vòng tròn'), findsOneWidget);
     });
 
-    testWidgets('Settings configuration integration test', (WidgetTester tester) async {
+    testWidgets('Settings configuration integration test', (
+      WidgetTester tester,
+    ) async {
       bool maxRetryReached = false;
       int maxRetryCount = 0;
 

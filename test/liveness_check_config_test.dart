@@ -13,18 +13,16 @@ void main() {
       expect(config.status, LivenessStatus.init);
       expect(config.showLoading, false);
       expect(config.placeholder, 'Please smile or blink eye 3 time');
-      expect(config.customHeader, isNull);
+      expect(config.appBarConfig, isA<AppBarConfig>());
       expect(config.customBottomWidget, isNull);
       expect(config.customLoadingWidget, isNull);
     });
 
     test('should create config with custom values', () {
-      final customHeader = Container(child: Text('Custom Header'));
-      final customBottomWidget = Container(child: Text('Custom Bottom'));
-      final customLoadingWidget = Container(child: Text('Loading...'));
+      final customBottomWidget = SizedBox(child: Text('Custom Bottom'));
+      final customLoadingWidget = SizedBox(child: Text('Loading...'));
 
       final config = LivenessCheckConfig(
-        customHeader: customHeader,
         customBottomWidget: customBottomWidget,
         customLoadingWidget: customLoadingWidget,
         status: LivenessStatus.success,
@@ -32,7 +30,6 @@ void main() {
         placeholder: 'Custom placeholder text',
       );
 
-      expect(config.customHeader, equals(customHeader));
       expect(config.customBottomWidget, equals(customBottomWidget));
       expect(config.customLoadingWidget, equals(customLoadingWidget));
       expect(config.status, LivenessStatus.success);
@@ -159,9 +156,18 @@ void main() {
       expect(messages.title, 'Liveness Check');
       expect(messages.tryAgainButtonText, 'Try Again');
       expect(messages.initializingCamera, 'Initializing camera...');
-      expect(messages.noFaceDetected, 'No face detected. Please position your face in the circle.');
-      expect(messages.multipleFacesDetected, 'Multiple faces detected. Please ensure only one person is visible.');
-      expect(messages.livenessCheckPassed, 'Liveness check passed! Taking photo...');
+      expect(
+        messages.noFaceDetected,
+        'No face detected. Please position your face in the circle.',
+      );
+      expect(
+        messages.multipleFacesDetected,
+        'Multiple faces detected. Please ensure only one person is visible.',
+      );
+      expect(
+        messages.livenessCheckPassed,
+        'Liveness check passed! Taking photo...',
+      );
     });
 
     test('should create messages with custom values', () {
@@ -242,6 +248,48 @@ void main() {
         LivenessStatus.success,
         LivenessStatus.fail,
       ]);
+    });
+  });
+
+  group('AppBarConfig Tests', () {
+    test('should create AppBarConfig with default values', () {
+      const appBarConfig = AppBarConfig();
+
+      expect(appBarConfig.title, isNull);
+      expect(appBarConfig.titleStyle, isNull);
+      expect(appBarConfig.backgroundColor, isNull);
+      expect(appBarConfig.elevation, 0);
+      expect(appBarConfig.customBackIcon, isNull);
+      expect(appBarConfig.centerTitle, true);
+      expect(appBarConfig.automaticallyImplyLeading, true);
+      expect(appBarConfig.showBackButton, true);
+    });
+
+    test('should create AppBarConfig with custom values', () {
+      final customBackIcon = IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: () {},
+      );
+
+      final appBarConfig = AppBarConfig(
+        title: 'Custom Title',
+        titleStyle: const TextStyle(color: Colors.red),
+        backgroundColor: Colors.blue,
+        elevation: 4.0,
+        customBackIcon: customBackIcon,
+        centerTitle: false,
+        automaticallyImplyLeading: false,
+        showBackButton: false,
+      );
+
+      expect(appBarConfig.title, 'Custom Title');
+      expect(appBarConfig.titleStyle, isA<TextStyle>());
+      expect(appBarConfig.backgroundColor, Colors.blue);
+      expect(appBarConfig.elevation, 4.0);
+      expect(appBarConfig.customBackIcon, equals(customBackIcon));
+      expect(appBarConfig.centerTitle, false);
+      expect(appBarConfig.automaticallyImplyLeading, false);
+      expect(appBarConfig.showBackButton, false);
     });
   });
 }

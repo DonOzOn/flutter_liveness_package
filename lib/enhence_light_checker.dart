@@ -53,8 +53,9 @@ class EnhancedQualityDetector {
       if (!landmarkStability) badConditions++;
       if (!skipLaplacianCheck &&
           laplacianVariance > 0 &&
-          laplacianVariance < threshold)
+          laplacianVariance < threshold) {
         badConditions++;
+      }
 
       // Only consider blurry if at least 2 conditions are bad AND face is very small
       final isBlurry = badConditions >= 2 && isSmallFace;

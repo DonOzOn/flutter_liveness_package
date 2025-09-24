@@ -112,7 +112,7 @@ class _CustomAssetsExampleState extends State<CustomAssetsExample> {
                     setState(() {
                       _currentStatus = LivenessStatus.init;
                     });
-                    print('User clicked retry - resetting to init state');
+                    debugPrint('User clicked retry - resetting to init state');
                   },
                   onMaxRetryReached: (attemptCount) {
                     showDialog(
@@ -136,10 +136,12 @@ class _CustomAssetsExampleState extends State<CustomAssetsExample> {
                     );
                   },
                   onPhotoTaken: (imagePath) {
-                    print('Photo captured at: $imagePath');
+                    debugPrint('Photo captured at: $imagePath');
                   },
                   onProgressUpdate: (blinkCount, isSmiling) {
-                    print('Progress: Blinks=$blinkCount, Smiling=$isSmiling');
+                    debugPrint(
+                      'Progress: Blinks=$blinkCount, Smiling=$isSmiling',
+                    );
                   },
                 ),
               ),

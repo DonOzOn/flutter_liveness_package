@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_liveness_check/flutter_liveness_check.dart';
 
@@ -24,7 +26,8 @@ class _FigmaStyleExampleState extends State<FigmaStyleExample> {
       body: LivenessCheckScreen(
         config: LivenessCheckConfig(
           status: _currentStatus,
-          placeholder: "Vui lòng điều chỉnh khuôn mặt cho đến khi vòng tròn chuyển xanh",
+          placeholder:
+              "Vui lòng điều chỉnh khuôn mặt cho đến khi vòng tròn chuyển xanh",
           theme: const LivenessCheckTheme(
             // Figma-inspired styling
             borderStyle: CircleBorderStyle.dashed,
@@ -49,9 +52,12 @@ class _FigmaStyleExampleState extends State<FigmaStyleExample> {
           messages: const LivenessCheckMessages(
             title: 'Xác thực khuôn mặt',
             tryAgainButtonText: 'Thử lại',
-            noFaceDetected: 'Không phát hiện khuôn mặt. Vui lòng đưa mặt vào vòng tròn.',
-            multipleFacesDetected: 'Phát hiện nhiều khuôn mặt. Chỉ cho phép một người.',
-            moveCloserToCamera: 'Di chuyển gần camera hơn hoặc giữ thiết bị ổn định.',
+            noFaceDetected:
+                'Không phát hiện khuôn mặt. Vui lòng đưa mặt vào vòng tròn.',
+            multipleFacesDetected:
+                'Phát hiện nhiều khuôn mặt. Chỉ cho phép một người.',
+            moveCloserToCamera:
+                'Di chuyển gần camera hơn hoặc giữ thiết bị ổn định.',
             holdStill: 'Giữ yên. Đặc điểm khuôn mặt không rõ ràng.',
             imageTooBlurry: 'Hình ảnh quá mờ. Giữ thiết bị ổn định.',
             poorLighting: 'Điều kiện ánh sáng kém.',
@@ -84,7 +90,9 @@ class _FigmaStyleExampleState extends State<FigmaStyleExample> {
                 context: context,
                 builder: (context) => AlertDialog(
                   title: const Text('Quá nhiều lần thử'),
-                  content: Text('Bạn đã thử $attemptCount lần. Vui lòng thử lại sau.'),
+                  content: Text(
+                    'Bạn đã thử $attemptCount lần. Vui lòng thử lại sau.',
+                  ),
                   actions: [
                     TextButton(
                       onPressed: () {

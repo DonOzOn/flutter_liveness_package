@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class LivenessCheckConfig {
-  final Widget? customHeader;
   final Widget? customBottomWidget;
   final LivenessCheckTheme theme;
   final LivenessCheckCallbacks? callbacks;
@@ -11,9 +10,9 @@ class LivenessCheckConfig {
   final LivenessStatus status;
   final bool showLoading;
   final Widget? customLoadingWidget;
+  final AppBarConfig appBarConfig;
 
   const LivenessCheckConfig({
-    this.customHeader,
     this.customBottomWidget,
     this.theme = const LivenessCheckTheme(),
     this.callbacks,
@@ -23,12 +22,35 @@ class LivenessCheckConfig {
     this.status = LivenessStatus.init,
     this.showLoading = false,
     this.customLoadingWidget,
+    this.appBarConfig = const AppBarConfig(),
   });
 }
 
 enum CircleBorderStyle { solid, dashed }
 
 enum LivenessStatus { init, success, fail }
+
+class AppBarConfig {
+  final String? title;
+  final TextStyle? titleStyle;
+  final Color? backgroundColor;
+  final double? elevation;
+  final Widget? customBackIcon;
+  final bool centerTitle;
+  final bool automaticallyImplyLeading;
+  final bool showBackButton;
+
+  const AppBarConfig({
+    this.title,
+    this.titleStyle,
+    this.backgroundColor,
+    this.elevation = 0,
+    this.customBackIcon,
+    this.centerTitle = true,
+    this.automaticallyImplyLeading = true,
+    this.showBackButton = true,
+  });
+}
 
 class LivenessCheckTheme {
   final Color backgroundColor;

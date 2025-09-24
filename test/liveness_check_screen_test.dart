@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_liveness_check/flutter_liveness_check.dart';
@@ -25,7 +27,7 @@ void main() {
         MaterialApp(
           home: LivenessCheckScreen(
             config: LivenessCheckConfig(
-              customHeader: Container(child: Text(headerText)),
+              appBarConfig: AppBarConfig(title: headerText),
             ),
           ),
         ),
@@ -43,7 +45,7 @@ void main() {
         MaterialApp(
           home: LivenessCheckScreen(
             config: LivenessCheckConfig(
-              customBottomWidget: Container(child: Text(bottomText)),
+              customBottomWidget: SizedBox(child: Text(bottomText)),
             ),
           ),
         ),
@@ -76,7 +78,7 @@ void main() {
           home: LivenessCheckScreen(
             config: LivenessCheckConfig(
               showLoading: true,
-              customLoadingWidget: Container(child: Text(loadingText)),
+              customLoadingWidget: Text(loadingText),
             ),
           ),
         ),
@@ -132,7 +134,7 @@ void main() {
             home: LivenessCheckScreen(
               config: LivenessCheckConfig(
                 status: LivenessStatus.fail,
-                customBottomWidget: Container(child: Text('Custom Bottom')),
+                customBottomWidget: SizedBox(child: Text('Custom Bottom')),
                 settings: LivenessCheckSettings(showTryAgainButton: true),
               ),
             ),
@@ -274,9 +276,9 @@ void main() {
         MaterialApp(
           home: LivenessCheckScreen(
             config: LivenessCheckConfig(
-              customHeader: Container(child: Text('Header')),
-              customBottomWidget: Container(child: Text('Bottom')),
-              customLoadingWidget: Container(child: Text('Loading')),
+              appBarConfig: AppBarConfig(title: 'Header'),
+              customBottomWidget: SizedBox(child: Text('Bottom')),
+              customLoadingWidget: SizedBox(child: Text('Loading')),
               showLoading: false,
               status: LivenessStatus.init,
               placeholder: 'Please position your face',
@@ -308,6 +310,105 @@ void main() {
       expect(find.text('Bottom'), findsOneWidget);
       expect(find.text('Please position your face'), findsOneWidget);
       expect(find.byType(LivenessCheckScreen), findsOneWidget);
+    });
+  });
+
+  group('AppBar Configuration Tests', () {
+    testWidgets('should show back button by default', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: LivenessCheckScreen(
+            config: LivenessCheckConfig(
+              appBarConfig: AppBarConfig(
+                title: 'Test',
+                showBackButton: true,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    });
+
+    testWidgets('should hide back button when showBackButton is false', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: LivenessCheckScreen(
+            config: LivenessCheckConfig(
+              appBarConfig: AppBarConfig(
+                title: 'Test',
+                showBackButton: false,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byIcon(Icons.arrow_back), findsNothing);
+    });
+
+    testWidgets('should show custom back icon when provided', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: LivenessCheckScreen(
+            config: LivenessCheckConfig(
+              appBarConfig: AppBarConfig(
+                title: 'Test',
+                showBackButton: true,
+                customBackIcon: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {},
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byIcon(Icons.close), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_back), findsNothing);
+    });
+
+    testWidgets('should not show custom back icon when showBackButton is false', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: LivenessCheckScreen(
+            config: LivenessCheckConfig(
+              appBarConfig: AppBarConfig(
+                title: 'Test',
+                showBackButton: false,
+                customBackIcon: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {},
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byIcon(Icons.close), findsNothing);
+      expect(find.byIcon(Icons.arrow_back), findsNothing);
+    });
+
+    testWidgets('should display custom title in AppBar', (WidgetTester tester) async {
+      const customTitle = 'Custom Verification Title';
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: LivenessCheckScreen(
+            config: LivenessCheckConfig(
+              appBarConfig: AppBarConfig(
+                title: customTitle,
+                centerTitle: false,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text(customTitle), findsOneWidget);
     });
   });
 }

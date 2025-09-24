@@ -461,8 +461,6 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     BlurDetectionResult blurResult,
     LightingDetectionResult lightingResult,
   ) {
-    String errorMessage = '';
-
     if (blurResult.isBlurry) {
       if (blurResult.faceArea < 8000) {
         _handleError(LivenessCheckError.moveCloserToCamera);
@@ -585,7 +583,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     if ((_blinkCount >= 3 || _isSmiling) && !_livenessCompleted) {
       _livenessCompleted = true;
       setState(() {
-        _errorMessage = 'Liveness check passed! Taking photo...';
+        _errorMessage = widget.config.messages.livenessCheckPassed;
         _borderColor = Colors.green;
       });
       _capturePhoto();
@@ -707,35 +705,9 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: widget.config.theme.backgroundColor,
-      appBar: widget.config.customHeader != null
-          ? null
-          : AppBar(
-              title: Text(
-                widget.config.messages.title,
-                style:
-                    widget.config.theme.titleTextStyle ??
-                    TextStyle(
-                      color: widget.config.theme.textColor,
-                      fontFamily: widget.config.theme.fontFamily,
-                    ),
-              ),
-              backgroundColor: widget.config.theme.backgroundColor,
-              elevation: 0,
-              foregroundColor: widget.config.theme.textColor,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: widget.config.theme.textColor,
-                ),
-                onPressed: () {
-                  widget.config.callbacks?.onCancel?.call();
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
+      appBar: _buildCustomAppBar(),
       body: Column(
         children: [
-          if (widget.config.customHeader != null) widget.config.customHeader!,
           Expanded(
             child: _isCameraInitialized
                 ? _buildCameraView()
@@ -746,6 +718,45 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
             widget.config.customBottomWidget!,
         ],
       ),
+    );
+  }
+
+  AppBar _buildCustomAppBar() {
+    final appBarConfig = widget.config.appBarConfig;
+
+    return AppBar(
+      title: Text(
+        appBarConfig.title ?? widget.config.messages.title,
+        style:
+            appBarConfig.titleStyle ??
+            widget.config.theme.titleTextStyle ??
+            TextStyle(
+              color: widget.config.theme.textColor,
+              fontFamily: widget.config.theme.fontFamily,
+            ),
+      ),
+      backgroundColor:
+          appBarConfig.backgroundColor ?? widget.config.theme.backgroundColor,
+      elevation: appBarConfig.elevation ?? 0,
+      foregroundColor: widget.config.theme.textColor,
+      centerTitle: appBarConfig.centerTitle,
+      automaticallyImplyLeading:
+          appBarConfig.automaticallyImplyLeading && appBarConfig.showBackButton,
+      leading:
+          (appBarConfig.automaticallyImplyLeading &&
+              appBarConfig.showBackButton)
+          ? (appBarConfig.customBackIcon ??
+                IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: widget.config.theme.textColor,
+                  ),
+                  onPressed: () {
+                    widget.config.callbacks?.onCancel?.call();
+                    Navigator.of(context).pop();
+                  },
+                ))
+          : null,
     );
   }
 
