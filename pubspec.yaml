@@ -1,7 +1,9 @@
 name: flutter_liveness_check
-description: "A new Flutter package project."
+description: "A comprehensive Flutter package for face liveness detection with fully customizable UI, ML Kit integration, and advanced features like dashed borders, retry logic, and quality detection."
 version: 1.0.0
-homepage: "https://example.com"
+homepage: "https://github.com/DonOzOn/flutter_liveness_package"
+repository: "https://github.com/DonOzOn/flutter_liveness_package"
+issue_tracker: "https://github.com/DonOzOn/flutter_liveness_package/issues"
 
 environment:
   sdk: ^3.8.1
