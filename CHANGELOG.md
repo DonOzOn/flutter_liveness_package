@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.0.1] - 2024-01-20
 
 ### Added
 - Comprehensive configuration system with `LivenessCheckConfig`
@@ -68,14 +68,13 @@ All notable changes to this project will be documented in this file.
 - Support for arm64-v8a, armeabi-v7a, x86_64 on Android
 - Support for arm64, x86_64 on iOS
 
-## [1.0.0] - Initial Release
+## [Unreleased]
 
-### Added
-- Basic liveness detection functionality
-- Camera integration with face detection
-- Simple UI with circular overlay
-- Basic error handling
-- Photo capture capability
+### Planned
+- Additional gesture detection options
+- Advanced anti-spoofing features
+- Integration with popular identity verification services
+- Enhanced accessibility features
 
 ---
 
