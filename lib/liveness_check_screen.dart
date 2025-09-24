@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_liveness_check/enhence_light_checker.dart';
-import 'package:flutter_liveness_check/liveness_result_screen.dart';
 import 'package:flutter_liveness_check/liveness_check_config.dart';
 import 'package:flutter_liveness_check/liveness_check_errors.dart';
+import 'package:flutter_liveness_check/widget/dashed_circle_painter.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -85,22 +85,87 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   /// Consecutive frames with poor image quality
   int _poorQualityFrames = 0;
 
-  /// Last blur detection result for debugging
-  BlurDetectionResult? _lastBlurResult;
-
-  /// Last lighting detection result for debugging
-  LightingDetectionResult? _lastLightingResult;
-
-  /// Whether to show detailed technical error information
-  bool _showDetailedError = false;
-
   /// Current camera image for enhanced quality analysis
   CameraImage? _currentCameraImage;
+
+  /// Current retry attempt count
+  int _retryAttemptCount = 0;
 
   @override
   void initState() {
     super.initState();
     _borderColor = widget.config.theme.borderColor;
+    _initializeCamera();
+    _initializeFaceDetector();
+  }
+
+  @override
+  void didUpdateWidget(LivenessCheckScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Handle status changes
+    if (oldWidget.config.status != widget.config.status) {
+      if (widget.config.status == LivenessStatus.init) {
+        // Reset retry counter when status changes back to init
+        _retryAttemptCount = 0;
+
+        // Initialize camera when switching to init status
+        if (_cameraController == null ||
+            !_cameraController!.value.isInitialized) {
+          _initializeCamera();
+          _initializeFaceDetector();
+        }
+      } else {
+        // Dispose camera when switching away from init status
+        _disposeCamera();
+      }
+    }
+
+    // Update border color based on new status
+    setState(() {
+      _borderColor = widget.config.theme.borderColor;
+    });
+  }
+
+  Future<void> _disposeCamera() async {
+    if (_cameraController != null) {
+      await _cameraController!.dispose();
+      _cameraController = null;
+      // Stop image stream if still running
+      if (_cameraController?.value.isStreamingImages ?? false) {
+        _cameraController?.stopImageStream();
+      }
+      // Close MLKit detector
+      _faceDetector?.close();
+    }
+  }
+
+  void _onTryAgain() {
+    // Increment retry counter
+    _retryAttemptCount++;
+
+    // Check if max retry attempts reached
+    if (_retryAttemptCount >= widget.config.settings.maxRetryAttempts) {
+      // Call max retry reached callback
+      widget.config.callbacks?.onMaxRetryReached?.call(_retryAttemptCount);
+      return;
+    }
+
+    // Call the onTryAgain callback
+    widget.config.callbacks?.onTryAgain?.call();
+
+    // Reset internal state
+    setState(() {
+      _isProcessing = false;
+      _livenessCompleted = false;
+      _errorMessage = '';
+      _blinkCount = 0;
+      _framesWithEyesClosed = 0;
+      _poorQualityFrames = 0;
+      _borderColor = widget.config.theme.borderColor;
+    });
+
+    // Reinitialize camera and face detector
     _initializeCamera();
     _initializeFaceDetector();
   }
@@ -328,14 +393,12 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
           _currentCameraImage!,
           faces.first,
         );
-        _lastBlurResult = blurResult;
 
         // Enhanced lighting detection
         final lightingResult = EnhancedQualityDetector.detectLighting(
           _currentCameraImage!,
           faces.first,
         );
-        _lastLightingResult = lightingResult;
 
         // Check overall quality
         final hasQualityIssue =
@@ -522,12 +585,12 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
       });
       _capturePhoto();
     } else if (!_livenessCompleted) {
-      final blinkStatus = _blinkCount >= 3 ? '✓' : '$_blinkCount/3';
-      final smileStatus = _isSmiling ? '✓' : '✗';
+      // final blinkStatus = _blinkCount >= 3 ? '✓' : '$_blinkCount/3';
+      // final smileStatus = _isSmiling ? '✓' : '✗';
       setState(() {
         _errorMessage = "";
         // _errorMessage = 'Blink 3 times: $blinkStatus, Smile: $smileStatus';
-        _borderColor = Colors.blue;
+        _borderColor = widget.config.theme.borderColor;
       });
     }
   }
@@ -609,13 +672,16 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
       // Navigate to result screen only if auto-navigation is enabled
       if (widget.config.settings.autoNavigateOnSuccess) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LivenessResultScreen(imagePath: photo.path),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => LivenessResultScreen(imagePath: photo.path),
+        //   ),
+        // );
       }
+      setState(() {
+        _isProcessing = false;
+      });
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -643,7 +709,10 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
                 widget.config.messages.title,
                 style:
                     widget.config.theme.titleTextStyle ??
-                    TextStyle(color: widget.config.theme.textColor),
+                    TextStyle(
+                      color: widget.config.theme.textColor,
+                      fontFamily: widget.config.theme.fontFamily,
+                    ),
               ),
               backgroundColor: widget.config.theme.backgroundColor,
               elevation: 0,
@@ -667,7 +736,8 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
                 ? _buildCameraView()
                 : _buildLoadingView(),
           ),
-          if (widget.config.customBottomWidget != null)
+          if (widget.config.customBottomWidget != null &&
+              !widget.config.settings.showTryAgainButton)
             widget.config.customBottomWidget!,
         ],
       ),
@@ -678,18 +748,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(),
-          const SizedBox(height: 16),
-          Text(
-            _errorMessage.isEmpty
-                ? widget.config.messages.initializingCamera
-                : _errorMessage,
-            style:
-                widget.config.theme.messageTextStyle ??
-                TextStyle(fontSize: 16, color: widget.config.theme.textColor),
-          ),
-        ],
+        children: [const CircularProgressIndicator()],
       ),
     );
   }
@@ -701,6 +760,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
             fontSize: 16,
             color: widget.config.theme.successColor.withValues(alpha: 0.8),
             fontWeight: FontWeight.w500,
+            fontFamily: widget.config.theme.fontFamily,
           );
     } else if (_borderColor == widget.config.theme.errorColor) {
       return widget.config.theme.errorTextStyle ??
@@ -708,6 +768,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
             fontSize: 16,
             color: widget.config.theme.errorColor.withValues(alpha: 0.8),
             fontWeight: FontWeight.w500,
+            fontFamily: widget.config.theme.fontFamily,
           );
     } else {
       return widget.config.theme.messageTextStyle ??
@@ -715,8 +776,122 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
             fontSize: 16,
             color: widget.config.theme.primaryColor.withValues(alpha: 0.8),
             fontWeight: FontWeight.w500,
+            fontFamily: widget.config.theme.fontFamily,
           );
     }
+  }
+
+  Widget _buildCircleWithContent(double circleSize, Size screenSize) {
+    final cameraPadding = widget.config.theme.cameraPadding;
+    final innerContentSize = circleSize - (cameraPadding * 2);
+
+    // Determine inner content based on status
+    Widget innerContent;
+
+    switch (widget.config.status) {
+      case LivenessStatus.success:
+        innerContent = Image.asset(
+          widget.config.theme.successAsset ??
+              'packages/flutter_liveness_check/assets/success.png',
+          width: innerContentSize,
+          height: innerContentSize,
+          fit: BoxFit.contain,
+        );
+        break;
+
+      case LivenessStatus.fail:
+        innerContent = Image.asset(
+          widget.config.theme.failAsset ??
+              'packages/flutter_liveness_check/assets/fail.png',
+          width: innerContentSize,
+          height: innerContentSize,
+          fit: BoxFit.contain,
+        );
+        break;
+
+      case LivenessStatus.init:
+        // For init status, show camera preview
+        if (_cameraController != null &&
+            _cameraController!.value.isInitialized) {
+          innerContent = OverflowBox(
+            alignment: Alignment.center,
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: SizedBox(
+                width: screenSize.width,
+                height: screenSize.width * _cameraController!.value.aspectRatio,
+                child: CameraPreview(_cameraController!),
+              ),
+            ),
+          );
+        } else {
+          innerContent = Container(
+            width: innerContentSize,
+            height: innerContentSize,
+            color: Colors.black,
+            child: Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  widget.config.theme.primaryColor,
+                ),
+              ),
+            ),
+          );
+        }
+        break;
+    }
+
+    Widget circleWidget;
+
+    if (widget.config.theme.borderStyle == CircleBorderStyle.dashed) {
+      // Use CustomPaint for dashed border
+      circleWidget = CustomPaint(
+        size: Size(circleSize, circleSize),
+        painter: DashedCirclePainter(
+          color: _borderColor,
+          strokeWidth: widget.config.theme.borderWidth,
+          dashLength: widget.config.theme.dashLength,
+          dashGap: widget.config.theme.dashGap,
+        ),
+        child: SizedBox(
+          width: circleSize,
+          height: circleSize,
+          child: Center(
+            child: ClipOval(
+              child: SizedBox(
+                width: innerContentSize,
+                height: innerContentSize,
+                child: innerContent,
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      // Use solid border
+      circleWidget = Container(
+        width: circleSize,
+        height: circleSize,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: _borderColor,
+            width: widget.config.theme.borderWidth,
+          ),
+        ),
+        child: Center(
+          child: ClipOval(
+            child: SizedBox(
+              width: innerContentSize,
+              height: innerContentSize,
+              child: innerContent,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return circleWidget;
   }
 
   Widget _buildCameraView() {
@@ -726,8 +901,11 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
     return Stack(
       children: [
-        // Camera preview
-        Positioned.fill(child: CameraPreview(_cameraController!)),
+        // Camera preview (only for init status)
+        if (widget.config.status == LivenessStatus.init &&
+            _cameraController != null &&
+            _cameraController!.value.isInitialized)
+          Positioned.fill(child: CameraPreview(_cameraController!)),
 
         // White overlay with circular cutout
         Positioned.fill(
@@ -739,32 +917,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
                 Positioned(
                   left: (size.width - circleSize) / 2,
                   top: centerY - (circleSize / 2),
-                  child: Container(
-                    width: circleSize,
-                    height: circleSize,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: _borderColor,
-                        width: widget.config.theme.borderWidth,
-                      ),
-                    ),
-                    child: ClipOval(
-                      child: OverflowBox(
-                        alignment: Alignment.center,
-                        child: FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: SizedBox(
-                            width: size.width,
-                            height:
-                                size.width *
-                                _cameraController!.value.aspectRatio,
-                            child: CameraPreview(_cameraController!),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  child: _buildCircleWithContent(circleSize, size),
                 ),
               ],
             ),
@@ -778,7 +931,8 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
           right: 20,
           child: Column(
             children: [
-              if (_errorMessage.isNotEmpty) ...[
+              if (_errorMessage.isNotEmpty &&
+                  widget.config.settings.showErrorMessage) ...[
                 _buildEnhancedErrorMessage(),
               ] else if (widget.config.placeholder != null) ...[
                 Text(
@@ -789,6 +943,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
                       TextStyle(
                         fontSize: 16,
                         color: widget.config.theme.primaryColor,
+                        fontFamily: widget.config.theme.fontFamily,
                       ),
                 ),
               ],
@@ -797,15 +952,45 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
         ),
 
         // Processing indicator
-        if (_isProcessing)
+        if (widget.config.showLoading)
           Positioned.fill(
-            child: Container(
-              color: Colors.black.withValues(alpha: 0.5),
-              child: Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    widget.config.theme.primaryColor,
+            child: widget.config.customLoadingWidget ??
+              Container(
+                color: Colors.black.withValues(alpha: 0.5),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      widget.config.theme.primaryColor,
+                    ),
                   ),
+                ),
+              ),
+          ),
+
+        // Try Again button for fail status (only if no custom bottom widget)
+        if (widget.config.status == LivenessStatus.fail &&
+            widget.config.settings.showTryAgainButton &&
+            widget.config.customBottomWidget == null)
+          Positioned(
+            bottom: 50,
+            left: 20,
+            right: 20,
+            child: ElevatedButton(
+              onPressed: _onTryAgain,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: widget.config.theme.primaryColor,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                widget.config.messages.tryAgainButtonText,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: widget.config.theme.fontFamily,
                 ),
               ),
             ),

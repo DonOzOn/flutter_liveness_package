@@ -1,130 +1,141 @@
-# Customizable Liveness Check Screen
+# Flutter Liveness Check Package
 
-The `LivenessCheckScreen` has been enhanced to be fully customizable and reusable across any Flutter project. You can now customize the header, bottom widget, colors, text messages, and behavior through a comprehensive configuration system.
+A comprehensive Flutter package for face liveness detection with customizable UI, status management, and advanced features like dashed borders, retry limits, and asset replacement.
 
-## Features
+## ( Features
 
-- **🎨 Custom Themes**: Customize colors, text styles, and UI elements
-- **📱 Custom Header**: Replace the default app bar with your own widget
-- **⬇️ Custom Bottom Widget**: Add custom actions, tips, or branding
-- **🔄 Flexible Callbacks**: Handle success, error, and progress events
-- **⚙️ Configurable Settings**: Adjust blink requirements, smile detection, and more
-- **🌐 Custom Messages**: Localize or customize all user-facing text
+- **<� Real-time Face Detection** - ML Kit powered liveness verification
+- **<� Customizable Circle Styles** - Solid and dashed border options with camera padding
+- **=� Status Management** - Init, success, and fail states with asset replacement
+- **= Retry Logic** - Configurable maximum attempts with callbacks
+- **< Localization Support** - Customizable messages and button text
+- **� Flexible Configuration** - Comprehensive theme and behavior customization
+- **=� Custom Widgets** - Custom headers and bottom widgets support
+- **<� Font Customization** - Set custom font family for all text elements
 
-## Quick Start
+## =� Quick Start
 
-### Basic Usage (Default Configuration)
-
-```dart
-import 'package:flutter_liveness_check/liveness_check_screen.dart';
-
-// Simple usage with default settings
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => const LivenessCheckScreen(),
-  ),
-);
-```
-
-### Custom Theme
+### Basic Usage
 
 ```dart
-import 'package:flutter_liveness_check/liveness_check_screen.dart';
-import 'package:flutter_liveness_check/liveness_check_config.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_liveness_check/flutter_liveness_check.dart';
 
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => LivenessCheckScreen(
+class MyLivenessCheck extends StatefulWidget {
+  @override
+  State<MyLivenessCheck> createState() => _MyLivenessCheckState();
+}
+
+class _MyLivenessCheckState extends State<MyLivenessCheck> {
+  LivenessStatus _status = LivenessStatus.init;
+
+  @override
+  Widget build(BuildContext context) {
+    return LivenessCheckScreen(
       config: LivenessCheckConfig(
-        theme: const LivenessCheckTheme(
-          backgroundColor: Color(0xFF1E1E1E), // Dark background
-          primaryColor: Colors.purple,         // Purple accent
-          successColor: Colors.teal,          // Teal success
-          errorColor: Colors.orange,          // Orange errors
-          textColor: Colors.white,            // White text
-          circleSize: 0.8,                    // Larger circle
-          borderWidth: 6,                     // Thicker border
-        ),
-        messages: const LivenessCheckMessages(
-          title: 'Face Verification',
-          noFaceDetected: 'Position your face within the circle',
-          livenessCheckPassed: 'Verification successful!',
+        status: _status,
+        callbacks: LivenessCheckCallbacks(
+          onSuccess: () => setState(() => _status = LivenessStatus.success),
+          onError: (error) => setState(() => _status = LivenessStatus.fail),
+          onTryAgain: () => setState(() => _status = LivenessStatus.init),
         ),
       ),
-    ),
-  ),
-);
+    );
+  }
+}
 ```
 
-## Configuration Options
+## =� Complete Parameter Reference
 
 ### LivenessCheckConfig
 
-The main configuration class that contains all customization options:
+Main configuration class containing all customization options:
 
 ```dart
-LivenessCheckConfig(
-  customHeader: Widget?,              // Custom header widget
-  customBottomWidget: Widget?,        // Custom bottom widget
-  theme: LivenessCheckTheme,          // Visual theme configuration
-  callbacks: LivenessCheckCallbacks?, // Event callbacks
-  messages: LivenessCheckMessages,    // Custom text messages
-  settings: LivenessCheckSettings,    // Behavior settings
-)
+LivenessCheckConfig({
+  Widget? customHeader,              // Custom header widget
+  Widget? customBottomWidget,        // Custom bottom widget
+  LivenessCheckTheme theme,          // Visual theme configuration
+  LivenessCheckCallbacks? callbacks, // Event callbacks
+  LivenessCheckMessages messages,    // Custom text messages
+  LivenessCheckSettings settings,    // Behavior settings
+  String? placeholder,               // Main instruction text
+  LivenessStatus status,             // Current status (init/success/fail)
+  bool showLoading,                  // Show loading overlay (dynamic control)
+  Widget? customLoadingWidget,       // Custom loading widget (replaces default overlay)
+})
 ```
 
 ### LivenessCheckTheme
 
-Controls the visual appearance:
+Controls visual appearance and styling:
 
 ```dart
-LivenessCheckTheme(
-  backgroundColor: Colors.white,      // Screen background
-  primaryColor: Colors.blue,          // Primary accent color
-  successColor: Colors.green,         // Success state color
-  errorColor: Colors.red,             // Error state color
-  warningColor: Colors.orange,        // Warning state color
-  borderColor: Colors.blue,           // Initial border color
-  textColor: Colors.black,            // Text color
-  overlayColor: Colors.white,         // Camera overlay color
-  circleSize: 0.7,                    // Circle size (0.0 - 1.0)
-  borderWidth: 4,                     // Border thickness
-  titleTextStyle: TextStyle?,         // Custom title style
-  messageTextStyle: TextStyle?,       // Custom message style
-  errorTextStyle: TextStyle?,         // Custom error style
-  successTextStyle: TextStyle?,       // Custom success style
-)
+LivenessCheckTheme({
+  // Colors
+  Color backgroundColor,             // Screen background (default: Colors.white)
+  Color primaryColor,               // Primary accent color (default: Colors.blue)
+  Color successColor,               // Success state color (default: Colors.green)
+  Color errorColor,                 // Error state color (default: Colors.red)
+  Color warningColor,               // Warning state color (default: Colors.orange)
+  Color borderColor,                // Initial border color (default: Colors.blue)
+  Color textColor,                  // Text color (default: Colors.black)
+  Color overlayColor,               // Camera overlay color (default: Colors.white)
+
+  // Circle Configuration
+  double circleSize,                // Circle size ratio (default: 0.65)
+  double borderWidth,               // Border thickness (default: 4)
+  CircleBorderStyle borderStyle,    // Border style: solid or dashed (default: solid)
+  double dashLength,                // Dash length for dashed style (default: 8.0)
+  double dashGap,                   // Gap between dashes (default: 8.0)
+  double cameraPadding,             // Space between border and camera (default: 0.0)
+
+  // Assets
+  String? successAsset,             // Custom success image path
+  String? failAsset,                // Custom fail image path
+
+  // Typography
+  String? fontFamily,               // Font family for all text
+  TextStyle? titleTextStyle,        // Custom title style
+  TextStyle? messageTextStyle,      // Custom message style
+  TextStyle? errorTextStyle,        // Custom error style
+  TextStyle? successTextStyle,      // Custom success style
+})
+```
+
+### LivenessCheckSettings
+
+Controls behavior and requirements:
+
+```dart
+LivenessCheckSettings({
+  int requiredBlinkCount,           // Number of blinks required (default: 3)
+  bool requireSmile,                // Whether smile is required (default: false)
+  bool showProgress,                // Show progress indicators (default: true)
+  bool autoNavigateOnSuccess,       // Auto-navigate after success (default: true)
+  bool showErrorMessage,            // Show error messages (default: true)
+  bool showTryAgainButton,          // Show try again button on fail (default: true)
+  int maxRetryAttempts,            // Maximum retry attempts (default: 3)
+  Duration processingTimeout,       // Processing timeout (default: 30 seconds)
+  double circlePositionY,          // Vertical circle position (default: 0.38)
+})
 ```
 
 ### LivenessCheckCallbacks
 
-Handle events and custom navigation:
+Handle events and custom logic:
 
 ```dart
-LivenessCheckCallbacks(
-  onSuccess: () {
-    // Called when liveness check passes
-    print('Verification successful!');
-  },
-  onError: (String error) {
-    // Called when an error occurs
-    print('Error: $error');
-  },
-  onCancel: () {
-    // Called when user cancels
-    print('User cancelled');
-  },
-  onPhotoTaken: (String imagePath) {
-    // Called when photo is captured
-    print('Photo saved: $imagePath');
-  },
-  onProgressUpdate: (int blinkCount, bool isSmiling) {
-    // Called during liveness detection
-    print('Progress: $blinkCount blinks, smiling: $isSmiling');
-  },
-)
+LivenessCheckCallbacks({
+  VoidCallback? onSuccess,                              // Liveness check passed
+  Function(String error)? onError,                      // Error occurred
+  Function(dynamic errorType, String message)? onErrorWithType, // Detailed error
+  VoidCallback? onCancel,                               // User cancelled
+  Function(String imagePath)? onPhotoTaken,             // Photo captured
+  Function(int blinkCount, bool isSmiling)? onProgressUpdate, // Progress update
+  VoidCallback? onTryAgain,                             // Try again pressed
+  Function(int attemptCount)? onMaxRetryReached,        // Max retries reached
+})
 ```
 
 ### LivenessCheckMessages
@@ -132,361 +143,384 @@ LivenessCheckCallbacks(
 Customize all user-facing text:
 
 ```dart
-LivenessCheckMessages(
-  title: 'Liveness Check',
-  initializingCamera: 'Initializing camera...',
-  noFaceDetected: 'No face detected. Please position your face in the circle.',
-  multipleFacesDetected: 'Multiple faces detected. Only one person allowed.',
-  moveCloserToCamera: 'Move closer to camera or hold device steady.',
-  holdStill: 'Hold still. Face features not clear.',
-  imageTooBlurry: 'Image too blurry. Hold device steady.',
-  poorLighting: 'Poor lighting conditions.',
-  livenessCheckPassed: 'Liveness check passed! Taking photo...',
-  takingPhoto: 'Taking photo...',
-  failedToCapture: 'Failed to capture photo',
-  cameraPermissionDenied: 'Camera permission denied',
-  failedToInitializeCamera: 'Failed to initialize camera',
+LivenessCheckMessages({
+  String title,                     // Screen title (default: 'Liveness Check')
+  String initializingCamera,        // Camera init message
+  String noFaceDetected,           // No face detected message
+  String multipleFacesDetected,    // Multiple faces message
+  String moveCloserToCamera,       // Move closer message
+  String holdStill,                // Hold still message
+  String imageTooBlurry,           // Image blurry message
+  String poorLighting,             // Poor lighting message
+  String livenessCheckPassed,      // Success message
+  String takingPhoto,              // Taking photo message
+  String failedToCapture,          // Capture failed message
+  String cameraPermissionDenied,   // Permission denied message
+  String failedToInitializeCamera, // Init failed message
+  String tryAgainButtonText,       // Try again button text (default: 'Try Again')
+})
+```
+
+## <� Circle Style Examples
+
+### Figma-Style Dashed Circle
+
+```dart
+LivenessCheckConfig(
+  theme: const LivenessCheckTheme(
+    borderStyle: CircleBorderStyle.dashed,
+    borderColor: Color(0xFF35C659), // Green color
+    borderWidth: 4,
+    dashLength: 8,
+    dashGap: 8,
+    cameraPadding: 10,
+    circleSize: 0.65,
+  ),
+  placeholder: "Please adjust your face until the circle turns green",
 )
 ```
 
-### LivenessCheckSettings
-
-Control behavior and requirements:
+### Solid Circle with Padding
 
 ```dart
-LivenessCheckSettings(
-  requiredBlinkCount: 3,              // Number of blinks required
-  requireSmile: false,                // Whether smile is required
-  showProgress: true,                 // Show progress indicators
-  autoNavigateOnSuccess: true,        // Auto-navigate after success
-  processingTimeout: Duration(seconds: 30), // Processing timeout
-  circlePositionY: 0.4,              // Vertical position of circle
+LivenessCheckConfig(
+  theme: const LivenessCheckTheme(
+    borderStyle: CircleBorderStyle.solid,
+    borderColor: Colors.blue,
+    borderWidth: 3,
+    cameraPadding: 20, // 20px padding around camera
+    circleSize: 0.7,
+  ),
 )
 ```
 
-## Examples
+## = Status Management
 
-### Banking App Integration
+The package supports three main states:
+
+### Init Status (Camera Active)
+```dart
+LivenessCheckConfig(
+  status: LivenessStatus.init,
+  // Camera is active and face detection is running
+)
+```
+
+### Success Status (Asset Replacement)
+```dart
+LivenessCheckConfig(
+  status: LivenessStatus.success,
+  theme: const LivenessCheckTheme(
+    successAsset: 'assets/custom_success.png',
+    // If no asset provided, uses default package asset
+  ),
+  placeholder: "Liveness check successful!",
+)
+```
+
+### Fail Status (Asset + Try Again Button)
+```dart
+LivenessCheckConfig(
+  status: LivenessStatus.fail,
+  theme: const LivenessCheckTheme(
+    failAsset: 'assets/custom_fail.png',
+    // If no asset provided, uses default package asset
+  ),
+  settings: const LivenessCheckSettings(
+    showTryAgainButton: true,
+    maxRetryAttempts: 3,
+  ),
+  callbacks: LivenessCheckCallbacks(
+    onTryAgain: () {
+      // Reset to init status
+    },
+    onMaxRetryReached: (attemptCount) {
+      // Handle max retry limit
+    },
+  ),
+)
+```
+
+## < Localization Example
 
 ```dart
-LivenessCheckScreen(
-  config: LivenessCheckConfig(
-    // Custom header with banking branding
-    customHeader: Container(
-      padding: const EdgeInsets.fromLTRB(16, 40, 16, 20),
-      decoration: const BoxDecoration(
-        color: Color(0xFF1565C0),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
+LivenessCheckConfig(
+  messages: const LivenessCheckMessages(
+    title: 'X�c th�c khu�n m�t',
+    tryAgainButtonText: 'Th� l�i',
+    noFaceDetected: 'Kh�ng ph�t hi�n khu�n m�t. Vui l�ng �a m�t v�o v�ng tr�n.',
+    multipleFacesDetected: 'Ph�t hi�n nhi�u khu�n m�t. Ch� cho ph�p m�t ng��i.',
+    moveCloserToCamera: 'Di chuy�n g�n camera h�n.',
+    holdStill: 'Gi� y�n. �c i�m khu�n m�t kh�ng r� r�ng.',
+    livenessCheckPassed: 'X�c th�c th�nh c�ng! ang ch�p �nh...',
+  ),
+  placeholder: "Vui l�ng i�u ch�nh khu�n m�t cho �n khi v�ng tr�n chuy�n xanh",
+)
+```
+
+## <� Advanced Features
+
+### Custom Font Family
+
+```dart
+LivenessCheckConfig(
+  theme: const LivenessCheckTheme(
+    fontFamily: 'Roboto', // Applied to all text elements
+    borderColor: Colors.purple,
+  ),
+)
+```
+
+### Hide UI Elements
+
+```dart
+LivenessCheckConfig(
+  showLoading: false,                // Hide loading indicator (dynamic control)
+  settings: const LivenessCheckSettings(
+    showErrorMessage: false,        // Hide error messages
+    showTryAgainButton: false,     // Hide try again button
+  ),
+)
+```
+
+### Dynamic Loading Control
+
+```dart
+class MyLivenessCheck extends StatefulWidget {
+  @override
+  State<MyLivenessCheck> createState() => _MyLivenessCheckState();
+}
+
+class _MyLivenessCheckState extends State<MyLivenessCheck> {
+  LivenessStatus _status = LivenessStatus.init;
+  bool _isProcessing = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return LivenessCheckScreen(
+      config: LivenessCheckConfig(
+        status: _status,
+        showLoading: _isProcessing, // Dynamic control from parent
+        callbacks: LivenessCheckCallbacks(
+          onSuccess: () {
+            setState(() => _isProcessing = true); // Show loading during processing
+            // Process the result
+            Future.delayed(Duration(seconds: 2), () {
+              setState(() {
+                _status = LivenessStatus.success;
+                _isProcessing = false; // Hide loading when done
+              });
+            });
+          },
         ),
       ),
-      child: Column(
-        children: [
-          // Bank logo and title
-          const Text(
-            'Secure Banking',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          // Security message
-          Container(
-            padding: const EdgeInsets.all(16),
-            child: const Text(
-              'Identity Verification Required',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    ),
+    );
+  }
+}
+```
 
-    // Banking theme colors
-    theme: const LivenessCheckTheme(
-      backgroundColor: Color(0xFFF8F9FA),
-      primaryColor: Color(0xFF1565C0),
-      successColor: Color(0xFF2E7D32),
-      errorColor: Color(0xFFD32F2F),
-    ),
+### Custom Widgets
 
-    // Custom verification flow
-    settings: const LivenessCheckSettings(
-      requiredBlinkCount: 3,
-      requireSmile: false,
-      autoNavigateOnSuccess: false,
-    ),
-
-    // Handle banking-specific logic
-    callbacks: LivenessCheckCallbacks(
-      onSuccess: () => _showBankingSuccessDialog(),
-      onError: (error) => _showBankingErrorDialog(error),
-      onPhotoTaken: (imagePath) => _processBankingVerification(imagePath),
-    ),
+```dart
+LivenessCheckConfig(
+  customHeader: MyCustomHeader(),
+  customBottomWidget: MyCustomFooter(),
+  customLoadingWidget: MyCustomLoadingWidget(), // Custom loading overlay
+  settings: const LivenessCheckSettings(
+    // When using customBottomWidget, consider disabling try again button
+    showTryAgainButton: false,
   ),
 )
 ```
 
-### E-commerce KYC
+### Custom Loading Widget
 
 ```dart
-LivenessCheckScreen(
-  config: LivenessCheckConfig(
-    // E-commerce branding
-    customHeader: _buildEcommerceHeader(),
-    customBottomWidget: _buildEcommerceTips(),
-
-    // Brand colors
-    theme: const LivenessCheckTheme(
-      primaryColor: Color(0xFFFF6B35),
-      successColor: Color(0xFF4CAF50),
-      circleSize: 0.75,
-    ),
-
-    // Quick verification
-    settings: const LivenessCheckSettings(
-      requiredBlinkCount: 2,
-      requireSmile: true,
-      showProgress: true,
-    ),
-
-    callbacks: LivenessCheckCallbacks(
-      onPhotoTaken: (imagePath) {
-        // Upload to KYC service
-        _uploadToKYCService(imagePath);
-      },
-    ),
-  ),
-)
-```
-
-### Healthcare App
-
-```dart
-LivenessCheckScreen(
-  config: LivenessCheckConfig(
-    theme: const LivenessCheckTheme(
-      backgroundColor: Color(0xFFF0F8F7),
-      primaryColor: Color(0xFF00695C),
-      successColor: Color(0xFF4CAF50),
-      textColor: Color(0xFF263238),
-    ),
-
-    messages: const LivenessCheckMessages(
-      title: 'Patient Verification',
-      noFaceDetected: 'Please position your face for verification',
-      livenessCheckPassed: 'Patient identity verified',
-    ),
-
-    settings: const LivenessCheckSettings(
-      requiredBlinkCount: 2,
-      requireSmile: false,
-      showProgress: false,
-    ),
-
-    callbacks: LivenessCheckCallbacks(
-      onSuccess: () => _proceedToHealthcareApp(),
-      onPhotoTaken: (imagePath) => _savePatientPhoto(imagePath),
-    ),
-  ),
-)
-```
-
-## Custom Header Examples
-
-### Branded Header with Logo
-
-```dart
-Widget _buildBrandedHeader() {
-  return Container(
-    padding: const EdgeInsets.fromLTRB(16, 40, 16, 20),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-    ),
-    child: Column(
-      children: [
-        Row(
+class MyCustomLoadingWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.blue.withValues(alpha: 0.8), // Custom background
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.pop(context),
-            ),
-            Expanded(
-              child: Center(
-                child: Image.asset('assets/logo.png', height: 32),
+            // Custom animated loading indicator
+            SizedBox(
+              width: 60,
+              height: 60,
+              child: CircularProgressIndicator(
+                strokeWidth: 6,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                backgroundColor: Colors.white.withValues(alpha: 0.3),
               ),
             ),
-            SizedBox(width: 48),
-          ],
-        ),
-        SizedBox(height: 16),
-        Text(
-          'Secure Identity Verification',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-```
-
-### Progress Header
-
-```dart
-Widget _buildProgressHeader() {
-  return Container(
-    padding: const EdgeInsets.all(16),
-    child: Column(
-      children: [
-        SizedBox(height: 40),
-        Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () => Navigator.pop(context),
-            ),
-            Expanded(
-              child: Text(
-                'Step 2 of 3',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+            SizedBox(height: 20),
+            Text(
+              'Processing your verification...',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(width: 48),
+            SizedBox(height: 8),
+            Text(
+              'Please wait a moment',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.8),
+                fontSize: 14,
+              ),
+            ),
           ],
         ),
-        SizedBox(height: 16),
-        LinearProgressIndicator(value: 0.66),
-        SizedBox(height: 16),
-        Text(
-          'Face Verification',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }
+
+// Usage example
+LivenessCheckConfig(
+  showLoading: true,
+  customLoadingWidget: MyCustomLoadingWidget(),
+  // ... other parameters
+)
 ```
 
-## Custom Bottom Widget Examples
-
-### Action Buttons
+### Retry Limits
 
 ```dart
-Widget _buildActionButtons() {
-  return Container(
-    padding: const EdgeInsets.all(20),
-    child: Row(
-      children: [
-        Expanded(
-          child: OutlinedButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
-          ),
+LivenessCheckConfig(
+  settings: const LivenessCheckSettings(
+    maxRetryAttempts: 5,
+  ),
+  callbacks: LivenessCheckCallbacks(
+    onMaxRetryReached: (attemptCount) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Too many attempts'),
+          content: Text('Failed after $attemptCount attempts'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
         ),
-        SizedBox(width: 16),
-        Expanded(
-          child: ElevatedButton(
-            onPressed: () => _retryVerification(),
-            child: Text('Retry'),
-          ),
-        ),
-      ],
-    ),
-  );
-}
+      );
+    },
+  ),
+)
 ```
 
-### Help & Tips
+## =� Sample Code
 
+For complete working examples, check the [sample folder](lib/sample/):
+
+- **[basic_liveness_example.dart](lib/sample/basic_liveness_example.dart)** - Simple implementation
+- **[figma_style_example.dart](lib/sample/figma_style_example.dart)** - Dashed circle with Vietnamese localization
+- **[custom_assets_example.dart](lib/sample/custom_assets_example.dart)** - Custom success/fail assets
+- **[custom_widget_example.dart](lib/sample/custom_widget_example.dart)** - Advanced UI with custom widgets
+- **[custom_loading_example.dart](lib/sample/custom_loading_example.dart)** - Custom loading widget with animations
+- **[minimal_example.dart](lib/sample/minimal_example.dart)** - Minimal configuration for testing
+
+Each example demonstrates different aspects of the package and can be run independently.
+
+## =' Integration Patterns
+
+### Navigation Integration
 ```dart
-Widget _buildHelpSection() {
-  return Container(
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      color: Colors.grey.shade50,
-      border: Border(top: BorderSide(color: Colors.grey.shade200)),
-    ),
-    child: Column(
-      crossAxisSize: CrossAxisSize.start,
-      children: [
-        Text(
-          'Verification Tips:',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-        SizedBox(height: 12),
-        _buildTip(Icons.lightbulb_outline, 'Ensure good lighting'),
-        _buildTip(Icons.center_focus_strong, 'Center your face in the circle'),
-        _buildTip(Icons.phone_android, 'Hold your device steady'),
-        SizedBox(height: 16),
-        Center(
-          child: TextButton(
-            onPressed: () => _showDetailedHelp(),
-            child: Text('Need help?'),
-          ),
-        ),
-      ],
-    ),
-  );
-}
+final result = await Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (context) => MyLivenessCheck(),
+  ),
+);
 
-Widget _buildTip(IconData icon, String text) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
-    child: Row(
-      children: [
-        Icon(icon, size: 16, color: Colors.grey.shade600),
-        SizedBox(width: 8),
-        Text(text, style: TextStyle(fontSize: 14)),
-      ],
-    ),
-  );
+if (result == true) {
+  // Liveness check passed
+} else {
+  // Liveness check failed or cancelled
 }
 ```
 
-## Best Practices
+### Form Integration
+```dart
+class RegistrationFlow extends StatefulWidget {
+  // Include liveness check as step in multi-step form
+  // See custom_widget_example.dart for reference
+}
+```
 
-1. **Consistent Branding**: Use your app's color scheme and typography
-2. **Clear Instructions**: Provide helpful guidance in custom headers/bottoms
-3. **Error Handling**: Implement proper error callbacks for user feedback
-4. **Accessibility**: Ensure custom widgets follow accessibility guidelines
-5. **Performance**: Keep custom widgets lightweight for smooth camera performance
-6. **Testing**: Test with different device orientations and lighting conditions
+## =� Default Assets
 
-## Migration from Default Screen
+The package includes default success and fail assets:
+- `packages/flutter_liveness_check/assets/success.png`
+- `packages/flutter_liveness_check/assets/fail.png`
 
-If you're currently using the default `LivenessCheckScreen`, migration is simple:
+These are automatically used when no custom assets are provided.
 
+## <� Best Practices
+
+1. **State Management**: Always manage `LivenessStatus` in parent widget
+2. **Resource Management**: Camera automatically starts/stops based on status
+3. **Error Handling**: Implement comprehensive callbacks for better UX
+4. **Custom Assets**: Use appropriate sizes (recommended: 200x200px)
+5. **Retry Limits**: Set reasonable max attempts (3-5) to prevent frustration
+6. **Localization**: Customize all messages for international apps
+7. **Testing**: Test with different lighting conditions and devices
+
+## =� Requirements
+
+- Flutter SDK: >=3.8.1
+- Dart SDK: >=3.0.0
+- iOS: 11.0+
+- Android: API level 21+
+
+## = Permissions
+
+The package automatically requests camera permission. Ensure your app has camera usage descriptions:
+
+### iOS (ios/Runner/Info.plist)
+```xml
+<key>NSCameraUsageDescription</key>
+<string>Camera access is required for face verification</string>
+```
+
+### Android (android/app/src/main/AndroidManifest.xml)
+```xml
+<uses-permission android:name="android.permission.CAMERA" />
+```
+
+## <� Migration Guide
+
+### From Basic Implementation
 ```dart
 // Before
 LivenessCheckScreen()
 
-// After (same behavior)
-LivenessCheckScreen(config: LivenessCheckConfig())
-
-// Or with minimal customization
+// After - same behavior
 LivenessCheckScreen(
   config: LivenessCheckConfig(
-    theme: LivenessCheckTheme(
-      primaryColor: YourBrandColors.primary,
-    ),
-    callbacks: LivenessCheckCallbacks(
-      onPhotoTaken: (imagePath) {
-        // Your custom photo handling
-      },
-    ),
+    status: LivenessStatus.init,
   ),
 )
 ```
 
-The screen maintains full backward compatibility while providing extensive customization options for your specific use case.
+### Adding Custom Styling
+```dart
+LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    status: _currentStatus,
+    theme: const LivenessCheckTheme(
+      borderStyle: CircleBorderStyle.dashed,
+      borderColor: Color(0xFF35C659),
+      fontFamily: 'YourFont',
+    ),
+    callbacks: LivenessCheckCallbacks(
+      onTryAgain: () => setState(() => _currentStatus = LivenessStatus.init),
+    ),
+  ),
+)
+```
