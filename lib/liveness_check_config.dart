@@ -38,7 +38,9 @@ class LivenessCheckTheme {
   final Color warningColor;
   final Color borderColor;
   final Color textColor;
-  final Color overlayColor;
+  final Color? overlayColor;
+  final Color? btnRetryBGColor;
+  final Color? btnTextRetryColor;
   final double circleSize;
   final double borderWidth;
   final CircleBorderStyle borderStyle;
@@ -55,6 +57,8 @@ class LivenessCheckTheme {
 
   const LivenessCheckTheme({
     this.backgroundColor = Colors.white,
+    this.btnRetryBGColor = Colors.blue,
+    this.btnTextRetryColor = Colors.white,
     this.primaryColor = Colors.blue,
     this.successColor = Colors.green,
     this.errorColor = Colors.red,
@@ -80,6 +84,8 @@ class LivenessCheckTheme {
   LivenessCheckTheme copyWith({
     Color? backgroundColor,
     Color? primaryColor,
+    Color? btnRetryBGColor,
+    Color? btnTextRetryColor,
     Color? successColor,
     Color? errorColor,
     Color? warningColor,
@@ -105,6 +111,8 @@ class LivenessCheckTheme {
       primaryColor: primaryColor ?? this.primaryColor,
       successColor: successColor ?? this.successColor,
       errorColor: errorColor ?? this.errorColor,
+      btnRetryBGColor: btnRetryBGColor ?? this.btnRetryBGColor,
+      btnTextRetryColor: btnTextRetryColor ?? this.btnTextRetryColor,
       warningColor: warningColor ?? this.warningColor,
       borderColor: borderColor ?? this.borderColor,
       textColor: textColor ?? this.textColor,

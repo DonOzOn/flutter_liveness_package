@@ -114,6 +114,10 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
             !_cameraController!.value.isInitialized) {
           _initializeCamera();
           _initializeFaceDetector();
+          // Trigger rebuild to show camera preview
+          if (mounted) {
+            setState(() {});
+          }
         }
       } else {
         // Dispose camera when switching away from init status
@@ -129,15 +133,16 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
   Future<void> _disposeCamera() async {
     if (_cameraController != null) {
+      // Stop image stream if still running
+      if (_cameraController!.value.isStreamingImages) {
+        await _cameraController!.stopImageStream();
+      }
+      // Dispose camera controller
       await _cameraController!.dispose();
       _cameraController = null;
-      // Stop image stream if still running
-      if (_cameraController?.value.isStreamingImages ?? false) {
-        _cameraController?.stopImageStream();
-      }
-      // Close MLKit detector
-      _faceDetector?.close();
     }
+    // Close MLKit detector
+    _faceDetector?.close();
   }
 
   void _onTryAgain() {
@@ -166,8 +171,8 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     });
 
     // Reinitialize camera and face detector
-    _initializeCamera();
-    _initializeFaceDetector();
+    // _initializeCamera();
+    // _initializeFaceDetector();
   }
 
   void _handleError(LivenessCheckError errorType, [String? technicalDetails]) {
@@ -954,17 +959,18 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
         // Processing indicator
         if (widget.config.showLoading)
           Positioned.fill(
-            child: widget.config.customLoadingWidget ??
-              Container(
-                color: Colors.black.withValues(alpha: 0.5),
-                child: Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      widget.config.theme.primaryColor,
+            child:
+                widget.config.customLoadingWidget ??
+                Container(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        widget.config.theme.primaryColor,
+                      ),
                     ),
                   ),
                 ),
-              ),
           ),
 
         // Try Again button for fail status (only if no custom bottom widget)
@@ -978,7 +984,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
             child: ElevatedButton(
               onPressed: _onTryAgain,
               style: ElevatedButton.styleFrom(
-                backgroundColor: widget.config.theme.primaryColor,
+                backgroundColor: widget.config.theme.btnRetryBGColor,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(

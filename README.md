@@ -100,6 +100,10 @@ LivenessCheckTheme({
   TextStyle? messageTextStyle,      // Custom message style
   TextStyle? errorTextStyle,        // Custom error style
   TextStyle? successTextStyle,      // Custom success style
+
+  // Button retry
+  Color? btnRetryBGColor,             // Custom background color of retry button
+  Color? btnTextRetryColor,           // Custom text color of retry button
 })
 ```
 
