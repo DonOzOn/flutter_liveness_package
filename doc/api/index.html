@@ -24,7 +24,7 @@
 <header id="title">
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
-    <li><a href="https://example.com">flutter_liveness_check package</a></li>
+    <li><a href="https://github.com/DonOzOn/flutter_liveness_package">flutter_liveness_check package</a></li>
   </ol>
   <div class="self-name">flutter_liveness_check</div>
   <form class="search navbar-right" role="search">
@@ -96,6 +96,35 @@
 <p>Add the following to your <code>ios/Runner/Info.plist</code>:</p>
 <pre class="language-xml"><code class="language-xml">&lt;key&gt;NSCameraUsageDescription&lt;/key&gt;
 &lt;string&gt;This app needs camera access for liveness verification&lt;/string&gt;
+</code></pre>
+<h2 id="-platform-support">📱 Platform Support</h2>
+<ul>
+<li><strong>iOS</strong>: 10.0+ with Metal support</li>
+<li><strong>Android</strong>: API level 21+ (Android 5.0)</li>
+<li><strong>Flutter</strong>: 3.0.0 or higher</li>
+<li><strong>Dart</strong>: 2.17 or higher</li>
+<li><strong>Camera Permissions</strong>: Automatically requested with proper error handling</li>
+<li><strong>ML Kit</strong>: Google ML Kit Face Detection API</li>
+<li><strong>Hardware</strong>: Front-facing camera required</li>
+</ul>
+<h3 id="supported-architectures">Supported Architectures</h3>
+<ul>
+<li><strong>Android</strong>: arm64-v8a, armeabi-v7a, x86_64</li>
+<li><strong>iOS</strong>: arm64, x86_64 (simulator)</li>
+</ul>
+<h2 id="-status-management">🔄 Status Management</h2>
+<p>The package supports three main states:</p>
+<ul>
+<li><strong><code>LivenessStatus.init</code></strong>: Shows camera preview with liveness detection</li>
+<li><strong><code>LivenessStatus.success</code></strong>: Shows success asset/animation</li>
+<li><strong><code>LivenessStatus.fail</code></strong>: Shows fail asset with retry button</li>
+</ul>
+<h2 id="-custom-assets">🎭 Custom Assets</h2>
+<p>Replace default success/fail assets:</p>
+<pre class="language-dart"><code class="language-dart">LivenessCheckTheme(
+  successAsset: 'packages/your_package/assets/custom_success.png',
+  failAsset: 'packages/your_package/assets/custom_fail.png',
+)
 </code></pre>
 <h2 id="-quick-start">⚡ Quick Start</h2>
 <h3 id="basic-usage">Basic Usage</h3>
@@ -506,35 +535,6 @@ const LivenessCheckMessages(
   tryAgainButtonText: 'Intentar Nuevamente',
 )
 </code></pre>
-<h2 id="-platform-support">📱 Platform Support</h2>
-<ul>
-<li><strong>iOS</strong>: 10.0+ with Metal support</li>
-<li><strong>Android</strong>: API level 21+ (Android 5.0)</li>
-<li><strong>Flutter</strong>: 3.0.0 or higher</li>
-<li><strong>Dart</strong>: 2.17 or higher</li>
-<li><strong>Camera Permissions</strong>: Automatically requested with proper error handling</li>
-<li><strong>ML Kit</strong>: Google ML Kit Face Detection API</li>
-<li><strong>Hardware</strong>: Front-facing camera required</li>
-</ul>
-<h3 id="supported-architectures">Supported Architectures</h3>
-<ul>
-<li><strong>Android</strong>: arm64-v8a, armeabi-v7a, x86_64</li>
-<li><strong>iOS</strong>: arm64, x86_64 (simulator)</li>
-</ul>
-<h2 id="-status-management">🔄 Status Management</h2>
-<p>The package supports three main states:</p>
-<ul>
-<li><strong><code>LivenessStatus.init</code></strong>: Shows camera preview with liveness detection</li>
-<li><strong><code>LivenessStatus.success</code></strong>: Shows success asset/animation</li>
-<li><strong><code>LivenessStatus.fail</code></strong>: Shows fail asset with retry button</li>
-</ul>
-<h2 id="-custom-assets">🎭 Custom Assets</h2>
-<p>Replace default success/fail assets:</p>
-<pre class="language-dart"><code class="language-dart">LivenessCheckTheme(
-  successAsset: 'packages/your_package/assets/custom_success.png',
-  failAsset: 'packages/your_package/assets/custom_fail.png',
-)
-</code></pre>
 <h2 id="-performance-tips">⚡ Performance Tips</h2>
 <h3 id="optimize-for-better-performance">Optimize for Better Performance</h3>
 <ol>
@@ -703,7 +703,7 @@ LivenessCheckConfig(
   </form>
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
-    <li><a href="https://example.com">flutter_liveness_check package</a></li>
+    <li><a href="https://github.com/DonOzOn/flutter_liveness_package">flutter_liveness_check package</a></li>
 </ol>
 
     <h5 class="hidden-xs"><span class="package-name">flutter_liveness_check</span> <span class="package-kind">package</span></h5>
@@ -725,7 +725,7 @@ LivenessCheckConfig(
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      0.0.1
+      1.0.1
   </span>
   
 </footer>
