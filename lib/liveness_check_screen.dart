@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +9,8 @@ import 'package:flutter_liveness_check/liveness_check_config.dart';
 import 'package:flutter_liveness_check/liveness_check_errors.dart';
 import 'package:flutter_liveness_check/widget/dashed_circle_painter.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:image/image.dart' as imglib;
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 /// A screen that performs real-time liveness detection using face recognition.
@@ -90,6 +94,8 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
   /// Current retry attempt count
   int _retryAttemptCount = 0;
+
+  bool isConverting = false;
 
   @override
   void initState() {
@@ -213,7 +219,9 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
         frontCamera,
         ResolutionPreset.medium,
         enableAudio: false,
-        imageFormatGroup: ImageFormatGroup.nv21,
+        imageFormatGroup: Platform.isAndroid
+            ? ImageFormatGroup.yuv420
+            : ImageFormatGroup.bgra8888,
       );
 
       await _cameraController!.initialize();
@@ -222,7 +230,11 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
         _isCameraInitialized = true;
       });
 
-      _cameraController!.startImageStream(_processCameraImage);
+      if (Platform.isAndroid) {
+        _cameraController!.startImageStream(_captureAndProcessImage);
+      } else {
+        _cameraController!.startImageStream(_processCameraImage);
+      }
     } catch (e) {
       _handleError(LivenessCheckError.cameraInitializationFailed, e.toString());
     }
@@ -272,6 +284,80 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
       debugPrint('Error processing image: $e');
     } finally {
       _isDetecting = false;
+    }
+  }
+
+  /// NEW LOGIC: Periodic photo capture for face detection
+  /// Captures a photo every 1 second and processes it for face detection
+  Future<void> _captureAndProcessImage(CameraImage image) async {
+    if (_isDetecting || !_isCameraInitialized || _livenessCompleted) return;
+    _isDetecting = true;
+    try {
+      final XFile? takenPhoto = await _cameraController?.takePicture();
+
+      final inputImage = await convertToInputImage(takenPhoto!);
+      if (inputImage != null) {
+        // Set _currentCameraImage to null since we're using file-based approach
+        _currentCameraImage = image;
+        await _detectFaces(inputImage);
+      }
+    } catch (e) {
+      debugPrint('Error capturing and processing image: $e');
+    } finally {
+      _isDetecting = false;
+    }
+  }
+
+  /// Captures a photo and converts it to InputImage for face detection
+  /// Flips the image horizontally to match the front camera preview
+  /// Stores the path for later reuse when liveness check succeeds
+  /// Also decodes the image for quality analysis
+  Future<InputImage?> convertToInputImage(XFile takenPhoto) async {
+    if (isConverting) return null;
+
+    try {
+      setState(() => isConverting = true);
+
+      // final XFile? takenPhoto = await _cameraController?.takePicture();
+
+      Uint8List? jpegBytes = await takenPhoto.readAsBytes();
+
+      // Flip image horizontally for front camera
+      jpegBytes = flipImageBytes(jpegBytes);
+
+      // Save to temporary file
+      final Directory dir = await getTemporaryDirectory();
+      final String path = '${dir.path}/cameraFace.jpg';
+      final File file = File(path);
+      await file.writeAsBytes(jpegBytes);
+
+      // Create InputImage from file
+      final InputImage inputImage = InputImage.fromFilePath(path);
+
+      return inputImage;
+    } catch (e) {
+      debugPrint('Error converting to InputImage: $e');
+      return null;
+    } finally {
+      if (mounted) {
+        setState(() => isConverting = false);
+      }
+    }
+  }
+
+  static Uint8List flipImageBytes(Uint8List inputBytes) {
+    final imglib.Image? decoded = imglib.decodeImage(inputBytes);
+    if (decoded == null) {
+      return inputBytes;
+    } else {
+      final imglib.Image flipped = imglib.flip(
+        decoded,
+        direction: imglib.FlipDirection.horizontal,
+      );
+      final Uint8List flippedBytes = Uint8List.fromList(
+        imglib.encodeJpg(flipped),
+      );
+      return flippedBytes;
     }
   }
 
@@ -695,7 +781,11 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
         // Restart image stream if capture failed
         if (_cameraController != null &&
             _cameraController!.value.isInitialized) {
-          _cameraController!.startImageStream(_processCameraImage);
+          if (Platform.isAndroid) {
+            _cameraController!.startImageStream(_captureAndProcessImage);
+          } else {
+            _cameraController!.startImageStream(_processCameraImage);
+          }
         }
       }
     }
