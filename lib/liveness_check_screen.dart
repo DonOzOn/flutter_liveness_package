@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -211,9 +213,12 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
       _cameraController = CameraController(
         frontCamera,
-        ResolutionPreset.medium,
-        enableAudio: false,
-        imageFormatGroup: ImageFormatGroup.nv21,
+        widget.config.cameraSettings?.resolutionPreset ?? ResolutionPreset.high,
+        enableAudio: widget.config.cameraSettings?.enableAudio ?? false,
+        imageFormatGroup:
+            widget.config.cameraSettings?.enableAudio ?? Platform.isAndroid
+            ? ImageFormatGroup.nv21
+            : ImageFormatGroup.bgra8888,
       );
 
       await _cameraController!.initialize();

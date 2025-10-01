@@ -340,6 +340,34 @@ LivenessCheckMessages(
 )
 ```
 
+### CameraSettings - Config camera controller
+
+```dart
+enum ResolutionPreset {
+  low,       // 352x288 (CIF)
+  medium,    // 720x480 (NTSC)
+  high,      // 1280x720 (HD)
+  veryHigh,  // 1920x1080 (Full HD)
+  ultraHigh, // 3840x2160 (4K)
+  max        // Highest available, varies by device
+}
+enum ImageFormatGroup {
+  unknown,
+  jpeg,     // Compressed, smaller, good for storage/sharing
+  yuv420,   // Raw format, great for real-time processing (default)
+  bgra8888, // iOS-friendly, raw format
+}
+
+CameraSettings(
+    //ResolutionPreset
+    this.resolutionPreset = ResolutionPreset.high,
+    //controls microphone input
+    this.enableAudio = false,
+    //ImageFormatGroup
+    this.imageFormatGroup,
+)
+```
+
 ## 🎯 Usage Examples
 
 ### 1. No Back Button Example

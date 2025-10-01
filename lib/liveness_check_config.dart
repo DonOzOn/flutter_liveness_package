@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 class LivenessCheckConfig {
@@ -6,6 +7,7 @@ class LivenessCheckConfig {
   final LivenessCheckCallbacks? callbacks;
   final LivenessCheckMessages messages;
   final LivenessCheckSettings settings;
+  final CameraSettings? cameraSettings;
   final String? placeholder;
   final LivenessStatus status;
   final bool showLoading;
@@ -13,6 +15,7 @@ class LivenessCheckConfig {
   final AppBarConfig appBarConfig;
 
   const LivenessCheckConfig({
+    this.cameraSettings = const CameraSettings(),
     this.customBottomWidget,
     this.theme = const LivenessCheckTheme(),
     this.callbacks,
@@ -23,6 +26,18 @@ class LivenessCheckConfig {
     this.showLoading = false,
     this.customLoadingWidget,
     this.appBarConfig = const AppBarConfig(),
+  });
+}
+
+class CameraSettings {
+  final ResolutionPreset? resolutionPreset;
+  final bool? enableAudio;
+  final ImageFormatGroup? imageFormatGroup;
+
+  const CameraSettings({
+    this.resolutionPreset = ResolutionPreset.high,
+    this.enableAudio = false,
+    this.imageFormatGroup,
   });
 }
 
