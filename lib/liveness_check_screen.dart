@@ -7,6 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter_liveness_check/enhence_light_checker.dart';
 import 'package:flutter_liveness_check/liveness_check_config.dart';
 import 'package:flutter_liveness_check/liveness_check_errors.dart';
+import 'package:flutter_liveness_check/ulti/device_helper.dart';
 import 'package:flutter_liveness_check/widget/dashed_circle_painter.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:image/image.dart' as imglib;
@@ -231,7 +232,12 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
       });
 
       if (Platform.isAndroid) {
-        _cameraController!.startImageStream(_captureAndProcessImage);
+        final isXiaomi = await isXiaomiDevice();
+        if (isXiaomi) {
+          _cameraController!.startImageStream(_captureAndProcessImage);
+        } else {
+          _cameraController!.startImageStream(_processCameraImage);
+        }
       } else {
         _cameraController!.startImageStream(_processCameraImage);
       }
@@ -782,7 +788,12 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
         if (_cameraController != null &&
             _cameraController!.value.isInitialized) {
           if (Platform.isAndroid) {
-            _cameraController!.startImageStream(_captureAndProcessImage);
+            final isXiaomi = await isXiaomiDevice();
+            if (isXiaomi) {
+              _cameraController!.startImageStream(_captureAndProcessImage);
+            } else {
+              _cameraController!.startImageStream(_processCameraImage);
+            }
           } else {
             _cameraController!.startImageStream(_processCameraImage);
           }
