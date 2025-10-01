@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [1.0.2] - 2024-10-01
+add param Camera setting for CameraController
+```dart
+enum ResolutionPreset {
+  low,       // 352x288 (CIF)
+  medium,    // 720x480 (NTSC)
+  high,      // 1280x720 (HD)
+  veryHigh,  // 1920x1080 (Full HD)
+  ultraHigh, // 3840x2160 (4K)
+  max        // Highest available, varies by device
+}
+enum ImageFormatGroup {
+  unknown,
+  jpeg,     // Compressed, smaller, good for storage/sharing
+  yuv420,   // Raw format, great for real-time processing (default)
+  bgra8888, // iOS-friendly, raw format
+}
+
+CameraSettings(
+    //ResolutionPreset
+    this.resolutionPreset = ResolutionPreset.high,
+    //controls microphone input
+    this.enableAudio = false,
+    //ImageFormatGroup
+    this.imageFormatGroup,
+)
+```
+---
+
+## [1.0.1] - 2024-09-20
+Update Readme
+
+---
 ## [1.0.0] - 2024-09-20
 
 ### Added
@@ -162,40 +196,6 @@ LivenessCheckScreen(
   ),
 )
 ```
-
-## [1.0.1] - 2024-09-20
-Update Readme
-
----
-
-## [1.0.2] - 2024-10-01
-add param Camera setting for CameraController
-```dart
-enum ResolutionPreset {
-  low,       // 352x288 (CIF)
-  medium,    // 720x480 (NTSC)
-  high,      // 1280x720 (HD)
-  veryHigh,  // 1920x1080 (Full HD)
-  ultraHigh, // 3840x2160 (4K)
-  max        // Highest available, varies by device
-}
-enum ImageFormatGroup {
-  unknown,
-  jpeg,     // Compressed, smaller, good for storage/sharing
-  yuv420,   // Raw format, great for real-time processing (default)
-  bgra8888, // iOS-friendly, raw format
-}
-
-CameraSettings(
-    //ResolutionPreset
-    this.resolutionPreset = ResolutionPreset.high,
-    //controls microphone input
-    this.enableAudio = false,
-    //ImageFormatGroup
-    this.imageFormatGroup,
-)
-```
----
 
 ## Support
 
