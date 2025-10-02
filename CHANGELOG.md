@@ -1,9 +1,10 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.0.3] - 2025-10-01
+update sdk suport '>=3.5.0 <4.0.0'
 
-
-## [1.0.2] - 2024-10-01
+## [1.0.2] - 2025-10-01
 add param Camera setting for CameraController
 ```dart
 enum ResolutionPreset {
@@ -32,11 +33,11 @@ CameraSettings(
 ```
 ---
 
-## [1.0.1] - 2024-09-20
+## [1.0.1] - 2025-09-20
 Update Readme
 
 ---
-## [1.0.0] - 2024-09-20
+## [1.0.0] - 2025-09-20
 
 ### Added
 - Comprehensive configuration system with `LivenessCheckConfig`
