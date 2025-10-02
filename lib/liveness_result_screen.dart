@@ -1,11 +1,33 @@
-// Result Screen
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+/// A screen that displays the result of a successful liveness check.
+///
+/// This screen shows:
+/// - Success indicator with a checkmark icon
+/// - Confirmation message
+/// - The captured photo
+/// - Action buttons (Retake and Continue)
+///
+/// Example usage:
+/// ```dart
+/// Navigator.push(
+///   context,
+///   MaterialPageRoute(
+///     builder: (context) => LivenessResultScreen(
+///       imagePath: '/path/to/captured/image.jpg',
+///     ),
+///   ),
+/// );
+/// ```
 class LivenessResultScreen extends StatelessWidget {
+  /// The file path of the captured photo.
   final String imagePath;
 
+  /// Creates a liveness result screen.
+  ///
+  /// The [imagePath] parameter is required and should point to a valid image file.
   const LivenessResultScreen({super.key, required this.imagePath});
 
   @override

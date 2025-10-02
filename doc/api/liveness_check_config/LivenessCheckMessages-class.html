@@ -25,21 +25,24 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_config/">liveness_check_config.dart</a></li>
+    <li><a href="../liveness_check_config">liveness_check_config.dart</a></li>
     <li class="self-crumb">LivenessCheckMessages class</li>
   </ol>
   <div class="self-name">LivenessCheckMessages</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -53,6 +56,9 @@
 </h1></div>
 
     
+<section class="desc markdown">
+  <p>Customizable text messages for the liveness check screen.</p>
+</section>
 
 
 
@@ -60,11 +66,11 @@
   <section class="summary offset-anchor" id="constructors">
     <h2>Constructors</h2>
     <dl class="constructor-summary-list">
-        <dt id="LivenessCheckMessages.new" class="callable">
-          <span class="name"><a href="../liveness_check_config/LivenessCheckMessages/LivenessCheckMessages.html">LivenessCheckMessages.new</a></span><span class="signature">({<span class="parameter" id="-param-title"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">title</span> = <span class="default-value">&#39;Liveness Check&#39;</span>, </span><span class="parameter" id="-param-initializingCamera"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">initializingCamera</span> = <span class="default-value">&#39;Initializing camera...&#39;</span>, </span><span class="parameter" id="-param-noFaceDetected"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">noFaceDetected</span> = <span class="default-value">&#39;No face detected. Please position your face in the circle.&#39;</span>, </span><span class="parameter" id="-param-multipleFacesDetected"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">multipleFacesDetected</span> = <span class="default-value">&#39;Multiple faces detected. Only one person allowed.&#39;</span>, </span><span class="parameter" id="-param-moveCloserToCamera"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">moveCloserToCamera</span> = <span class="default-value">&#39;Move closer to camera or hold device steady.&#39;</span>, </span><span class="parameter" id="-param-holdStill"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">holdStill</span> = <span class="default-value">&#39;Hold still. Face features not clear.&#39;</span>, </span><span class="parameter" id="-param-imageTooBlurry"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">imageTooBlurry</span> = <span class="default-value">&#39;Image too blurry. Hold device steady.&#39;</span>, </span><span class="parameter" id="-param-poorLighting"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">poorLighting</span> = <span class="default-value">&#39;Poor lighting conditions.&#39;</span>, </span><span class="parameter" id="-param-livenessCheckPassed"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">livenessCheckPassed</span> = <span class="default-value">&#39;Liveness check passed! Taking photo...&#39;</span>, </span><span class="parameter" id="-param-takingPhoto"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">takingPhoto</span> = <span class="default-value">&#39;Taking photo...&#39;</span>, </span><span class="parameter" id="-param-failedToCapture"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">failedToCapture</span> = <span class="default-value">&#39;Failed to capture photo&#39;</span>, </span><span class="parameter" id="-param-cameraPermissionDenied"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">cameraPermissionDenied</span> = <span class="default-value">&#39;Camera permission denied&#39;</span>, </span><span class="parameter" id="-param-failedToInitializeCamera"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">failedToInitializeCamera</span> = <span class="default-value">&#39;Failed to initialize camera&#39;</span>, </span><span class="parameter" id="-param-tryAgainButtonText"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">tryAgainButtonText</span> = <span class="default-value">&#39;Try Again&#39;</span></span>})</span>
+        <dt id="LivenessCheckMessages" class="callable">
+          <span class="name"><a href="../liveness_check_config/LivenessCheckMessages/LivenessCheckMessages.html">LivenessCheckMessages</a></span><span class="signature">({<span class="parameter" id="-param-title"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">title</span> = <span class="default-value">&#39;Liveness Check&#39;</span>, </span><span class="parameter" id="-param-initializingCamera"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">initializingCamera</span> = <span class="default-value">&#39;Initializing camera...&#39;</span>, </span><span class="parameter" id="-param-noFaceDetected"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">noFaceDetected</span> = <span class="default-value">&#39;No face detected. Please position your face in the circle.&#39;</span>, </span><span class="parameter" id="-param-multipleFacesDetected"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">multipleFacesDetected</span> = <span class="default-value">&#39;Multiple faces detected. Only one person allowed.&#39;</span>, </span><span class="parameter" id="-param-moveCloserToCamera"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">moveCloserToCamera</span> = <span class="default-value">&#39;Move closer to camera or hold device steady.&#39;</span>, </span><span class="parameter" id="-param-holdStill"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">holdStill</span> = <span class="default-value">&#39;Hold still. Face features not clear.&#39;</span>, </span><span class="parameter" id="-param-imageTooBlurry"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">imageTooBlurry</span> = <span class="default-value">&#39;Image too blurry. Hold device steady.&#39;</span>, </span><span class="parameter" id="-param-poorLighting"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">poorLighting</span> = <span class="default-value">&#39;Poor lighting conditions.&#39;</span>, </span><span class="parameter" id="-param-livenessCheckPassed"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">livenessCheckPassed</span> = <span class="default-value">&#39;Liveness check passed! Taking photo...&#39;</span>, </span><span class="parameter" id="-param-takingPhoto"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">takingPhoto</span> = <span class="default-value">&#39;Taking photo...&#39;</span>, </span><span class="parameter" id="-param-failedToCapture"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">failedToCapture</span> = <span class="default-value">&#39;Failed to capture photo&#39;</span>, </span><span class="parameter" id="-param-cameraPermissionDenied"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">cameraPermissionDenied</span> = <span class="default-value">&#39;Camera permission denied&#39;</span>, </span><span class="parameter" id="-param-failedToInitializeCamera"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">failedToInitializeCamera</span> = <span class="default-value">&#39;Failed to initialize camera&#39;</span>, </span><span class="parameter" id="-param-tryAgainButtonText"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">tryAgainButtonText</span> = <span class="default-value">&#39;Try Again&#39;</span>, </span><span class="parameter" id="-param-permissionDialogConfig"><span class="type-annotation"><a href="../liveness_check_config/PermissionDialogConfig-class.html">PermissionDialogConfig</a></span> <span class="parameter-name">permissionDialogConfig</span> = <span class="default-value">const PermissionDialogConfig()</span></span>})</span>
         </dt>
         <dd>
-          
+          Creates liveness check messages.
             <div class="constructor-modifier features">const</div>
         </dd>
     </dl>
@@ -82,7 +88,7 @@
 
 </dt>
 <dd>
-  
+  Message shown when camera permission is denied.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -94,7 +100,7 @@
 
 </dt>
 <dd>
-  
+  Message shown when photo capture fails.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -106,7 +112,7 @@
 
 </dt>
 <dd>
-  
+  Message shown when camera initialization fails.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -130,7 +136,7 @@
 
 </dt>
 <dd>
-  
+  Message shown when user needs to hold still.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -142,7 +148,7 @@
 
 </dt>
 <dd>
-  
+  Message shown when image is too blurry.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -154,7 +160,7 @@
 
 </dt>
 <dd>
-  
+  Message shown while initializing camera.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -166,7 +172,7 @@
 
 </dt>
 <dd>
-  
+  Message shown when liveness check passes.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -178,7 +184,7 @@
 
 </dt>
 <dd>
-  
+  Message shown when user needs to move closer.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -190,7 +196,7 @@
 
 </dt>
 <dd>
-  
+  Message shown when multiple faces are detected.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -202,7 +208,19 @@
 
 </dt>
 <dd>
+  Message shown when no face is detected.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="permissionDialogConfig" class="property">
+  <span class="name"><a href="../liveness_check_config/LivenessCheckMessages/permissionDialogConfig.html">permissionDialogConfig</a></span>
+  <span class="signature">&#8594; <a href="../liveness_check_config/PermissionDialogConfig-class.html">PermissionDialogConfig</a></span>
   
+
+</dt>
+<dd>
+  Configuration for the permission dialog.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -214,7 +232,7 @@
 
 </dt>
 <dd>
-  
+  Message shown when lighting is poor.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -238,7 +256,7 @@
 
 </dt>
 <dd>
-  
+  Message shown while taking photo.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -250,7 +268,7 @@
 
 </dt>
 <dd>
-  
+  Title of the screen.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -262,7 +280,7 @@
 
 </dt>
 <dd>
-  
+  Text for the try again button.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -339,7 +357,7 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_config/">liveness_check_config</a></li>
+    <li><a href="../liveness_check_config">liveness_check_config</a></li>
     <li class="self-crumb">LivenessCheckMessages class</li>
 </ol>
 
@@ -352,7 +370,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

@@ -1,18 +1,45 @@
+/// Enumeration of all possible liveness check error types.
+///
+/// These error types are used throughout the liveness check process to
+/// categorize and handle different failure scenarios.
 enum LivenessCheckError {
+  /// Camera permission was denied by the user.
   cameraPermissionDenied,
+
+  /// Failed to initialize the camera hardware.
   cameraInitializationFailed,
+
+  /// No face detected in the camera frame.
   noFaceDetected,
+
+  /// Multiple faces detected when only one is expected.
   multipleFacesDetected,
+
+  /// Image quality is too blurry for detection.
   imageBlurry,
+
+  /// Face features are not clear enough.
   faceNotClear,
+
+  /// User needs to move closer to the camera.
   moveCloserToCamera,
+
+  /// Lighting conditions are inadequate.
   poorLighting,
+
+  /// Failed to capture photo after liveness check.
   photoCaptureFailed,
+
+  /// Processing took too long and timed out.
   processingTimeout,
+
+  /// An unknown or unexpected error occurred.
   unknownError,
 }
 
+/// Extension methods for [LivenessCheckError] enum.
 extension LivenessCheckErrorExtension on LivenessCheckError {
+  /// Returns the default error message for this error type.
   String getDefaultMessage() {
     switch (this) {
       case LivenessCheckError.cameraPermissionDenied:
@@ -40,6 +67,9 @@ extension LivenessCheckErrorExtension on LivenessCheckError {
     }
   }
 
+  /// Returns a custom error message from the provided [messages] configuration.
+  ///
+  /// Falls back to default messages if a custom message is not provided.
   String getCustomMessage(dynamic messages) {
     switch (this) {
       case LivenessCheckError.cameraPermissionDenied:
@@ -68,12 +98,27 @@ extension LivenessCheckErrorExtension on LivenessCheckError {
   }
 }
 
+/// Contains detailed information about a liveness check error.
+///
+/// This class provides comprehensive error information including the error type,
+/// user-friendly message, technical details for debugging, and timestamp.
 class LivenessCheckErrorInfo {
+  /// The type of error that occurred.
   final LivenessCheckError errorType;
+
+  /// User-friendly error message.
   final String message;
+
+  /// Optional technical details for debugging purposes.
   final String? technicalDetails;
+
+  /// Timestamp when the error occurred.
   final DateTime timestamp;
 
+  /// Creates a liveness check error info object.
+  ///
+  /// The [errorType] and [message] are required. The [technicalDetails] and
+  /// [timestamp] are optional, with timestamp defaulting to the current time.
   LivenessCheckErrorInfo({
     required this.errorType,
     required this.message,

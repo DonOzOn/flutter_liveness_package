@@ -25,7 +25,7 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">flutter_liveness_check</a></li>
-    <li><a href="../../enhence_light_checker/">enhence_light_checker.dart</a></li>
+    <li><a href="../../enhence_light_checker">enhence_light_checker.dart</a></li>
     <li><a href="../../enhence_light_checker/EnhancedQualityDetector-class.html">EnhancedQualityDetector</a></li>
     <li class="self-crumb">detectBlur static method</li>
   </ol>
@@ -33,14 +33,17 @@
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -55,8 +58,8 @@
     <section class="multi-line-signature">
       
 <span class="returntype"><a href="../../enhence_light_checker/BlurDetectionResult-class.html">BlurDetectionResult</a></span>
-<span class="name ">detectBlur</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="detectBlur-param-cameraImage"><span class="type-annotation"><a href="https://pub.dev/documentation/camera/0.11.2/camera/CameraImage-class.html">CameraImage</a></span> <span class="parameter-name">cameraImage</span>, </span></li>
-<li><span class="parameter" id="detectBlur-param-face"><span class="type-annotation"><a href="https://pub.dev/documentation/google_mlkit_face_detection/0.13.1/google_mlkit_face_detection/Face-class.html">Face</a></span> <span class="parameter-name">face</span>, {</span></li>
+<span class="name ">detectBlur</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="detectBlur-param-cameraImage"><span class="type-annotation"><a href="https://pub.dev/documentation/camera/0.10.6/camera/CameraImage-class.html">CameraImage</a></span> <span class="parameter-name">cameraImage</span>, </span></li>
+<li><span class="parameter" id="detectBlur-param-face"><span class="type-annotation"><a href="https://pub.dev/documentation/google_mlkit_face_detection/0.10.1/google_mlkit_face_detection/Face-class.html">Face</a></span> <span class="parameter-name">face</span>, {</span></li>
 <li><span class="parameter" id="detectBlur-param-threshold"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">threshold</span> = <span class="default-value">_blurThreshold</span>, </span></li>
 </ol>})
 
@@ -65,7 +68,15 @@
     </section>
     
 <section class="desc markdown">
-  <p>Enhanced blur detection with much more forgiving logic</p>
+  <p>Detects blur in camera images using multiple quality metrics.</p>
+<p>Analyzes the <code>cameraImage</code> focusing on the detected <code>face</code> region.
+Returns a <a href="../../enhence_light_checker/BlurDetectionResult-class.html">BlurDetectionResult</a> with detailed quality information.</p>
+<p>The detection uses:</p>
+<ul>
+<li>Face size analysis</li>
+<li>Landmark stability check</li>
+<li>Laplacian variance calculation (optional based on image format)</li>
+</ul>
 </section>
 
 
@@ -158,7 +169,7 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">flutter_liveness_check</a></li>
-    <li><a href="../../enhence_light_checker/">enhence_light_checker</a></li>
+    <li><a href="../../enhence_light_checker">enhence_light_checker</a></li>
     <li><a href="../../enhence_light_checker/EnhancedQualityDetector-class.html">EnhancedQualityDetector</a></li>
     <li class="self-crumb">detectBlur static method</li>
 </ol>
@@ -172,7 +183,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

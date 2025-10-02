@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the LivenessCheckMessages.new constructor from Class LivenessCheckMessages from the liveness_check_config library, for the Dart programming language.">
-  <title>LivenessCheckMessages.new constructor - LivenessCheckMessages - liveness_check_config library - Dart API</title>
+  <meta name="description" content="API docs for the LivenessCheckMessages constructor from Class LivenessCheckMessages from the liveness_check_config library, for the Dart programming language.">
+  <title>LivenessCheckMessages constructor - LivenessCheckMessages - liveness_check_config library - Dart API</title>
 
 
   
@@ -25,22 +25,25 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">flutter_liveness_check</a></li>
-    <li><a href="../../liveness_check_config/">liveness_check_config.dart</a></li>
+    <li><a href="../../liveness_check_config">liveness_check_config.dart</a></li>
     <li><a href="../../liveness_check_config/LivenessCheckMessages-class.html">LivenessCheckMessages</a></li>
-    <li class="self-crumb">LivenessCheckMessages.new const constructor</li>
+    <li class="self-crumb">LivenessCheckMessages const constructor</li>
   </ol>
-  <div class="self-name">LivenessCheckMessages.new</div>
+  <div class="self-name">LivenessCheckMessages</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
   <div
@@ -68,9 +71,13 @@
 <li><span class="parameter" id="-param-cameraPermissionDenied"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">cameraPermissionDenied</span> = <span class="default-value">&#39;Camera permission denied&#39;</span>, </span></li>
 <li><span class="parameter" id="-param-failedToInitializeCamera"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">failedToInitializeCamera</span> = <span class="default-value">&#39;Failed to initialize camera&#39;</span>, </span></li>
 <li><span class="parameter" id="-param-tryAgainButtonText"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">tryAgainButtonText</span> = <span class="default-value">&#39;Try Again&#39;</span>, </span></li>
+<li><span class="parameter" id="-param-permissionDialogConfig"><span class="type-annotation"><a href="../../liveness_check_config/PermissionDialogConfig-class.html">PermissionDialogConfig</a></span> <span class="parameter-name">permissionDialogConfig</span> = <span class="default-value">const PermissionDialogConfig()</span>, </span></li>
 </ol>})
     </section>
     
+<section class="desc markdown">
+  <p>Creates liveness check messages.</p>
+</section>
 
 
     
@@ -93,6 +100,7 @@
   this.cameraPermissionDenied = &#39;Camera permission denied&#39;,
   this.failedToInitializeCamera = &#39;Failed to initialize camera&#39;,
   this.tryAgainButtonText = &#39;Try Again&#39;,
+  this.permissionDialogConfig = const PermissionDialogConfig(),
 });</code></pre>
 </section>
 
@@ -107,9 +115,9 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">flutter_liveness_check</a></li>
-    <li><a href="../../liveness_check_config/">liveness_check_config</a></li>
+    <li><a href="../../liveness_check_config">liveness_check_config</a></li>
     <li><a href="../../liveness_check_config/LivenessCheckMessages-class.html">LivenessCheckMessages</a></li>
-    <li class="self-crumb">LivenessCheckMessages.new const constructor</li>
+    <li class="self-crumb">LivenessCheckMessages const constructor</li>
 </ol>
 
     <h5>LivenessCheckMessages class</h5>
@@ -121,7 +129,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

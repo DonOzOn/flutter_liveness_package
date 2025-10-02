@@ -25,21 +25,24 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_config/">liveness_check_config.dart</a></li>
+    <li><a href="../liveness_check_config">liveness_check_config.dart</a></li>
     <li class="self-crumb">LivenessCheckConfig class</li>
   </ol>
   <div class="self-name">LivenessCheckConfig</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -53,6 +56,22 @@
 </h1></div>
 
     
+<section class="desc markdown">
+  <p>Main configuration class for the liveness check screen.</p>
+<p>This class contains all customization options including theme, callbacks,
+messages, settings, and UI components.</p>
+<p>Example:</p>
+<pre class="language-dart"><code class="language-dart">LivenessCheckConfig(
+  theme: LivenessCheckTheme(primaryColor: Colors.blue),
+  callbacks: LivenessCheckCallbacks(
+    onSuccess: () =&gt; print('Success'),
+  ),
+  messages: LivenessCheckMessages(
+    title: 'Verify Your Identity',
+  ),
+)
+</code></pre>
+</section>
 
 
 
@@ -60,11 +79,11 @@
   <section class="summary offset-anchor" id="constructors">
     <h2>Constructors</h2>
     <dl class="constructor-summary-list">
-        <dt id="LivenessCheckConfig.new" class="callable">
-          <span class="name"><a href="../liveness_check_config/LivenessCheckConfig/LivenessCheckConfig.html">LivenessCheckConfig.new</a></span><span class="signature">({<span class="parameter" id="-param-customBottomWidget"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a>?</span> <span class="parameter-name">customBottomWidget</span>, </span><span class="parameter" id="-param-theme"><span class="type-annotation"><a href="../liveness_check_config/LivenessCheckTheme-class.html">LivenessCheckTheme</a></span> <span class="parameter-name">theme</span> = <span class="default-value">const LivenessCheckTheme()</span>, </span><span class="parameter" id="-param-callbacks"><span class="type-annotation"><a href="../liveness_check_config/LivenessCheckCallbacks-class.html">LivenessCheckCallbacks</a>?</span> <span class="parameter-name">callbacks</span>, </span><span class="parameter" id="-param-messages"><span class="type-annotation"><a href="../liveness_check_config/LivenessCheckMessages-class.html">LivenessCheckMessages</a></span> <span class="parameter-name">messages</span> = <span class="default-value">const LivenessCheckMessages()</span>, </span><span class="parameter" id="-param-settings"><span class="type-annotation"><a href="../liveness_check_config/LivenessCheckSettings-class.html">LivenessCheckSettings</a></span> <span class="parameter-name">settings</span> = <span class="default-value">const LivenessCheckSettings()</span>, </span><span class="parameter" id="-param-placeholder"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">placeholder</span> = <span class="default-value">&quot;Please smile or blink eye 3 time&quot;</span>, </span><span class="parameter" id="-param-status"><span class="type-annotation"><a href="../liveness_check_config/LivenessStatus.html">LivenessStatus</a></span> <span class="parameter-name">status</span> = <span class="default-value">LivenessStatus.init</span>, </span><span class="parameter" id="-param-showLoading"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showLoading</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-customLoadingWidget"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a>?</span> <span class="parameter-name">customLoadingWidget</span>, </span><span class="parameter" id="-param-appBarConfig"><span class="type-annotation"><a href="../liveness_check_config/AppBarConfig-class.html">AppBarConfig</a></span> <span class="parameter-name">appBarConfig</span> = <span class="default-value">const AppBarConfig()</span></span>})</span>
+        <dt id="LivenessCheckConfig" class="callable">
+          <span class="name"><a href="../liveness_check_config/LivenessCheckConfig/LivenessCheckConfig.html">LivenessCheckConfig</a></span><span class="signature">({<span class="parameter" id="-param-cameraSettings"><span class="type-annotation"><a href="../liveness_check_config/CameraSettings-class.html">CameraSettings</a>?</span> <span class="parameter-name">cameraSettings</span> = <span class="default-value">const CameraSettings()</span>, </span><span class="parameter" id="-param-customBottomWidget"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a>?</span> <span class="parameter-name">customBottomWidget</span>, </span><span class="parameter" id="-param-theme"><span class="type-annotation"><a href="../liveness_check_config/LivenessCheckTheme-class.html">LivenessCheckTheme</a></span> <span class="parameter-name">theme</span> = <span class="default-value">const LivenessCheckTheme()</span>, </span><span class="parameter" id="-param-callbacks"><span class="type-annotation"><a href="../liveness_check_config/LivenessCheckCallbacks-class.html">LivenessCheckCallbacks</a>?</span> <span class="parameter-name">callbacks</span>, </span><span class="parameter" id="-param-messages"><span class="type-annotation"><a href="../liveness_check_config/LivenessCheckMessages-class.html">LivenessCheckMessages</a></span> <span class="parameter-name">messages</span> = <span class="default-value">const LivenessCheckMessages()</span>, </span><span class="parameter" id="-param-settings"><span class="type-annotation"><a href="../liveness_check_config/LivenessCheckSettings-class.html">LivenessCheckSettings</a></span> <span class="parameter-name">settings</span> = <span class="default-value">const LivenessCheckSettings()</span>, </span><span class="parameter" id="-param-placeholder"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">placeholder</span> = <span class="default-value">&quot;Please smile or blink eye 3 time&quot;</span>, </span><span class="parameter" id="-param-status"><span class="type-annotation"><a href="../liveness_check_config/LivenessStatus.html">LivenessStatus</a></span> <span class="parameter-name">status</span> = <span class="default-value">LivenessStatus.init</span>, </span><span class="parameter" id="-param-showLoading"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showLoading</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-customLoadingWidget"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a>?</span> <span class="parameter-name">customLoadingWidget</span>, </span><span class="parameter" id="-param-appBarConfig"><span class="type-annotation"><a href="../liveness_check_config/AppBarConfig-class.html">AppBarConfig</a></span> <span class="parameter-name">appBarConfig</span> = <span class="default-value">const AppBarConfig()</span></span>})</span>
         </dt>
         <dd>
-          
+          Creates a liveness check configuration.
             <div class="constructor-modifier features">const</div>
         </dd>
     </dl>
@@ -82,7 +101,7 @@
 
 </dt>
 <dd>
-  
+  AppBar configuration.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -94,7 +113,19 @@
 
 </dt>
 <dd>
+  Callbacks for handling events.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="cameraSettings" class="property">
+  <span class="name"><a href="../liveness_check_config/LivenessCheckConfig/cameraSettings.html">cameraSettings</a></span>
+  <span class="signature">&#8594; <a href="../liveness_check_config/CameraSettings-class.html">CameraSettings</a>?</span>
   
+
+</dt>
+<dd>
+  Camera-specific settings.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -106,7 +137,7 @@
 
 </dt>
 <dd>
-  
+  Custom widget to display at the bottom of the screen.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -118,7 +149,7 @@
 
 </dt>
 <dd>
-  
+  Custom loading widget to replace the default spinner.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -142,7 +173,7 @@
 
 </dt>
 <dd>
-  
+  Customizable text messages.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -154,7 +185,7 @@
 
 </dt>
 <dd>
-  
+  Placeholder text shown during liveness check.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -178,7 +209,7 @@
 
 </dt>
 <dd>
-  
+  Behavior settings for the liveness check.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -190,7 +221,7 @@
 
 </dt>
 <dd>
-  
+  Whether to show a loading overlay.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -202,7 +233,7 @@
 
 </dt>
 <dd>
-  
+  Current status of the liveness check (init, success, fail).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -214,7 +245,7 @@
 
 </dt>
 <dd>
-  
+  Theme configuration for visual customization.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -291,7 +322,7 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_config/">liveness_check_config</a></li>
+    <li><a href="../liveness_check_config">liveness_check_config</a></li>
     <li class="self-crumb">LivenessCheckConfig class</li>
 </ol>
 
@@ -304,7 +335,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

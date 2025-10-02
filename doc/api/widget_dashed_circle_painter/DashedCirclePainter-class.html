@@ -25,21 +25,24 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../widget_dashed_circle_painter/">widget&#47;dashed_circle_painter.dart</a></li>
+    <li><a href="../widget_dashed_circle_painter">widget&#47;dashed_circle_painter.dart</a></li>
     <li class="self-crumb">DashedCirclePainter class</li>
   </ol>
   <div class="self-name">DashedCirclePainter</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -53,6 +56,23 @@
 </h1></div>
 
     
+<section class="desc markdown">
+  <p>A custom painter that draws a dashed circular border.</p>
+<p>This painter creates a circular border with evenly spaced dashes around
+the circumference. The dashes are automatically adjusted to fit perfectly
+around the circle, ensuring a symmetrical appearance.</p>
+<p>Example:</p>
+<pre class="language-dart"><code class="language-dart">CustomPaint(
+  size: Size(300, 300),
+  painter: DashedCirclePainter(
+    color: Colors.blue,
+    strokeWidth: 4.0,
+    dashLength: 10.0,
+    dashGap: 8.0,
+  ),
+)
+</code></pre>
+</section>
 
 
     <section>
@@ -83,11 +103,11 @@
   <section class="summary offset-anchor" id="constructors">
     <h2>Constructors</h2>
     <dl class="constructor-summary-list">
-        <dt id="DashedCirclePainter.new" class="callable">
-          <span class="name"><a href="../widget_dashed_circle_painter/DashedCirclePainter/DashedCirclePainter.html">DashedCirclePainter.new</a></span><span class="signature">({<span class="parameter" id="-param-color"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">color</span>, </span><span class="parameter" id="-param-strokeWidth"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">strokeWidth</span>, </span><span class="parameter" id="-param-dashLength"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">dashLength</span>, </span><span class="parameter" id="-param-dashGap"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">dashGap</span></span>})</span>
+        <dt id="DashedCirclePainter" class="callable">
+          <span class="name"><a href="../widget_dashed_circle_painter/DashedCirclePainter/DashedCirclePainter.html">DashedCirclePainter</a></span><span class="signature">({<span class="parameter" id="-param-color"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">color</span>, </span><span class="parameter" id="-param-strokeWidth"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">strokeWidth</span>, </span><span class="parameter" id="-param-dashLength"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">dashLength</span>, </span><span class="parameter" id="-param-dashGap"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">dashGap</span></span>})</span>
         </dt>
         <dd>
-          
+          Creates a dashed circle painter.
         </dd>
     </dl>
   </section>
@@ -99,12 +119,12 @@
     <dl class="properties">
         <dt id="color" class="property">
   <span class="name"><a href="../widget_dashed_circle_painter/DashedCirclePainter/color.html">color</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span>
   
 
 </dt>
 <dd>
-  
+  The color of the dashed border.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -116,7 +136,7 @@
 
 </dt>
 <dd>
-  
+  The gap between each dash segment.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -128,7 +148,7 @@
 
 </dt>
 <dd>
-  
+  The length of each dash segment.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -177,7 +197,7 @@ by this painter.
 
 </dt>
 <dd>
-  
+  The width of the stroke (border thickness).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -232,16 +252,14 @@ this custom paint delegate.
 </dd>
 
         <dt id="paint" class="callable">
-  <span class="name"><a href="../widget_dashed_circle_painter/DashedCirclePainter/paint.html">paint</a></span><span class="signature">(<wbr><span class="parameter" id="paint-param-canvas"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Canvas-class.html">Canvas</a></span> <span class="parameter-name">canvas</span>, </span><span class="parameter" id="paint-param-size"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Size-class.html">Size</a></span> <span class="parameter-name">size</span></span>)
+  <span class="name"><a href="../widget_dashed_circle_painter/DashedCirclePainter/paint.html">paint</a></span><span class="signature">(<wbr><span class="parameter" id="paint-param-canvas"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Canvas-class.html">Canvas</a></span> <span class="parameter-name">canvas</span>, </span><span class="parameter" id="paint-param-size"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Size-class.html">Size</a></span> <span class="parameter-name">size</span></span>)
     <span class="returntype parameter">&#8594; void</span>
   </span>
   
 
 </dt>
 <dd>
-  Called whenever the object needs to paint. The given <a href="https://api.flutter.dev/flutter/dart-ui/Canvas-class.html">Canvas</a> has its
-coordinate space configured such that the origin is at the top left of the
-box. The area of the box is the size of the <code>size</code> argument.
+  Paints the dashed circle on the canvas.
   <div class="features"><span class="feature">override</span></div>
 
 </dd>
@@ -285,11 +303,7 @@ implemented in terms of the former).
 
 </dt>
 <dd>
-  Called whenever a new instance of the custom painter delegate class is
-provided to the <a href="https://api.flutter.dev/flutter/rendering/RenderCustomPaint-class.html">RenderCustomPaint</a> object, or any time that a new
-<a href="https://api.flutter.dev/flutter/widgets/CustomPaint-class.html">CustomPaint</a> object is created with a new instance of the custom painter
-delegate class (which amounts to the same thing, because the latter is
-implemented in terms of the former).
+  Determines whether the painter should repaint.
   <div class="features"><span class="feature">override</span></div>
 
 </dd>
@@ -344,7 +358,7 @@ implemented in terms of the former).
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../widget_dashed_circle_painter/">dashed_circle_painter</a></li>
+    <li><a href="../widget_dashed_circle_painter">dashed_circle_painter</a></li>
     <li class="self-crumb">DashedCirclePainter class</li>
 </ol>
 
@@ -357,7 +371,7 @@ implemented in terms of the former).
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

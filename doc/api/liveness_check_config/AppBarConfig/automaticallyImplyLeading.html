@@ -25,7 +25,7 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">flutter_liveness_check</a></li>
-    <li><a href="../../liveness_check_config/">liveness_check_config.dart</a></li>
+    <li><a href="../../liveness_check_config">liveness_check_config.dart</a></li>
     <li><a href="../../liveness_check_config/AppBarConfig-class.html">AppBarConfig</a></li>
     <li class="self-crumb">automaticallyImplyLeading property</li>
   </ol>
@@ -33,14 +33,17 @@
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -61,6 +64,9 @@
 
       </section>
       
+<section class="desc markdown">
+  <p>Whether to automatically show leading widget.</p>
+</section>
 
       
 <section class="summary source-code" id="source">
@@ -80,7 +86,7 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">flutter_liveness_check</a></li>
-    <li><a href="../../liveness_check_config/">liveness_check_config</a></li>
+    <li><a href="../../liveness_check_config">liveness_check_config</a></li>
     <li><a href="../../liveness_check_config/AppBarConfig-class.html">AppBarConfig</a></li>
     <li class="self-crumb">automaticallyImplyLeading property</li>
 </ol>
@@ -94,7 +100,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

@@ -25,21 +25,24 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../enhence_light_checker/">enhence_light_checker.dart</a></li>
+    <li><a href="../enhence_light_checker">enhence_light_checker.dart</a></li>
     <li class="self-crumb">LightingDetectionResult class</li>
   </ol>
   <div class="self-name">LightingDetectionResult</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -53,6 +56,11 @@
 </h1></div>
 
     
+<section class="desc markdown">
+  <p>Result class containing lighting quality analysis.</p>
+<p>Provides detailed information about lighting conditions including
+brightness, contrast, exposure ratios, and identified issues.</p>
+</section>
 
 
 
@@ -60,11 +68,11 @@
   <section class="summary offset-anchor" id="constructors">
     <h2>Constructors</h2>
     <dl class="constructor-summary-list">
-        <dt id="LightingDetectionResult.new" class="callable">
-          <span class="name"><a href="../enhence_light_checker/LightingDetectionResult/LightingDetectionResult.html">LightingDetectionResult.new</a></span><span class="signature">({<span class="parameter" id="-param-isGoodLighting"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isGoodLighting</span>, </span><span class="parameter" id="-param-avgBrightness"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">avgBrightness</span>, </span><span class="parameter" id="-param-contrast"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">contrast</span>, </span><span class="parameter" id="-param-overexposureRatio"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">overexposureRatio</span>, </span><span class="parameter" id="-param-underexposureRatio"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">underexposureRatio</span>, </span><span class="parameter" id="-param-issue"><span class="type-annotation"><a href="../enhence_light_checker/LightingIssue.html">LightingIssue</a>?</span> <span class="parameter-name">issue</span></span>})</span>
+        <dt id="LightingDetectionResult" class="callable">
+          <span class="name"><a href="../enhence_light_checker/LightingDetectionResult/LightingDetectionResult.html">LightingDetectionResult</a></span><span class="signature">({<span class="parameter" id="-param-isGoodLighting"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isGoodLighting</span>, </span><span class="parameter" id="-param-avgBrightness"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">avgBrightness</span>, </span><span class="parameter" id="-param-contrast"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">contrast</span>, </span><span class="parameter" id="-param-overexposureRatio"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">overexposureRatio</span>, </span><span class="parameter" id="-param-underexposureRatio"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">underexposureRatio</span>, </span><span class="parameter" id="-param-issue"><span class="type-annotation"><a href="../enhence_light_checker/LightingIssue.html">LightingIssue</a>?</span> <span class="parameter-name">issue</span></span>})</span>
         </dt>
         <dd>
-          
+          Creates a lighting detection result.
         </dd>
     </dl>
   </section>
@@ -81,7 +89,7 @@
 
 </dt>
 <dd>
-  
+  Average brightness level (0-255).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -93,7 +101,7 @@
 
 </dt>
 <dd>
-  
+  Contrast level calculated from standard deviation.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -117,7 +125,7 @@
 
 </dt>
 <dd>
-  
+  Whether the lighting conditions are acceptable.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -129,7 +137,7 @@
 
 </dt>
 <dd>
-  
+  Specific lighting issue detected, if any.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -141,7 +149,7 @@
 
 </dt>
 <dd>
-  
+  Returns a user-friendly description of the lighting issue.
   <div class="features"><span class="feature">no setter</span></div>
 
 </dd>
@@ -153,7 +161,7 @@
 
 </dt>
 <dd>
-  
+  Ratio of overexposed pixels (0.0 - 1.0).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -177,7 +185,7 @@
 
 </dt>
 <dd>
-  
+  Ratio of underexposed pixels (0.0 - 1.0).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -254,7 +262,7 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../enhence_light_checker/">enhence_light_checker</a></li>
+    <li><a href="../enhence_light_checker">enhence_light_checker</a></li>
     <li class="self-crumb">LightingDetectionResult class</li>
 </ol>
 
@@ -267,7 +275,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

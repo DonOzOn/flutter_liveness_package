@@ -31,14 +31,17 @@
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -69,7 +72,15 @@
 
 </dt>
 <dd>
-  
+  Configuration for the app bar.
+</dd>
+
+          <dt id="CameraSettings">
+  <span class="name "><a href="../liveness_check_config/CameraSettings-class.html">CameraSettings</a></span> 
+
+</dt>
+<dd>
+  Camera-specific configuration settings.
 </dd>
 
           <dt id="LivenessCheckCallbacks">
@@ -77,7 +88,7 @@
 
 </dt>
 <dd>
-  
+  Callback functions for handling liveness check events.
 </dd>
 
           <dt id="LivenessCheckConfig">
@@ -85,7 +96,7 @@
 
 </dt>
 <dd>
-  
+  Main configuration class for the liveness check screen.
 </dd>
 
           <dt id="LivenessCheckMessages">
@@ -93,7 +104,7 @@
 
 </dt>
 <dd>
-  
+  Customizable text messages for the liveness check screen.
 </dd>
 
           <dt id="LivenessCheckSettings">
@@ -101,7 +112,7 @@
 
 </dt>
 <dd>
-  
+  Behavior settings for the liveness check.
 </dd>
 
           <dt id="LivenessCheckTheme">
@@ -109,7 +120,15 @@
 
 </dt>
 <dd>
-  
+  Theme configuration for visual customization of the liveness check screen.
+</dd>
+
+          <dt id="PermissionDialogConfig">
+  <span class="name "><a href="../liveness_check_config/PermissionDialogConfig-class.html">PermissionDialogConfig</a></span> 
+
+</dt>
+<dd>
+  Configuration for the camera permission dialog.
 </dd>
 
       </dl>
@@ -123,7 +142,7 @@
 
 </dt>
 <dd>
-  
+  Style options for the circular border.
 </dd>
 
           <dt id="LivenessStatus">
@@ -131,7 +150,7 @@
 
 </dt>
 <dd>
-  
+  Status states for the liveness check.
 </dd>
 
       </dl>
@@ -160,13 +179,14 @@
     <h5><span class="package-name">flutter_liveness_check</span> <span class="package-kind">package</span></h5>
     <ol>
       <li class="section-title">Libraries</li>
-      <li><a href="../enhence_light_checker/">enhence_light_checker</a></li>
-      <li><a href="../flutter_liveness_check/">flutter_liveness_check</a></li>
-      <li><a href="../liveness_check_config/">liveness_check_config</a></li>
-      <li><a href="../liveness_check_errors/">liveness_check_errors</a></li>
-      <li><a href="../liveness_check_screen/">liveness_check_screen</a></li>
-      <li><a href="../liveness_result_screen/">liveness_result_screen</a></li>
-      <li><a href="../widget_dashed_circle_painter/">widget/dashed_circle_painter</a></li>
+      <li><a href="../enhence_light_checker">enhence_light_checker</a></li>
+      <li><a href="../flutter_liveness_check">flutter_liveness_check</a></li>
+      <li><a href="../liveness_check_config">liveness_check_config</a></li>
+      <li><a href="../liveness_check_errors">liveness_check_errors</a></li>
+      <li><a href="../liveness_check_screen">liveness_check_screen</a></li>
+      <li><a href="../liveness_result_screen">liveness_result_screen</a></li>
+      <li><a href="../ulti_device_helper">ulti/device_helper</a></li>
+      <li><a href="../widget_dashed_circle_painter">widget/dashed_circle_painter</a></li>
 </ol>
 
   </div>
@@ -177,7 +197,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

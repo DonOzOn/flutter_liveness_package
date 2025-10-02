@@ -25,21 +25,24 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_errors/">liveness_check_errors.dart</a></li>
+    <li><a href="../liveness_check_errors">liveness_check_errors.dart</a></li>
     <li class="self-crumb">LivenessCheckError enum</li>
   </ol>
   <div class="self-name">LivenessCheckError</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -58,6 +61,11 @@
     </div>
 
     
+<section class="desc markdown">
+  <p>Enumeration of all possible liveness check error types.</p>
+<p>These error types are used throughout the liveness check process to
+categorize and handle different failure scenarios.</p>
+</section>
 
 
       <section>
@@ -96,7 +104,7 @@
 
 </dt>
 <dd>
-  
+  <p>Camera permission was denied by the user.</p>
   
 
 </dd>
@@ -108,7 +116,7 @@
 
 </dt>
 <dd>
-  
+  <p>Failed to initialize the camera hardware.</p>
   
 
 </dd>
@@ -120,7 +128,7 @@
 
 </dt>
 <dd>
-  
+  <p>No face detected in the camera frame.</p>
   
 
 </dd>
@@ -132,7 +140,7 @@
 
 </dt>
 <dd>
-  
+  <p>Multiple faces detected when only one is expected.</p>
   
 
 </dd>
@@ -144,7 +152,7 @@
 
 </dt>
 <dd>
-  
+  <p>Image quality is too blurry for detection.</p>
   
 
 </dd>
@@ -156,7 +164,7 @@
 
 </dt>
 <dd>
-  
+  <p>Face features are not clear enough.</p>
   
 
 </dd>
@@ -168,7 +176,7 @@
 
 </dt>
 <dd>
-  
+  <p>User needs to move closer to the camera.</p>
   
 
 </dd>
@@ -180,7 +188,7 @@
 
 </dt>
 <dd>
-  
+  <p>Lighting conditions are inadequate.</p>
   
 
 </dd>
@@ -192,7 +200,7 @@
 
 </dt>
 <dd>
-  
+  <p>Failed to capture photo after liveness check.</p>
   
 
 </dd>
@@ -204,7 +212,7 @@
 
 </dt>
 <dd>
-  
+  <p>Processing took too long and timed out.</p>
   
 
 </dd>
@@ -216,7 +224,7 @@
 
 </dt>
 <dd>
-  
+  <p>An unknown or unexpected error occurred.</p>
   
 
 </dd>
@@ -303,7 +311,7 @@
         <span>Available on <a href="../liveness_check_errors/LivenessCheckError.html">LivenessCheckError</a>,
         provided by the <a href="../liveness_check_errors/LivenessCheckErrorExtension.html">LivenessCheckErrorExtension</a> extension</span>
       </p>
-  
+  Returns a custom error message from the provided <code>messages</code> configuration.
   
 
 </dd>
@@ -320,7 +328,7 @@
         <span>Available on <a href="../liveness_check_errors/LivenessCheckError.html">LivenessCheckError</a>,
         provided by the <a href="../liveness_check_errors/LivenessCheckErrorExtension.html">LivenessCheckErrorExtension</a> extension</span>
       </p>
-  
+  Returns the default error message for this error type.
   
 
 </dd>
@@ -405,7 +413,7 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_errors/">liveness_check_errors</a></li>
+    <li><a href="../liveness_check_errors">liveness_check_errors</a></li>
     <li class="self-crumb">LivenessCheckError enum</li>
 </ol>
 
@@ -418,7 +426,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

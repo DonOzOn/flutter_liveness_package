@@ -25,21 +25,24 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_config/">liveness_check_config.dart</a></li>
+    <li><a href="../liveness_check_config">liveness_check_config.dart</a></li>
     <li class="self-crumb">LivenessCheckSettings class</li>
   </ol>
   <div class="self-name">LivenessCheckSettings</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -53,6 +56,9 @@
 </h1></div>
 
     
+<section class="desc markdown">
+  <p>Behavior settings for the liveness check.</p>
+</section>
 
 
 
@@ -60,11 +66,11 @@
   <section class="summary offset-anchor" id="constructors">
     <h2>Constructors</h2>
     <dl class="constructor-summary-list">
-        <dt id="LivenessCheckSettings.new" class="callable">
-          <span class="name"><a href="../liveness_check_config/LivenessCheckSettings/LivenessCheckSettings.html">LivenessCheckSettings.new</a></span><span class="signature">({<span class="parameter" id="-param-requiredBlinkCount"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">requiredBlinkCount</span> = <span class="default-value">3</span>, </span><span class="parameter" id="-param-requireSmile"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">requireSmile</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-showProgress"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showProgress</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-autoNavigateOnSuccess"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">autoNavigateOnSuccess</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-showErrorMessage"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showErrorMessage</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-showTryAgainButton"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showTryAgainButton</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-maxRetryAttempts"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">maxRetryAttempts</span> = <span class="default-value">3</span>, </span><span class="parameter" id="-param-processingTimeout"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Duration-class.html">Duration</a></span> <span class="parameter-name">processingTimeout</span> = <span class="default-value">const Duration(seconds: 30)</span>, </span><span class="parameter" id="-param-circlePositionY"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">circlePositionY</span> = <span class="default-value">0.38</span></span>})</span>
+        <dt id="LivenessCheckSettings" class="callable">
+          <span class="name"><a href="../liveness_check_config/LivenessCheckSettings/LivenessCheckSettings.html">LivenessCheckSettings</a></span><span class="signature">({<span class="parameter" id="-param-requiredBlinkCount"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">requiredBlinkCount</span> = <span class="default-value">3</span>, </span><span class="parameter" id="-param-requireSmile"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">requireSmile</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-showProgress"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showProgress</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-autoNavigateOnSuccess"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">autoNavigateOnSuccess</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-showErrorMessage"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showErrorMessage</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-showTryAgainButton"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showTryAgainButton</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-maxRetryAttempts"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">maxRetryAttempts</span> = <span class="default-value">3</span>, </span><span class="parameter" id="-param-processingTimeout"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Duration-class.html">Duration</a></span> <span class="parameter-name">processingTimeout</span> = <span class="default-value">const Duration(seconds: 30)</span>, </span><span class="parameter" id="-param-circlePositionY"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">circlePositionY</span> = <span class="default-value">0.38</span></span>})</span>
         </dt>
         <dd>
-          
+          Creates liveness check settings.
             <div class="constructor-modifier features">const</div>
         </dd>
     </dl>
@@ -82,7 +88,7 @@
 
 </dt>
 <dd>
-  
+  Whether to automatically navigate on successful verification.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -94,7 +100,7 @@
 
 </dt>
 <dd>
-  
+  Vertical position of the circle (0.0 to 1.0).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -118,7 +124,7 @@
 
 </dt>
 <dd>
-  
+  Maximum number of retry attempts allowed.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -130,7 +136,7 @@
 
 </dt>
 <dd>
-  
+  Timeout duration for processing.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -142,7 +148,7 @@
 
 </dt>
 <dd>
-  
+  Number of blinks required to pass the liveness check.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -154,7 +160,7 @@
 
 </dt>
 <dd>
-  
+  Whether a smile is required to pass the liveness check.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -178,7 +184,7 @@
 
 </dt>
 <dd>
-  
+  Whether to show error messages to the user.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -190,7 +196,7 @@
 
 </dt>
 <dd>
-  
+  Whether to show progress indicators during the check.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -202,7 +208,7 @@
 
 </dt>
 <dd>
-  
+  Whether to show the try again button on failure.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -279,7 +285,7 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_config/">liveness_check_config</a></li>
+    <li><a href="../liveness_check_config">liveness_check_config</a></li>
     <li class="self-crumb">LivenessCheckSettings class</li>
 </ol>
 
@@ -292,7 +298,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

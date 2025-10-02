@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the LivenessCheckTheme.new constructor from Class LivenessCheckTheme from the liveness_check_config library, for the Dart programming language.">
-  <title>LivenessCheckTheme.new constructor - LivenessCheckTheme - liveness_check_config library - Dart API</title>
+  <meta name="description" content="API docs for the LivenessCheckTheme constructor from Class LivenessCheckTheme from the liveness_check_config library, for the Dart programming language.">
+  <title>LivenessCheckTheme constructor - LivenessCheckTheme - liveness_check_config library - Dart API</title>
 
 
   
@@ -25,22 +25,25 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">flutter_liveness_check</a></li>
-    <li><a href="../../liveness_check_config/">liveness_check_config.dart</a></li>
+    <li><a href="../../liveness_check_config">liveness_check_config.dart</a></li>
     <li><a href="../../liveness_check_config/LivenessCheckTheme-class.html">LivenessCheckTheme</a></li>
-    <li class="self-crumb">LivenessCheckTheme.new const constructor</li>
+    <li class="self-crumb">LivenessCheckTheme const constructor</li>
   </ol>
-  <div class="self-name">LivenessCheckTheme.new</div>
+  <div class="self-name">LivenessCheckTheme</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
   <div
@@ -54,16 +57,16 @@
 
     <section class="multi-line-signature">
       const
-      <span class="name ">LivenessCheckTheme</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="-param-backgroundColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">backgroundColor</span> = <span class="default-value">Colors.white</span>, </span></li>
-<li><span class="parameter" id="-param-btnRetryBGColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">btnRetryBGColor</span> = <span class="default-value">Colors.blue</span>, </span></li>
-<li><span class="parameter" id="-param-btnTextRetryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">btnTextRetryColor</span> = <span class="default-value">Colors.white</span>, </span></li>
-<li><span class="parameter" id="-param-primaryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">primaryColor</span> = <span class="default-value">Colors.blue</span>, </span></li>
-<li><span class="parameter" id="-param-successColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">successColor</span> = <span class="default-value">Colors.green</span>, </span></li>
-<li><span class="parameter" id="-param-errorColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">errorColor</span> = <span class="default-value">Colors.red</span>, </span></li>
-<li><span class="parameter" id="-param-warningColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">warningColor</span> = <span class="default-value">Colors.orange</span>, </span></li>
-<li><span class="parameter" id="-param-borderColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">borderColor</span> = <span class="default-value">Colors.blue</span>, </span></li>
-<li><span class="parameter" id="-param-textColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">textColor</span> = <span class="default-value">Colors.black</span>, </span></li>
-<li><span class="parameter" id="-param-overlayColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">overlayColor</span> = <span class="default-value">Colors.white</span>, </span></li>
+      <span class="name ">LivenessCheckTheme</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="-param-backgroundColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">backgroundColor</span> = <span class="default-value">Colors.white</span>, </span></li>
+<li><span class="parameter" id="-param-btnRetryBGColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">btnRetryBGColor</span> = <span class="default-value">Colors.blue</span>, </span></li>
+<li><span class="parameter" id="-param-btnTextRetryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">btnTextRetryColor</span> = <span class="default-value">Colors.white</span>, </span></li>
+<li><span class="parameter" id="-param-primaryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">primaryColor</span> = <span class="default-value">Colors.blue</span>, </span></li>
+<li><span class="parameter" id="-param-successColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">successColor</span> = <span class="default-value">Colors.green</span>, </span></li>
+<li><span class="parameter" id="-param-errorColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">errorColor</span> = <span class="default-value">Colors.red</span>, </span></li>
+<li><span class="parameter" id="-param-warningColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">warningColor</span> = <span class="default-value">Colors.orange</span>, </span></li>
+<li><span class="parameter" id="-param-borderColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">borderColor</span> = <span class="default-value">Colors.blue</span>, </span></li>
+<li><span class="parameter" id="-param-textColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">textColor</span> = <span class="default-value">Colors.black</span>, </span></li>
+<li><span class="parameter" id="-param-overlayColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">overlayColor</span> = <span class="default-value">Colors.white</span>, </span></li>
 <li><span class="parameter" id="-param-circleSize"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">circleSize</span> = <span class="default-value">0.65</span>, </span></li>
 <li><span class="parameter" id="-param-borderWidth"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">borderWidth</span> = <span class="default-value">4</span>, </span></li>
 <li><span class="parameter" id="-param-borderStyle"><span class="type-annotation"><a href="../../liveness_check_config/CircleBorderStyle.html">CircleBorderStyle</a></span> <span class="parameter-name">borderStyle</span> = <span class="default-value">CircleBorderStyle.solid</span>, </span></li>
@@ -80,6 +83,9 @@
 </ol>})
     </section>
     
+<section class="desc markdown">
+  <p>Creates a liveness check theme.</p>
+</section>
 
 
     
@@ -123,9 +129,9 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">flutter_liveness_check</a></li>
-    <li><a href="../../liveness_check_config/">liveness_check_config</a></li>
+    <li><a href="../../liveness_check_config">liveness_check_config</a></li>
     <li><a href="../../liveness_check_config/LivenessCheckTheme-class.html">LivenessCheckTheme</a></li>
-    <li class="self-crumb">LivenessCheckTheme.new const constructor</li>
+    <li class="self-crumb">LivenessCheckTheme const constructor</li>
 </ol>
 
     <h5>LivenessCheckTheme class</h5>
@@ -137,7 +143,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

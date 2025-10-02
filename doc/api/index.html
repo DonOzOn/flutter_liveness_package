@@ -30,14 +30,17 @@
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
   <div id="dartdoc-main-content" class="main-content">
@@ -96,6 +99,22 @@
 <p>Add the following to your <code>ios/Runner/Info.plist</code>:</p>
 <pre class="language-xml"><code class="language-xml">&lt;key&gt;NSCameraUsageDescription&lt;/key&gt;
 &lt;string&gt;This app needs camera access for liveness verification&lt;/string&gt;
+</code></pre>
+<p>Add the following to your Podfile:</p>
+<pre class="language-ruby"><code class="language-ruby">post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      # You can remove unused permissions here
+      # e.g. when you don't need camera permission, just add 'PERMISSION_CAMERA=0'
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+        ## dart: PermissionGroup.camera
+        'PERMISSION_CAMERA=1',
+      ]
+    end
+  end
+end
 </code></pre>
 <h2 id="-platform-support">📱 Platform Support</h2>
 <ul>
@@ -335,6 +354,48 @@ class _MyLivenessCheckState extends State&lt;MyLivenessCheck&gt; {
   // UI Text
   tryAgainButtonText: 'Try Again',
   takingPhoto: 'Taking photo...',
+
+  // Permission Dialog Configuration
+  permissionDialogConfig: PermissionDialogConfig(
+    title: 'Camera Permission Required',
+    message: 'Camera permission is required for liveness check. Please enable it in settings.',
+    cancelButtonText: 'Cancel',
+    settingsButtonText: 'Open Settings',
+  ),
+)
+</code></pre>
+<h3 id="permissiondialogconfig---permission-dialog-customization">PermissionDialogConfig - Permission Dialog Customization</h3>
+<p>When camera permission is permanently denied, a dialog will be shown to guide users to settings. Customize this dialog:</p>
+<pre class="language-dart"><code class="language-dart">PermissionDialogConfig(
+  title: 'Camera Access Needed',
+  message: 'To verify your identity, we need access to your camera. Please enable it in your device settings.',
+  cancelButtonText: 'Not Now',
+  settingsButtonText: 'Go to Settings',
+)
+</code></pre>
+<h3 id="camerasettings---config-camera-controller">CameraSettings - Config camera controller</h3>
+<pre class="language-dart"><code class="language-dart">enum ResolutionPreset {
+  low,       // 352x288 (CIF)
+  medium,    // 720x480 (NTSC)
+  high,      // 1280x720 (HD)
+  veryHigh,  // 1920x1080 (Full HD)
+  ultraHigh, // 3840x2160 (4K)
+  max        // Highest available, varies by device
+}
+enum ImageFormatGroup {
+  unknown,
+  jpeg,     // Compressed, smaller, good for storage/sharing
+  yuv420,   // Raw format, great for real-time processing (default)
+  bgra8888, // iOS-friendly, raw format
+}
+
+CameraSettings(
+    //ResolutionPreset
+    this.resolutionPreset = ResolutionPreset.high,
+    //controls microphone input
+    this.enableAudio = false,
+    //ImageFormatGroup
+    this.imageFormatGroup,
 )
 </code></pre>
 <h2 id="-usage-examples">🎯 Usage Examples</h2>
@@ -469,6 +530,20 @@ class _MyLivenessCheckState extends State&lt;MyLivenessCheck&gt; {
             _showGenericError(message);
         }
       },
+    ),
+  ),
+)
+</code></pre>
+<h3 id="6-custom-permission-dialog">6. Custom Permission Dialog</h3>
+<pre class="language-dart"><code class="language-dart">LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    messages: LivenessCheckMessages(
+      permissionDialogConfig: PermissionDialogConfig(
+        title: 'Camera Access Required',
+        message: 'We need camera access to verify your identity. Please grant permission in your device settings.',
+        cancelButtonText: 'Not Now',
+        settingsButtonText: 'Open Settings',
+      ),
     ),
   ),
 )
@@ -644,49 +719,56 @@ LivenessCheckConfig(
           <h2>Libraries</h2>
         <dl>
           <dt id="enhence_light_checker">
-  <span class="name"><a href="enhence_light_checker/">enhence_light_checker</a></span> 
+  <span class="name"><a href="enhence_light_checker">enhence_light_checker</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="flutter_liveness_check">
-  <span class="name"><a href="flutter_liveness_check/">flutter_liveness_check</a></span> 
+  <span class="name"><a href="flutter_liveness_check">flutter_liveness_check</a></span> 
 
 </dt>
-<dd>
+<dd>Flutter Liveness Check Package
 </dd>
 
           <dt id="liveness_check_config">
-  <span class="name"><a href="liveness_check_config/">liveness_check_config</a></span> 
+  <span class="name"><a href="liveness_check_config">liveness_check_config</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="liveness_check_errors">
-  <span class="name"><a href="liveness_check_errors/">liveness_check_errors</a></span> 
+  <span class="name"><a href="liveness_check_errors">liveness_check_errors</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="liveness_check_screen">
-  <span class="name"><a href="liveness_check_screen/">liveness_check_screen</a></span> 
+  <span class="name"><a href="liveness_check_screen">liveness_check_screen</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="liveness_result_screen">
-  <span class="name"><a href="liveness_result_screen/">liveness_result_screen</a></span> 
+  <span class="name"><a href="liveness_result_screen">liveness_result_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="device_helper">
+  <span class="name"><a href="ulti_device_helper">ulti/device_helper</a></span> 
 
 </dt>
 <dd>
 </dd>
 
           <dt id="dashed_circle_painter">
-  <span class="name"><a href="widget_dashed_circle_painter/">widget/dashed_circle_painter</a></span> 
+  <span class="name"><a href="widget_dashed_circle_painter">widget/dashed_circle_painter</a></span> 
 
 </dt>
 <dd>
@@ -709,13 +791,14 @@ LivenessCheckConfig(
     <h5 class="hidden-xs"><span class="package-name">flutter_liveness_check</span> <span class="package-kind">package</span></h5>
     <ol>
       <li class="section-title">Libraries</li>
-      <li><a href="enhence_light_checker/">enhence_light_checker</a></li>
-      <li><a href="flutter_liveness_check/">flutter_liveness_check</a></li>
-      <li><a href="liveness_check_config/">liveness_check_config</a></li>
-      <li><a href="liveness_check_errors/">liveness_check_errors</a></li>
-      <li><a href="liveness_check_screen/">liveness_check_screen</a></li>
-      <li><a href="liveness_result_screen/">liveness_result_screen</a></li>
-      <li><a href="widget_dashed_circle_painter/">widget/dashed_circle_painter</a></li>
+      <li><a href="enhence_light_checker">enhence_light_checker</a></li>
+      <li><a href="flutter_liveness_check">flutter_liveness_check</a></li>
+      <li><a href="liveness_check_config">liveness_check_config</a></li>
+      <li><a href="liveness_check_errors">liveness_check_errors</a></li>
+      <li><a href="liveness_check_screen">liveness_check_screen</a></li>
+      <li><a href="liveness_result_screen">liveness_result_screen</a></li>
+      <li><a href="ulti_device_helper">ulti/device_helper</a></li>
+      <li><a href="widget_dashed_circle_painter">widget/dashed_circle_painter</a></li>
 </ol>
 
   </div>
@@ -725,7 +808,7 @@ LivenessCheckConfig(
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

@@ -25,21 +25,24 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../enhence_light_checker/">enhence_light_checker.dart</a></li>
+    <li><a href="../enhence_light_checker">enhence_light_checker.dart</a></li>
     <li class="self-crumb">BlurDetectionResult class</li>
   </ol>
   <div class="self-name">BlurDetectionResult</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -54,7 +57,16 @@
 
     
 <section class="desc markdown">
-  <p>Enhanced result classes with debug info</p>
+  <p>Result class containing blur detection analysis.</p>
+<p>Provides comprehensive information about image blur including:</p>
+<ul>
+<li>Whether the image is considered blurry</li>
+<li>Face area measurement</li>
+<li>Laplacian variance (sharpness metric)</li>
+<li>Landmark stability status</li>
+<li>Confidence score</li>
+<li>Debug information</li>
+</ul>
 </section>
 
 
@@ -63,8 +75,8 @@
   <section class="summary offset-anchor" id="constructors">
     <h2>Constructors</h2>
     <dl class="constructor-summary-list">
-        <dt id="BlurDetectionResult.new" class="callable">
-          <span class="name"><a href="../enhence_light_checker/BlurDetectionResult/BlurDetectionResult.html">BlurDetectionResult.new</a></span><span class="signature">({<span class="parameter" id="-param-isBlurry"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isBlurry</span>, </span><span class="parameter" id="-param-faceArea"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">faceArea</span>, </span><span class="parameter" id="-param-laplacianVariance"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">laplacianVariance</span>, </span><span class="parameter" id="-param-landmarkStability"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">landmarkStability</span>, </span><span class="parameter" id="-param-confidence"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">confidence</span>, </span><span class="parameter" id="-param-debugInfo"><span>required</span> <span class="type-annotation"><a href="../enhence_light_checker/BlurDebugInfo-class.html">BlurDebugInfo</a></span> <span class="parameter-name">debugInfo</span></span>})</span>
+        <dt id="BlurDetectionResult" class="callable">
+          <span class="name"><a href="../enhence_light_checker/BlurDetectionResult/BlurDetectionResult.html">BlurDetectionResult</a></span><span class="signature">({<span class="parameter" id="-param-isBlurry"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isBlurry</span>, </span><span class="parameter" id="-param-faceArea"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">faceArea</span>, </span><span class="parameter" id="-param-laplacianVariance"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">laplacianVariance</span>, </span><span class="parameter" id="-param-landmarkStability"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">landmarkStability</span>, </span><span class="parameter" id="-param-confidence"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">confidence</span>, </span><span class="parameter" id="-param-debugInfo"><span>required</span> <span class="type-annotation"><a href="../enhence_light_checker/BlurDebugInfo-class.html">BlurDebugInfo</a></span> <span class="parameter-name">debugInfo</span></span>})</span>
         </dt>
         <dd>
           
@@ -84,7 +96,7 @@
 
 </dt>
 <dd>
-  
+  Confidence score of the blur detection (0.0 - 1.0).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -96,7 +108,7 @@
 
 </dt>
 <dd>
-  
+  Additional debug information.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -108,7 +120,7 @@
 
 </dt>
 <dd>
-  
+  Area of the detected face in pixels.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -132,7 +144,7 @@
 
 </dt>
 <dd>
-  
+  Whether the image is considered blurry.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -144,7 +156,7 @@
 
 </dt>
 <dd>
-  
+  Whether face landmarks are stable and detectable.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -156,7 +168,7 @@
 
 </dt>
 <dd>
-  
+  Laplacian variance value (higher = sharper).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -245,7 +257,7 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../enhence_light_checker/">enhence_light_checker</a></li>
+    <li><a href="../enhence_light_checker">enhence_light_checker</a></li>
     <li class="self-crumb">BlurDetectionResult class</li>
 </ol>
 
@@ -258,7 +270,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

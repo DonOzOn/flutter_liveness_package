@@ -25,21 +25,24 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_errors/">liveness_check_errors.dart</a></li>
+    <li><a href="../liveness_check_errors">liveness_check_errors.dart</a></li>
     <li class="self-crumb">LivenessCheckErrorInfo class</li>
   </ol>
   <div class="self-name">LivenessCheckErrorInfo</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -53,6 +56,11 @@
 </h1></div>
 
     
+<section class="desc markdown">
+  <p>Contains detailed information about a liveness check error.</p>
+<p>This class provides comprehensive error information including the error type,
+user-friendly message, technical details for debugging, and timestamp.</p>
+</section>
 
 
 
@@ -60,11 +68,11 @@
   <section class="summary offset-anchor" id="constructors">
     <h2>Constructors</h2>
     <dl class="constructor-summary-list">
-        <dt id="LivenessCheckErrorInfo.new" class="callable">
-          <span class="name"><a href="../liveness_check_errors/LivenessCheckErrorInfo/LivenessCheckErrorInfo.html">LivenessCheckErrorInfo.new</a></span><span class="signature">({<span class="parameter" id="-param-errorType"><span>required</span> <span class="type-annotation"><a href="../liveness_check_errors/LivenessCheckError.html">LivenessCheckError</a></span> <span class="parameter-name">errorType</span>, </span><span class="parameter" id="-param-message"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">message</span>, </span><span class="parameter" id="-param-technicalDetails"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">technicalDetails</span>, </span><span class="parameter" id="-param-timestamp"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/DateTime-class.html">DateTime</a>?</span> <span class="parameter-name">timestamp</span></span>})</span>
+        <dt id="LivenessCheckErrorInfo" class="callable">
+          <span class="name"><a href="../liveness_check_errors/LivenessCheckErrorInfo/LivenessCheckErrorInfo.html">LivenessCheckErrorInfo</a></span><span class="signature">({<span class="parameter" id="-param-errorType"><span>required</span> <span class="type-annotation"><a href="../liveness_check_errors/LivenessCheckError.html">LivenessCheckError</a></span> <span class="parameter-name">errorType</span>, </span><span class="parameter" id="-param-message"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">message</span>, </span><span class="parameter" id="-param-technicalDetails"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">technicalDetails</span>, </span><span class="parameter" id="-param-timestamp"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/DateTime-class.html">DateTime</a>?</span> <span class="parameter-name">timestamp</span></span>})</span>
         </dt>
         <dd>
-          
+          Creates a liveness check error info object.
         </dd>
     </dl>
   </section>
@@ -81,7 +89,7 @@
 
 </dt>
 <dd>
-  
+  The type of error that occurred.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -105,7 +113,7 @@
 
 </dt>
 <dd>
-  
+  User-friendly error message.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -129,7 +137,7 @@
 
 </dt>
 <dd>
-  
+  Optional technical details for debugging purposes.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -141,7 +149,7 @@
 
 </dt>
 <dd>
-  
+  Timestamp when the error occurred.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -218,7 +226,7 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_errors/">liveness_check_errors</a></li>
+    <li><a href="../liveness_check_errors">liveness_check_errors</a></li>
     <li class="self-crumb">LivenessCheckErrorInfo class</li>
 </ol>
 
@@ -231,7 +239,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

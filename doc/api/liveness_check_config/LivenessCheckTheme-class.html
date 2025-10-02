@@ -25,21 +25,24 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_config/">liveness_check_config.dart</a></li>
+    <li><a href="../liveness_check_config">liveness_check_config.dart</a></li>
     <li class="self-crumb">LivenessCheckTheme class</li>
   </ol>
   <div class="self-name">LivenessCheckTheme</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -53,6 +56,9 @@
 </h1></div>
 
     
+<section class="desc markdown">
+  <p>Theme configuration for visual customization of the liveness check screen.</p>
+</section>
 
 
 
@@ -60,11 +66,11 @@
   <section class="summary offset-anchor" id="constructors">
     <h2>Constructors</h2>
     <dl class="constructor-summary-list">
-        <dt id="LivenessCheckTheme.new" class="callable">
-          <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/LivenessCheckTheme.html">LivenessCheckTheme.new</a></span><span class="signature">({<span class="parameter" id="-param-backgroundColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">backgroundColor</span> = <span class="default-value">Colors.white</span>, </span><span class="parameter" id="-param-btnRetryBGColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">btnRetryBGColor</span> = <span class="default-value">Colors.blue</span>, </span><span class="parameter" id="-param-btnTextRetryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">btnTextRetryColor</span> = <span class="default-value">Colors.white</span>, </span><span class="parameter" id="-param-primaryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">primaryColor</span> = <span class="default-value">Colors.blue</span>, </span><span class="parameter" id="-param-successColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">successColor</span> = <span class="default-value">Colors.green</span>, </span><span class="parameter" id="-param-errorColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">errorColor</span> = <span class="default-value">Colors.red</span>, </span><span class="parameter" id="-param-warningColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">warningColor</span> = <span class="default-value">Colors.orange</span>, </span><span class="parameter" id="-param-borderColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">borderColor</span> = <span class="default-value">Colors.blue</span>, </span><span class="parameter" id="-param-textColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">textColor</span> = <span class="default-value">Colors.black</span>, </span><span class="parameter" id="-param-overlayColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">overlayColor</span> = <span class="default-value">Colors.white</span>, </span><span class="parameter" id="-param-circleSize"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">circleSize</span> = <span class="default-value">0.65</span>, </span><span class="parameter" id="-param-borderWidth"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">borderWidth</span> = <span class="default-value">4</span>, </span><span class="parameter" id="-param-borderStyle"><span class="type-annotation"><a href="../liveness_check_config/CircleBorderStyle.html">CircleBorderStyle</a></span> <span class="parameter-name">borderStyle</span> = <span class="default-value">CircleBorderStyle.solid</span>, </span><span class="parameter" id="-param-dashLength"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">dashLength</span> = <span class="default-value">8.0</span>, </span><span class="parameter" id="-param-dashGap"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">dashGap</span> = <span class="default-value">8.0</span>, </span><span class="parameter" id="-param-cameraPadding"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">cameraPadding</span> = <span class="default-value">0.0</span>, </span><span class="parameter" id="-param-successAsset"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">successAsset</span>, </span><span class="parameter" id="-param-failAsset"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">failAsset</span>, </span><span class="parameter" id="-param-fontFamily"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">fontFamily</span>, </span><span class="parameter" id="-param-titleTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">titleTextStyle</span>, </span><span class="parameter" id="-param-messageTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">messageTextStyle</span>, </span><span class="parameter" id="-param-errorTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">errorTextStyle</span>, </span><span class="parameter" id="-param-successTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">successTextStyle</span></span>})</span>
+        <dt id="LivenessCheckTheme" class="callable">
+          <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/LivenessCheckTheme.html">LivenessCheckTheme</a></span><span class="signature">({<span class="parameter" id="-param-backgroundColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">backgroundColor</span> = <span class="default-value">Colors.white</span>, </span><span class="parameter" id="-param-btnRetryBGColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">btnRetryBGColor</span> = <span class="default-value">Colors.blue</span>, </span><span class="parameter" id="-param-btnTextRetryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">btnTextRetryColor</span> = <span class="default-value">Colors.white</span>, </span><span class="parameter" id="-param-primaryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">primaryColor</span> = <span class="default-value">Colors.blue</span>, </span><span class="parameter" id="-param-successColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">successColor</span> = <span class="default-value">Colors.green</span>, </span><span class="parameter" id="-param-errorColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">errorColor</span> = <span class="default-value">Colors.red</span>, </span><span class="parameter" id="-param-warningColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">warningColor</span> = <span class="default-value">Colors.orange</span>, </span><span class="parameter" id="-param-borderColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">borderColor</span> = <span class="default-value">Colors.blue</span>, </span><span class="parameter" id="-param-textColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span> <span class="parameter-name">textColor</span> = <span class="default-value">Colors.black</span>, </span><span class="parameter" id="-param-overlayColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">overlayColor</span> = <span class="default-value">Colors.white</span>, </span><span class="parameter" id="-param-circleSize"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">circleSize</span> = <span class="default-value">0.65</span>, </span><span class="parameter" id="-param-borderWidth"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">borderWidth</span> = <span class="default-value">4</span>, </span><span class="parameter" id="-param-borderStyle"><span class="type-annotation"><a href="../liveness_check_config/CircleBorderStyle.html">CircleBorderStyle</a></span> <span class="parameter-name">borderStyle</span> = <span class="default-value">CircleBorderStyle.solid</span>, </span><span class="parameter" id="-param-dashLength"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">dashLength</span> = <span class="default-value">8.0</span>, </span><span class="parameter" id="-param-dashGap"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">dashGap</span> = <span class="default-value">8.0</span>, </span><span class="parameter" id="-param-cameraPadding"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">cameraPadding</span> = <span class="default-value">0.0</span>, </span><span class="parameter" id="-param-successAsset"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">successAsset</span>, </span><span class="parameter" id="-param-failAsset"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">failAsset</span>, </span><span class="parameter" id="-param-fontFamily"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">fontFamily</span>, </span><span class="parameter" id="-param-titleTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">titleTextStyle</span>, </span><span class="parameter" id="-param-messageTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">messageTextStyle</span>, </span><span class="parameter" id="-param-errorTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">errorTextStyle</span>, </span><span class="parameter" id="-param-successTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">successTextStyle</span></span>})</span>
         </dt>
         <dd>
-          
+          Creates a liveness check theme.
             <div class="constructor-modifier features">const</div>
         </dd>
     </dl>
@@ -77,24 +83,24 @@
     <dl class="properties">
         <dt id="backgroundColor" class="property">
   <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/backgroundColor.html">backgroundColor</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span>
   
 
 </dt>
 <dd>
-  
+  Background color of the screen.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
 
         <dt id="borderColor" class="property">
   <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/borderColor.html">borderColor</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span>
   
 
 </dt>
 <dd>
-  
+  Color of the circular border.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -106,7 +112,7 @@
 
 </dt>
 <dd>
-  
+  Style of the circular border (solid or dashed).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -118,31 +124,31 @@
 
 </dt>
 <dd>
-  
+  Width of the circular border.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
 
         <dt id="btnRetryBGColor" class="property">
   <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/btnRetryBGColor.html">btnRetryBGColor</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span>
   
 
 </dt>
 <dd>
-  
+  Background color of the retry button.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
 
         <dt id="btnTextRetryColor" class="property">
   <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/btnTextRetryColor.html">btnTextRetryColor</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span>
   
 
 </dt>
 <dd>
-  
+  Text color of the retry button.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -154,7 +160,7 @@
 
 </dt>
 <dd>
-  
+  Padding between border and camera preview.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -166,7 +172,7 @@
 
 </dt>
 <dd>
-  
+  Size of the circular preview (0.0 to 1.0 of screen width).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -178,7 +184,7 @@
 
 </dt>
 <dd>
-  
+  Gap between dash segments (when using dashed border).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -190,19 +196,19 @@
 
 </dt>
 <dd>
-  
+  Length of each dash segment (when using dashed border).
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
 
         <dt id="errorColor" class="property">
   <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/errorColor.html">errorColor</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span>
   
 
 </dt>
 <dd>
-  
+  Color for error indicators.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -214,7 +220,7 @@
 
 </dt>
 <dd>
-  
+  Text style for error messages.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -226,7 +232,7 @@
 
 </dt>
 <dd>
-  
+  Asset path for failure indicator image.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -238,7 +244,7 @@
 
 </dt>
 <dd>
-  
+  Font family for all text elements.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -262,31 +268,31 @@
 
 </dt>
 <dd>
-  
+  Text style for messages.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
 
         <dt id="overlayColor" class="property">
   <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/overlayColor.html">overlayColor</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span>
   
 
 </dt>
 <dd>
-  
+  Overlay color covering the camera preview.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
 
         <dt id="primaryColor" class="property">
   <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/primaryColor.html">primaryColor</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span>
   
 
 </dt>
 <dd>
-  
+  Primary color for UI elements.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -310,19 +316,19 @@
 
 </dt>
 <dd>
-  
+  Asset path for success indicator image.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
 
         <dt id="successColor" class="property">
   <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/successColor.html">successColor</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span>
   
 
 </dt>
 <dd>
-  
+  Color for success indicators.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -334,19 +340,19 @@
 
 </dt>
 <dd>
-  
+  Text style for success messages.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
 
         <dt id="textColor" class="property">
   <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/textColor.html">textColor</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span>
   
 
 </dt>
 <dd>
-  
+  Default text color.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -358,19 +364,19 @@
 
 </dt>
 <dd>
-  
+  Text style for title.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
 
         <dt id="warningColor" class="property">
   <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/warningColor.html">warningColor</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a></span>
   
 
 </dt>
 <dd>
-  
+  Color for warning indicators.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -385,14 +391,14 @@
     <h2>Methods</h2>
     <dl class="callables">
         <dt id="copyWith" class="callable">
-  <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/copyWith.html">copyWith</a></span><span class="signature">(<wbr>{<span class="parameter" id="copyWith-param-backgroundColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">backgroundColor</span>, </span><span class="parameter" id="copyWith-param-primaryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">primaryColor</span>, </span><span class="parameter" id="copyWith-param-btnRetryBGColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">btnRetryBGColor</span>, </span><span class="parameter" id="copyWith-param-btnTextRetryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">btnTextRetryColor</span>, </span><span class="parameter" id="copyWith-param-successColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">successColor</span>, </span><span class="parameter" id="copyWith-param-errorColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">errorColor</span>, </span><span class="parameter" id="copyWith-param-warningColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">warningColor</span>, </span><span class="parameter" id="copyWith-param-borderColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">borderColor</span>, </span><span class="parameter" id="copyWith-param-textColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">textColor</span>, </span><span class="parameter" id="copyWith-param-overlayColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">overlayColor</span>, </span><span class="parameter" id="copyWith-param-circleSize"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">circleSize</span>, </span><span class="parameter" id="copyWith-param-borderWidth"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">borderWidth</span>, </span><span class="parameter" id="copyWith-param-borderStyle"><span class="type-annotation"><a href="../liveness_check_config/CircleBorderStyle.html">CircleBorderStyle</a>?</span> <span class="parameter-name">borderStyle</span>, </span><span class="parameter" id="copyWith-param-dashLength"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">dashLength</span>, </span><span class="parameter" id="copyWith-param-dashGap"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">dashGap</span>, </span><span class="parameter" id="copyWith-param-cameraPadding"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">cameraPadding</span>, </span><span class="parameter" id="copyWith-param-successAsset"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">successAsset</span>, </span><span class="parameter" id="copyWith-param-failAsset"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">failAsset</span>, </span><span class="parameter" id="copyWith-param-fontFamily"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">fontFamily</span>, </span><span class="parameter" id="copyWith-param-titleTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">titleTextStyle</span>, </span><span class="parameter" id="copyWith-param-messageTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">messageTextStyle</span>, </span><span class="parameter" id="copyWith-param-errorTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">errorTextStyle</span>, </span><span class="parameter" id="copyWith-param-successTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">successTextStyle</span></span>})
+  <span class="name"><a href="../liveness_check_config/LivenessCheckTheme/copyWith.html">copyWith</a></span><span class="signature">(<wbr>{<span class="parameter" id="copyWith-param-backgroundColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">backgroundColor</span>, </span><span class="parameter" id="copyWith-param-primaryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">primaryColor</span>, </span><span class="parameter" id="copyWith-param-btnRetryBGColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">btnRetryBGColor</span>, </span><span class="parameter" id="copyWith-param-btnTextRetryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">btnTextRetryColor</span>, </span><span class="parameter" id="copyWith-param-successColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">successColor</span>, </span><span class="parameter" id="copyWith-param-errorColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">errorColor</span>, </span><span class="parameter" id="copyWith-param-warningColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">warningColor</span>, </span><span class="parameter" id="copyWith-param-borderColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">borderColor</span>, </span><span class="parameter" id="copyWith-param-textColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">textColor</span>, </span><span class="parameter" id="copyWith-param-overlayColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">overlayColor</span>, </span><span class="parameter" id="copyWith-param-circleSize"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">circleSize</span>, </span><span class="parameter" id="copyWith-param-borderWidth"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">borderWidth</span>, </span><span class="parameter" id="copyWith-param-borderStyle"><span class="type-annotation"><a href="../liveness_check_config/CircleBorderStyle.html">CircleBorderStyle</a>?</span> <span class="parameter-name">borderStyle</span>, </span><span class="parameter" id="copyWith-param-dashLength"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">dashLength</span>, </span><span class="parameter" id="copyWith-param-dashGap"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">dashGap</span>, </span><span class="parameter" id="copyWith-param-cameraPadding"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">cameraPadding</span>, </span><span class="parameter" id="copyWith-param-successAsset"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">successAsset</span>, </span><span class="parameter" id="copyWith-param-failAsset"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">failAsset</span>, </span><span class="parameter" id="copyWith-param-fontFamily"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">fontFamily</span>, </span><span class="parameter" id="copyWith-param-titleTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">titleTextStyle</span>, </span><span class="parameter" id="copyWith-param-messageTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">messageTextStyle</span>, </span><span class="parameter" id="copyWith-param-errorTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">errorTextStyle</span>, </span><span class="parameter" id="copyWith-param-successTextStyle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/TextStyle-class.html">TextStyle</a>?</span> <span class="parameter-name">successTextStyle</span></span>})
     <span class="returntype parameter">&#8594; <a href="../liveness_check_config/LivenessCheckTheme-class.html">LivenessCheckTheme</a></span>
   </span>
   
 
 </dt>
 <dd>
-  
+  Creates a copy of this theme with the given fields replaced.
   
 
 </dd>
@@ -460,7 +466,7 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_config/">liveness_check_config</a></li>
+    <li><a href="../liveness_check_config">liveness_check_config</a></li>
     <li class="self-crumb">LivenessCheckTheme class</li>
 </ol>
 
@@ -473,7 +479,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

@@ -25,21 +25,24 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_errors/">liveness_check_errors.dart</a></li>
+    <li><a href="../liveness_check_errors">liveness_check_errors.dart</a></li>
     <li class="self-crumb">LivenessCheckErrorExtension extension</li>
   </ol>
   <div class="self-name">LivenessCheckErrorExtension</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -53,6 +56,9 @@
 </h1></div>
 
     
+<section class="desc markdown">
+  <p>Extension methods for <a href="../liveness_check_errors/LivenessCheckError.html">LivenessCheckError</a> enum.</p>
+</section>
 
     <section>
       <dl class="dl-horizontal">
@@ -87,7 +93,7 @@
         <span>Available on <a href="../liveness_check_errors/LivenessCheckError.html">LivenessCheckError</a>,
         provided by the <a href="../liveness_check_errors/LivenessCheckErrorExtension.html">LivenessCheckErrorExtension</a> extension</span>
       </p>
-  
+  Returns a custom error message from the provided <code>messages</code> configuration.
   
 
 </dd>
@@ -104,7 +110,7 @@
         <span>Available on <a href="../liveness_check_errors/LivenessCheckError.html">LivenessCheckError</a>,
         provided by the <a href="../liveness_check_errors/LivenessCheckErrorExtension.html">LivenessCheckErrorExtension</a> extension</span>
       </p>
-  
+  Returns the default error message for this error type.
   
 
 </dd>
@@ -126,7 +132,7 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../index.html">flutter_liveness_check</a></li>
-    <li><a href="../liveness_check_errors/">liveness_check_errors</a></li>
+    <li><a href="../liveness_check_errors">liveness_check_errors</a></li>
     <li class="self-crumb">LivenessCheckErrorExtension extension</li>
 </ol>
 
@@ -139,7 +145,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>

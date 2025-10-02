@@ -3,22 +3,41 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
+/// A utility class for detecting image quality issues in liveness checks.
+///
+/// This class provides methods to analyze camera images for:
+/// - Blur detection using Laplacian variance and face landmarks
+/// - Lighting quality analysis including brightness and contrast
+/// - Face size and stability checks
 class EnhancedQualityDetector {
-  // Much more lenient quality thresholds
-  static const double _blurThreshold = 20.0; // Much lower threshold (was 50)
-  static const double _minBrightness = 100.0; // More lenient (was 30)
-  static const double _maxBrightness = 250.0; // More lenient (was 240)
-  // More lenient (was 15)
-  static const int _minFaceSize = 3000; // Much smaller requirement (was 5000)
-  static const double _maxOverexposureRatio =
-      0.4; // Much more lenient (was 0.25)
-  static const double _maxUnderexposureRatio =
-      0.4; // Much more lenient (was 0.25)
+  // Quality detection thresholds
+  /// Threshold for blur detection using Laplacian variance.
+  static const double _blurThreshold = 20.0;
 
-  // New: Consecutive frame requirements
-  // Need 8 bad frames before marking as blur
+  /// Minimum acceptable brightness level.
+  static const double _minBrightness = 100.0;
 
-  /// Enhanced blur detection with much more forgiving logic
+  /// Maximum acceptable brightness level.
+  static const double _maxBrightness = 250.0;
+
+  /// Minimum required face size in pixels.
+  static const int _minFaceSize = 3000;
+
+  /// Maximum ratio of overexposed pixels allowed.
+  static const double _maxOverexposureRatio = 0.4;
+
+  /// Maximum ratio of underexposed pixels allowed.
+  static const double _maxUnderexposureRatio = 0.4;
+
+  /// Detects blur in camera images using multiple quality metrics.
+  ///
+  /// Analyzes the [cameraImage] focusing on the detected [face] region.
+  /// Returns a [BlurDetectionResult] with detailed quality information.
+  ///
+  /// The detection uses:
+  /// - Face size analysis
+  /// - Landmark stability check
+  /// - Laplacian variance calculation (optional based on image format)
   static BlurDetectionResult detectBlur(
     CameraImage cameraImage,
     Face face, {
@@ -93,7 +112,16 @@ class EnhancedQualityDetector {
     }
   }
 
-  /// Much more lenient lighting detection
+  /// Detects lighting quality in camera images.
+  ///
+  /// Analyzes the [cameraImage] focusing on the detected [face] region.
+  /// Returns a [LightingDetectionResult] with lighting metrics and issues.
+  ///
+  /// The detection analyzes:
+  /// - Average brightness
+  /// - Contrast levels
+  /// - Overexposure and underexposure ratios
+  /// - Specific lighting issues (too bright, too dark, etc.)
   static LightingDetectionResult detectLighting(
     CameraImage cameraImage,
     Face face,
@@ -345,13 +373,32 @@ class EnhancedQualityDetector {
   }
 }
 
-/// Enhanced result classes with debug info
+/// Result class containing blur detection analysis.
+///
+/// Provides comprehensive information about image blur including:
+/// - Whether the image is considered blurry
+/// - Face area measurement
+/// - Laplacian variance (sharpness metric)
+/// - Landmark stability status
+/// - Confidence score
+/// - Debug information
 class BlurDetectionResult {
+  /// Whether the image is considered blurry.
   final bool isBlurry;
+
+  /// Area of the detected face in pixels.
   final double faceArea;
+
+  /// Laplacian variance value (higher = sharper).
   final double laplacianVariance;
+
+  /// Whether face landmarks are stable and detectable.
   final bool landmarkStability;
+
+  /// Confidence score of the blur detection (0.0 - 1.0).
   final double confidence;
+
+  /// Additional debug information.
   final BlurDebugInfo debugInfo;
 
   BlurDetectionResult({
@@ -371,11 +418,20 @@ class BlurDetectionResult {
   }
 }
 
+/// Debug information for blur detection analysis.
+///
+/// Contains additional details used in blur detection logic.
 class BlurDebugInfo {
+  /// Whether the detected face is smaller than the minimum threshold.
   final bool isSmallFace;
+
+  /// Number of quality conditions that failed.
   final int badConditions;
+
+  /// Whether Laplacian variance check was skipped.
   final bool skipLaplacianCheck;
 
+  /// Creates blur debug information.
   BlurDebugInfo({
     required this.isSmallFace,
     required this.badConditions,
@@ -388,14 +444,30 @@ class BlurDebugInfo {
   }
 }
 
+/// Result class containing lighting quality analysis.
+///
+/// Provides detailed information about lighting conditions including
+/// brightness, contrast, exposure ratios, and identified issues.
 class LightingDetectionResult {
+  /// Whether the lighting conditions are acceptable.
   final bool isGoodLighting;
+
+  /// Average brightness level (0-255).
   final double avgBrightness;
+
+  /// Contrast level calculated from standard deviation.
   final double contrast;
+
+  /// Ratio of overexposed pixels (0.0 - 1.0).
   final double overexposureRatio;
+
+  /// Ratio of underexposed pixels (0.0 - 1.0).
   final double underexposureRatio;
+
+  /// Specific lighting issue detected, if any.
   final LightingIssue? issue;
 
+  /// Creates a lighting detection result.
   LightingDetectionResult({
     required this.isGoodLighting,
     required this.avgBrightness,
@@ -405,6 +477,7 @@ class LightingDetectionResult {
     this.issue,
   });
 
+  /// Returns a user-friendly description of the lighting issue.
   String get issueDescription {
     switch (issue) {
       case LightingIssue.tooBright:
@@ -431,11 +504,23 @@ class LightingDetectionResult {
   }
 }
 
+/// Enumeration of possible lighting issues.
 enum LightingIssue {
+  /// Lighting is too bright overall.
   tooBright,
+
+  /// Lighting is too warm/dark.
   tooWarm,
+
+  /// Contrast is too low.
   lowContrast,
+
+  /// Image has overexposed areas.
   overexposed,
+
+  /// Image has underexposed areas.
   underexposed,
+
+  /// Error occurred during extraction.
   extractionError,
 }

@@ -25,7 +25,7 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">flutter_liveness_check</a></li>
-    <li><a href="../../enhence_light_checker/">enhence_light_checker.dart</a></li>
+    <li><a href="../../enhence_light_checker">enhence_light_checker.dart</a></li>
     <li><a href="../../enhence_light_checker/EnhancedQualityDetector-class.html">EnhancedQualityDetector</a></li>
     <li class="self-crumb">detectLighting static method</li>
   </ol>
@@ -33,14 +33,17 @@
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
-    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      dark_mode
-    </span>
-    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
-      light_mode
-    </span>
-  </button>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
 <main>
 <div
@@ -55,8 +58,8 @@
     <section class="multi-line-signature">
       
 <span class="returntype"><a href="../../enhence_light_checker/LightingDetectionResult-class.html">LightingDetectionResult</a></span>
-<span class="name ">detectLighting</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="detectLighting-param-cameraImage"><span class="type-annotation"><a href="https://pub.dev/documentation/camera/0.11.2/camera/CameraImage-class.html">CameraImage</a></span> <span class="parameter-name">cameraImage</span>, </span></li>
-<li><span class="parameter" id="detectLighting-param-face"><span class="type-annotation"><a href="https://pub.dev/documentation/google_mlkit_face_detection/0.13.1/google_mlkit_face_detection/Face-class.html">Face</a></span> <span class="parameter-name">face</span></span></li>
+<span class="name ">detectLighting</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="detectLighting-param-cameraImage"><span class="type-annotation"><a href="https://pub.dev/documentation/camera/0.10.6/camera/CameraImage-class.html">CameraImage</a></span> <span class="parameter-name">cameraImage</span>, </span></li>
+<li><span class="parameter" id="detectLighting-param-face"><span class="type-annotation"><a href="https://pub.dev/documentation/google_mlkit_face_detection/0.10.1/google_mlkit_face_detection/Face-class.html">Face</a></span> <span class="parameter-name">face</span></span></li>
 </ol>)
 
       
@@ -64,7 +67,16 @@
     </section>
     
 <section class="desc markdown">
-  <p>Much more lenient lighting detection</p>
+  <p>Detects lighting quality in camera images.</p>
+<p>Analyzes the <code>cameraImage</code> focusing on the detected <code>face</code> region.
+Returns a <a href="../../enhence_light_checker/LightingDetectionResult-class.html">LightingDetectionResult</a> with lighting metrics and issues.</p>
+<p>The detection analyzes:</p>
+<ul>
+<li>Average brightness</li>
+<li>Contrast levels</li>
+<li>Overexposure and underexposure ratios</li>
+<li>Specific lighting issues (too bright, too dark, etc.)</li>
+</ul>
 </section>
 
 
@@ -154,7 +166,7 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">flutter_liveness_check</a></li>
-    <li><a href="../../enhence_light_checker/">enhence_light_checker</a></li>
+    <li><a href="../../enhence_light_checker">enhence_light_checker</a></li>
     <li><a href="../../enhence_light_checker/EnhancedQualityDetector-class.html">EnhancedQualityDetector</a></li>
     <li class="self-crumb">detectLighting static method</li>
 </ol>
@@ -168,7 +180,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.1
+      1.0.5
   </span>
   
 </footer>
