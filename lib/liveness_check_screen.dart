@@ -194,12 +194,43 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   ///
   /// This method:
   /// - Requests camera permission from the user
+  /// - Handles permission denied cases with option to open settings
   /// - Finds and configures the front-facing camera
   /// - Sets up camera controller with NV21 format for better ML Kit compatibility
   /// - Starts the image stream for real-time face detection
   Future<void> _initializeCamera() async {
     final status = await Permission.camera.request();
     if (status != PermissionStatus.granted) {
+      // Check if permission is permanently denied
+      if (status == PermissionStatus.permanentlyDenied) {
+        // Show dialog to navigate to settings
+        if (mounted) {
+          final permissionConfig = widget.config.messages.permissionDialogConfig;
+          final shouldOpenSettings = await showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+              title: Text(permissionConfig.title),
+              content: Text(permissionConfig.message),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text(permissionConfig.cancelButtonText),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: Text(permissionConfig.settingsButtonText),
+                ),
+              ],
+            ),
+          );
+
+          if (shouldOpenSettings == true) {
+            // Open app settings
+            await openAppSettings();
+          }
+        }
+      }
       _handleError(LivenessCheckError.cameraPermissionDenied);
       return;
     }
@@ -215,10 +246,10 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
         frontCamera,
         widget.config.cameraSettings?.resolutionPreset ?? ResolutionPreset.high,
         enableAudio: widget.config.cameraSettings?.enableAudio ?? false,
-        imageFormatGroup:
-            widget.config.cameraSettings?.enableAudio ?? Platform.isAndroid
+        imageFormatGroup: widget.config.cameraSettings?.imageFormatGroup ??
+            (Platform.isAndroid
                 ? ImageFormatGroup.nv21
-                : ImageFormatGroup.bgra8888,
+                : ImageFormatGroup.bgra8888),
       );
 
       await _cameraController!.initialize();

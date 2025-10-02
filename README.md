@@ -71,6 +71,23 @@ Add the following to your `ios/Runner/Info.plist`:
 <string>This app needs camera access for liveness verification</string>
 ```
 
+Add the following to your Podfile:
+```ruby
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      # You can remove unused permissions here
+      # e.g. when you don't need camera permission, just add 'PERMISSION_CAMERA=0'
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+        ## dart: PermissionGroup.camera
+        'PERMISSION_CAMERA=1',
+      ]
+    end
+  end
+end
+```
 ## 📱 Platform Support
 
 - **iOS**: 10.0+ with Metal support
@@ -337,6 +354,27 @@ LivenessCheckMessages(
   // UI Text
   tryAgainButtonText: 'Try Again',
   takingPhoto: 'Taking photo...',
+
+  // Permission Dialog Configuration
+  permissionDialogConfig: PermissionDialogConfig(
+    title: 'Camera Permission Required',
+    message: 'Camera permission is required for liveness check. Please enable it in settings.',
+    cancelButtonText: 'Cancel',
+    settingsButtonText: 'Open Settings',
+  ),
+)
+```
+
+### PermissionDialogConfig - Permission Dialog Customization
+
+When camera permission is permanently denied, a dialog will be shown to guide users to settings. Customize this dialog:
+
+```dart
+PermissionDialogConfig(
+  title: 'Camera Access Needed',
+  message: 'To verify your identity, we need access to your camera. Please enable it in your device settings.',
+  cancelButtonText: 'Not Now',
+  settingsButtonText: 'Go to Settings',
 )
 ```
 
@@ -515,6 +553,23 @@ LivenessCheckScreen(
             _showGenericError(message);
         }
       },
+    ),
+  ),
+)
+```
+
+### 6. Custom Permission Dialog
+
+```dart
+LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    messages: LivenessCheckMessages(
+      permissionDialogConfig: PermissionDialogConfig(
+        title: 'Camera Access Required',
+        message: 'We need camera access to verify your identity. Please grant permission in your device settings.',
+        cancelButtonText: 'Not Now',
+        settingsButtonText: 'Open Settings',
+      ),
     ),
   ),
 )

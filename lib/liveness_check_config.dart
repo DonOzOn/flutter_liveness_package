@@ -208,6 +208,7 @@ class LivenessCheckMessages {
   final String cameraPermissionDenied;
   final String failedToInitializeCamera;
   final String tryAgainButtonText;
+  final PermissionDialogConfig permissionDialogConfig;
 
   const LivenessCheckMessages({
     this.title = 'Liveness Check',
@@ -226,6 +227,21 @@ class LivenessCheckMessages {
     this.cameraPermissionDenied = 'Camera permission denied',
     this.failedToInitializeCamera = 'Failed to initialize camera',
     this.tryAgainButtonText = 'Try Again',
+    this.permissionDialogConfig = const PermissionDialogConfig(),
+  });
+}
+
+class PermissionDialogConfig {
+  final String title;
+  final String message;
+  final String cancelButtonText;
+  final String settingsButtonText;
+
+  const PermissionDialogConfig({
+    this.title = 'Camera Permission Required',
+    this.message = 'Camera permission is required for liveness check. Please enable it in settings.',
+    this.cancelButtonText = 'Cancel',
+    this.settingsButtonText = 'Open Settings',
   });
 }
 
