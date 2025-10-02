@@ -217,8 +217,8 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
         enableAudio: widget.config.cameraSettings?.enableAudio ?? false,
         imageFormatGroup:
             widget.config.cameraSettings?.enableAudio ?? Platform.isAndroid
-            ? ImageFormatGroup.nv21
-            : ImageFormatGroup.bgra8888,
+                ? ImageFormatGroup.nv21
+                : ImageFormatGroup.bgra8888,
       );
 
       await _cameraController!.initialize();
@@ -563,10 +563,9 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     if (mouthBottom != null && mouthLeft != null && mouthRight != null) {
       // Calculate mouth width and height approximation
       final mouthWidth = (mouthRight.position.x - mouthLeft.position.x).abs();
-      final mouthHeight =
-          (mouthBottom.position.y -
-                  ((mouthLeft.position.y + mouthRight.position.y) / 2))
-              .abs();
+      final mouthHeight = (mouthBottom.position.y -
+              ((mouthLeft.position.y + mouthRight.position.y) / 2))
+          .abs();
 
       // Mouth should be relatively wide and open (showing teeth)
       final mouthRatio = mouthHeight / mouthWidth;
@@ -714,9 +713,8 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
       body: Column(
         children: [
           Expanded(
-            child: _isCameraInitialized
-                ? _buildCameraView()
-                : _buildLoadingView(),
+            child:
+                _isCameraInitialized ? _buildCameraView() : _buildLoadingView(),
           ),
           if (widget.config.customBottomWidget != null &&
               !widget.config.settings.showTryAgainButton)
@@ -732,8 +730,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     return AppBar(
       title: Text(
         appBarConfig.title ?? widget.config.messages.title,
-        style:
-            appBarConfig.titleStyle ??
+        style: appBarConfig.titleStyle ??
             widget.config.theme.titleTextStyle ??
             TextStyle(
               color: widget.config.theme.textColor,
@@ -747,20 +744,19 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
       centerTitle: appBarConfig.centerTitle,
       automaticallyImplyLeading:
           appBarConfig.automaticallyImplyLeading && appBarConfig.showBackButton,
-      leading:
-          (appBarConfig.automaticallyImplyLeading &&
+      leading: (appBarConfig.automaticallyImplyLeading &&
               appBarConfig.showBackButton)
           ? (appBarConfig.customBackIcon ??
-                IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: widget.config.theme.textColor,
-                  ),
-                  onPressed: () {
-                    widget.config.callbacks?.onCancel?.call();
-                    Navigator.of(context).pop();
-                  },
-                ))
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: widget.config.theme.textColor,
+                ),
+                onPressed: () {
+                  widget.config.callbacks?.onCancel?.call();
+                  Navigator.of(context).pop();
+                },
+              ))
           : null,
     );
   }
@@ -959,8 +955,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
                 Text(
                   widget.config.placeholder ?? '',
                   textAlign: TextAlign.center,
-                  style:
-                      widget.config.theme.messageTextStyle ??
+                  style: widget.config.theme.messageTextStyle ??
                       TextStyle(
                         fontSize: 16,
                         color: widget.config.theme.primaryColor,
@@ -975,8 +970,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
         // Processing indicator
         if (widget.config.showLoading)
           Positioned.fill(
-            child:
-                widget.config.customLoadingWidget ??
+            child: widget.config.customLoadingWidget ??
                 Container(
                   color: Colors.black.withValues(alpha: 0.5),
                   child: Center(
