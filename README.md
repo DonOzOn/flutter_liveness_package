@@ -158,6 +158,71 @@ class _MyLivenessCheckState extends State<MyLivenessCheck> {
 }
 ```
 
+## 🎮 Manual Camera Control
+
+Use `LivenessCheckController` for advanced camera lifecycle management:
+
+```dart
+final controller = LivenessCheckController();
+
+// Add controller to LivenessCheckScreen
+LivenessCheckScreen(
+  controller: controller,
+  config: LivenessCheckConfig(...),
+)
+
+// Manual control methods
+await controller.initializeCamera();  // Start camera + face detector
+await controller.disposeCamera();     // Stop camera and release resources
+controller.resetState();              // Reset blink count and smile status
+
+// Monitor status
+print(controller.isInitialized);  // Check if camera is ready
+
+// Listen to changes
+controller.addListener(() {
+  print('Camera status: ${controller.isInitialized}');
+});
+```
+
+### App Lifecycle Management Example
+
+```dart
+class _MyScreenState extends State<MyScreen> with WidgetsBindingObserver {
+  final controller = LivenessCheckController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      controller.disposeCamera(); // Save battery
+    } else if (state == AppLifecycleState.resumed) {
+      controller.initializeCamera(); // Restart camera
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LivenessCheckScreen(
+      controller: controller,
+      config: LivenessCheckConfig(...),
+    );
+  }
+}
+```
+
 ## 📖 Complete Configuration Reference
 
 ### LivenessCheckConfig
@@ -241,9 +306,12 @@ LivenessCheckTheme(
   dashLength: 10.0,
   dashGap: 6.0,
 
-  // Button Colors
+  // Try Again Button Styling
   btnRetryBGColor: Colors.blue,
   btnTextRetryColor: Colors.white,
+  btnRetryHeight: 44.0,              // Button height (default: 44)
+  btnRetryPadding: EdgeInsets.symmetric(vertical: 16),
+  btnRetryBorderRadius: 8.0,         // Border radius
 
   // Typography
   fontFamily: 'CustomFont',
@@ -526,20 +594,45 @@ LivenessCheckScreen(
 )
 ```
 
-### 5. Custom Loading & Error Handling
+### 5. Custom Loading Widgets
 
 ```dart
 LivenessCheckScreen(
   config: LivenessCheckConfig(
-    showLoading: _isProcessing,
-    customLoadingWidget: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CircularProgressIndicator(color: Colors.purple),
-        const SizedBox(height: 16),
-        const Text('Processing verification...'),
-      ],
+    // Custom camera initialization loading (shown while camera starts)
+    customCameraLoadingWidget: Container(
+      color: Colors.white,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(color: Colors.purple),
+            const SizedBox(height: 16),
+            const Text('Initializing camera...'),
+          ],
+        ),
+      ),
     ),
+
+    // Custom processing overlay (shown during verification)
+    showLoading: _isProcessing,
+    customLoadingWidget: Container(
+      color: Colors.black87,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(color: Colors.purple),
+            const SizedBox(height: 16),
+            const Text(
+              'Processing verification...',
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    ),
+
     callbacks: LivenessCheckCallbacks(
       onErrorWithType: (errorType, message) {
         switch (errorType) {

@@ -46,8 +46,11 @@ class LivenessCheckConfig {
   /// Whether to show a loading overlay.
   final bool showLoading;
 
-  /// Custom loading widget to replace the default spinner.
+  /// Custom loading widget to replace the default overlay spinner.
   final Widget? customLoadingWidget;
+
+  /// Custom widget to replace the default camera initialization loading view.
+  final Widget? customCameraLoadingWidget;
 
   /// AppBar configuration.
   final AppBarConfig appBarConfig;
@@ -64,6 +67,7 @@ class LivenessCheckConfig {
     this.status = LivenessStatus.init,
     this.showLoading = false,
     this.customLoadingWidget,
+    this.customCameraLoadingWidget,
     this.appBarConfig = const AppBarConfig(),
   });
 }
@@ -218,11 +222,23 @@ class LivenessCheckTheme {
   /// Text style for success messages.
   final TextStyle? successTextStyle;
 
+  /// Try again button height.
+  final double? btnRetryHeight;
+
+  /// Try again button padding.
+  final EdgeInsets? btnRetryPadding;
+
+  /// Try again button border radius.
+  final double? btnRetryBorderRadius;
+
   /// Creates a liveness check theme.
   const LivenessCheckTheme({
     this.backgroundColor = Colors.white,
     this.btnRetryBGColor = Colors.blue,
     this.btnTextRetryColor = Colors.white,
+    this.btnRetryHeight,
+    this.btnRetryPadding,
+    this.btnRetryBorderRadius,
     this.primaryColor = Colors.blue,
     this.successColor = Colors.green,
     this.errorColor = Colors.red,
@@ -251,6 +267,9 @@ class LivenessCheckTheme {
     Color? primaryColor,
     Color? btnRetryBGColor,
     Color? btnTextRetryColor,
+    double? btnRetryHeight,
+    EdgeInsets? btnRetryPadding,
+    double? btnRetryBorderRadius,
     Color? successColor,
     Color? errorColor,
     Color? warningColor,
@@ -278,6 +297,9 @@ class LivenessCheckTheme {
       errorColor: errorColor ?? this.errorColor,
       btnRetryBGColor: btnRetryBGColor ?? this.btnRetryBGColor,
       btnTextRetryColor: btnTextRetryColor ?? this.btnTextRetryColor,
+      btnRetryHeight: btnRetryHeight ?? this.btnRetryHeight,
+      btnRetryPadding: btnRetryPadding ?? this.btnRetryPadding,
+      btnRetryBorderRadius: btnRetryBorderRadius ?? this.btnRetryBorderRadius,
       warningColor: warningColor ?? this.warningColor,
       borderColor: borderColor ?? this.borderColor,
       textColor: textColor ?? this.textColor,

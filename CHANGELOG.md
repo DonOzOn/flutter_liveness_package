@@ -1,6 +1,8 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.0.6] - 2025-10-21
+add controller to init and dispose camera and face detect, add button retry custom style
 ## [1.0.5] - 2025-10-02
 fix show camera on IOS , add guide to config permission handler in ReadMe
 
