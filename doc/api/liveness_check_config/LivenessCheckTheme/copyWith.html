@@ -62,6 +62,9 @@
 <li><span class="parameter" id="copyWith-param-primaryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">primaryColor</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-btnRetryBGColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">btnRetryBGColor</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-btnTextRetryColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">btnTextRetryColor</span>, </span></li>
+<li><span class="parameter" id="copyWith-param-btnRetryHeight"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">btnRetryHeight</span>, </span></li>
+<li><span class="parameter" id="copyWith-param-btnRetryPadding"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/EdgeInsets-class.html">EdgeInsets</a>?</span> <span class="parameter-name">btnRetryPadding</span>, </span></li>
+<li><span class="parameter" id="copyWith-param-btnRetryBorderRadius"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">btnRetryBorderRadius</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-successColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">successColor</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-errorColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">errorColor</span>, </span></li>
 <li><span class="parameter" id="copyWith-param-warningColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Color-class.html">Color</a>?</span> <span class="parameter-name">warningColor</span>, </span></li>
@@ -100,6 +103,9 @@
   Color? primaryColor,
   Color? btnRetryBGColor,
   Color? btnTextRetryColor,
+  double? btnRetryHeight,
+  EdgeInsets? btnRetryPadding,
+  double? btnRetryBorderRadius,
   Color? successColor,
   Color? errorColor,
   Color? warningColor,
@@ -127,6 +133,9 @@
     errorColor: errorColor ?? this.errorColor,
     btnRetryBGColor: btnRetryBGColor ?? this.btnRetryBGColor,
     btnTextRetryColor: btnTextRetryColor ?? this.btnTextRetryColor,
+    btnRetryHeight: btnRetryHeight ?? this.btnRetryHeight,
+    btnRetryPadding: btnRetryPadding ?? this.btnRetryPadding,
+    btnRetryBorderRadius: btnRetryBorderRadius ?? this.btnRetryBorderRadius,
     warningColor: warningColor ?? this.warningColor,
     borderColor: borderColor ?? this.borderColor,
     textColor: textColor ?? this.textColor,
@@ -173,7 +182,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.5
+      1.0.6
   </span>
   
 </footer>

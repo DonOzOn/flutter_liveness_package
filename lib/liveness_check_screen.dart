@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_liveness_check/enhence_light_checker.dart';
 import 'package:flutter_liveness_check/liveness_check_config.dart';
+import 'package:flutter_liveness_check/liveness_check_controller.dart';
 import 'package:flutter_liveness_check/liveness_check_errors.dart';
 import 'package:flutter_liveness_check/widget/dashed_circle_painter.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -32,11 +33,16 @@ import 'package:permission_handler/permission_handler.dart';
 /// );
 /// ```
 class LivenessCheckScreen extends StatefulWidget {
+  /// Configuration for the liveness check screen.
   final LivenessCheckConfig config;
+
+  /// Optional controller for manual camera control.
+  final LivenessCheckController? controller;
 
   const LivenessCheckScreen({
     super.key,
     this.config = const LivenessCheckConfig(),
+    this.controller,
   });
 
   @override
@@ -55,6 +61,9 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
   /// Tracks camera initialization status
   bool _isCameraInitialized = false;
+
+  /// Tracks if camera is being disposed
+  bool _isDisposing = false;
 
   // Liveness check state
   /// Current number of detected eye blinks
@@ -97,6 +106,15 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   void initState() {
     super.initState();
     _borderColor = widget.config.theme.borderColor;
+
+    // Register controller callbacks
+    widget.controller?.registerInitializeCallback(() {
+      _initializeCamera();
+      _initializeFaceDetector();
+    });
+    widget.controller?.registerDisposeCallback(_disposeCamera);
+    widget.controller?.registerResetCallback(_resetLivenessState);
+
     _initializeCamera();
     _initializeFaceDetector();
   }
@@ -135,16 +153,52 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
   Future<void> _disposeCamera() async {
     if (_cameraController != null) {
-      // Stop image stream if still running
-      if (_cameraController!.value.isStreamingImages) {
-        await _cameraController!.stopImageStream();
+      // Set disposing flag first to stop any rebuilds
+      if (mounted) {
+        setState(() {
+          _isDisposing = true;
+          _isCameraInitialized = false;
+        });
       }
-      // Dispose camera controller
-      await _cameraController!.dispose();
+
+      try {
+        // Stop image stream if still running
+        if (_cameraController!.value.isStreamingImages) {
+          await _cameraController!.stopImageStream();
+        }
+      } catch (e) {
+        debugPrint('Error stopping image stream: $e');
+      }
+
+      // Small delay to ensure no pending frame processing
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      try {
+        // Dispose camera controller
+        await _cameraController!.dispose();
+      } catch (e) {
+        debugPrint('Error disposing camera: $e');
+      }
+
       _cameraController = null;
+
+      // Notify controller
+      widget.controller?.setInitialized(false);
     }
+
     // Close MLKit detector
-    _faceDetector?.close();
+    try {
+      _faceDetector?.close();
+    } catch (e) {
+      debugPrint('Error closing face detector: $e');
+    }
+
+    // Reset disposing flag
+    if (mounted) {
+      setState(() {
+        _isDisposing = false;
+      });
+    }
   }
 
   void _onTryAgain() {
@@ -205,7 +259,8 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
       if (status == PermissionStatus.permanentlyDenied) {
         // Show dialog to navigate to settings
         if (mounted) {
-          final permissionConfig = widget.config.messages.permissionDialogConfig;
+          final permissionConfig =
+              widget.config.messages.permissionDialogConfig;
           final shouldOpenSettings = await showDialog<bool>(
             context: context,
             barrierDismissible: false,
@@ -258,6 +313,9 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
         _isCameraInitialized = true;
       });
 
+      // Notify controller
+      widget.controller?.setInitialized(true);
+
       _cameraController!.startImageStream(_processCameraImage);
     } catch (e) {
       _handleError(LivenessCheckError.cameraInitializationFailed, e.toString());
@@ -295,7 +353,12 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   ///
   /// [image] The camera frame to process
   Future<void> _processCameraImage(CameraImage image) async {
-    if (_isDetecting || !_isCameraInitialized || _livenessCompleted) return;
+    if (_isDetecting ||
+        !_isCameraInitialized ||
+        _livenessCompleted ||
+        _isDisposing) {
+      return;
+    }
 
     _isDetecting = true;
     _currentCameraImage = image; // Store current image
@@ -738,15 +801,28 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Determine which view to show based on status
+    Widget bodyContent;
+
+    if (widget.config.status == LivenessStatus.init) {
+      // For init status, check if camera is ready
+      final isCameraReady = !_isDisposing &&
+          _isCameraInitialized &&
+          _cameraController != null &&
+          _cameraController!.value.isInitialized;
+
+      bodyContent = isCameraReady ? _buildCameraView() : _buildLoadingView();
+    } else {
+      // For success/fail status, always show the camera view (it shows icons)
+      bodyContent = _buildCameraView();
+    }
+
     return Scaffold(
       backgroundColor: widget.config.theme.backgroundColor,
       appBar: _buildCustomAppBar(),
       body: Column(
         children: [
-          Expanded(
-            child:
-                _isCameraInitialized ? _buildCameraView() : _buildLoadingView(),
-          ),
+          Expanded(child: bodyContent),
           if (widget.config.customBottomWidget != null &&
               !widget.config.settings.showTryAgainButton)
             widget.config.customBottomWidget!,
@@ -793,12 +869,13 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   }
 
   Widget _buildLoadingView() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [const CircularProgressIndicator()],
-      ),
-    );
+    // Use custom loading widget if provided
+    if (widget.config.customCameraLoadingWidget != null) {
+      return widget.config.customCameraLoadingWidget!;
+    }
+
+    // Default loading view
+    return SizedBox();
   }
 
   TextStyle _getMessageTextStyle() {
@@ -859,8 +936,10 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
       case LivenessStatus.init:
         // For init status, show camera preview
-        if (_cameraController != null &&
-            _cameraController!.value.isInitialized) {
+        if (!_isDisposing &&
+            _cameraController != null &&
+            _cameraController!.value.isInitialized &&
+            !_cameraController!.value.isPreviewPaused) {
           innerContent = OverflowBox(
             alignment: Alignment.center,
             child: FittedBox(
@@ -950,9 +1029,11 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     return Stack(
       children: [
         // Camera preview (only for init status)
-        if (widget.config.status == LivenessStatus.init &&
+        if (!_isDisposing &&
+            widget.config.status == LivenessStatus.init &&
             _cameraController != null &&
-            _cameraController!.value.isInitialized)
+            _cameraController!.value.isInitialized &&
+            !_cameraController!.value.isPreviewPaused)
           Positioned.fill(child: CameraPreview(_cameraController!)),
 
         // White overlay with circular cutout
@@ -1022,22 +1103,35 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
             bottom: 50,
             left: 20,
             right: 20,
-            child: ElevatedButton(
-              onPressed: _onTryAgain,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: widget.config.theme.btnRetryBGColor,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+            child: SizedBox(
+              height: widget.config.theme.btnRetryHeight,
+              child: ElevatedButton(
+                onPressed: _onTryAgain,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: widget.config.theme.btnRetryBGColor,
+                  foregroundColor: widget.config.theme.btnTextRetryColor,
+                  padding: widget.config.theme.btnRetryPadding ??
+                      const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                  minimumSize: widget.config.theme.btnRetryHeight != null
+                      ? Size.fromHeight(widget.config.theme.btnRetryHeight!)
+                      : const Size.fromHeight(44),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      widget.config.theme.btnRetryBorderRadius ?? 8,
+                    ),
+                  ),
                 ),
-              ),
-              child: Text(
-                widget.config.messages.tryAgainButtonText,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: widget.config.theme.fontFamily,
+                child: Text(
+                  widget.config.messages.tryAgainButtonText,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: widget.config.theme.fontFamily,
+                    color: widget.config.theme.btnTextRetryColor,
+                  ),
                 ),
               ),
             ),

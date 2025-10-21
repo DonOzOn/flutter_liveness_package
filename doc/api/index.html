@@ -177,6 +177,64 @@ class _MyLivenessCheckState extends State&lt;MyLivenessCheck&gt; {
   }
 }
 </code></pre>
+<h2 id="-manual-camera-control">🎮 Manual Camera Control</h2>
+<p>Use <code>LivenessCheckController</code> for advanced camera lifecycle management:</p>
+<pre class="language-dart"><code class="language-dart">final controller = LivenessCheckController();
+
+// Add controller to LivenessCheckScreen
+LivenessCheckScreen(
+  controller: controller,
+  config: LivenessCheckConfig(...),
+)
+
+// Manual control methods
+await controller.initializeCamera();  // Start camera + face detector
+await controller.disposeCamera();     // Stop camera and release resources
+controller.resetState();              // Reset blink count and smile status
+
+// Monitor status
+print(controller.isInitialized);  // Check if camera is ready
+
+// Listen to changes
+controller.addListener(() {
+  print('Camera status: ${controller.isInitialized}');
+});
+</code></pre>
+<h3 id="app-lifecycle-management-example">App Lifecycle Management Example</h3>
+<pre class="language-dart"><code class="language-dart">class _MyScreenState extends State&lt;MyScreen&gt; with WidgetsBindingObserver {
+  final controller = LivenessCheckController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      controller.disposeCamera(); // Save battery
+    } else if (state == AppLifecycleState.resumed) {
+      controller.initializeCamera(); // Restart camera
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LivenessCheckScreen(
+      controller: controller,
+      config: LivenessCheckConfig(...),
+    );
+  }
+}
+</code></pre>
 <h2 id="-complete-configuration-reference">📖 Complete Configuration Reference</h2>
 <h3 id="livenesscheckconfig">LivenessCheckConfig</h3>
 <p>Main configuration container for all customization options:</p>
@@ -250,9 +308,12 @@ class _MyLivenessCheckState extends State&lt;MyLivenessCheck&gt; {
   dashLength: 10.0,
   dashGap: 6.0,
 
-  // Button Colors
+  // Try Again Button Styling
   btnRetryBGColor: Colors.blue,
   btnTextRetryColor: Colors.white,
+  btnRetryHeight: 44.0,              // Button height (default: 44)
+  btnRetryPadding: EdgeInsets.symmetric(vertical: 16),
+  btnRetryBorderRadius: 8.0,         // Border radius
 
   // Typography
   fontFamily: 'CustomFont',
@@ -505,18 +566,43 @@ CameraSettings(
   ),
 )
 </code></pre>
-<h3 id="5-custom-loading--error-handling">5. Custom Loading &amp; Error Handling</h3>
+<h3 id="5-custom-loading-widgets">5. Custom Loading Widgets</h3>
 <pre class="language-dart"><code class="language-dart">LivenessCheckScreen(
   config: LivenessCheckConfig(
-    showLoading: _isProcessing,
-    customLoadingWidget: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CircularProgressIndicator(color: Colors.purple),
-        const SizedBox(height: 16),
-        const Text('Processing verification...'),
-      ],
+    // Custom camera initialization loading (shown while camera starts)
+    customCameraLoadingWidget: Container(
+      color: Colors.white,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(color: Colors.purple),
+            const SizedBox(height: 16),
+            const Text('Initializing camera...'),
+          ],
+        ),
+      ),
     ),
+
+    // Custom processing overlay (shown during verification)
+    showLoading: _isProcessing,
+    customLoadingWidget: Container(
+      color: Colors.black87,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(color: Colors.purple),
+            const SizedBox(height: 16),
+            const Text(
+              'Processing verification...',
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    ),
+
     callbacks: LivenessCheckCallbacks(
       onErrorWithType: (errorType, message) {
         switch (errorType) {
@@ -739,6 +825,13 @@ LivenessCheckConfig(
 <dd>
 </dd>
 
+          <dt id="liveness_check_controller">
+  <span class="name"><a href="liveness_check_controller">liveness_check_controller</a></span> 
+
+</dt>
+<dd>
+</dd>
+
           <dt id="liveness_check_errors">
   <span class="name"><a href="liveness_check_errors">liveness_check_errors</a></span> 
 
@@ -794,6 +887,7 @@ LivenessCheckConfig(
       <li><a href="enhence_light_checker">enhence_light_checker</a></li>
       <li><a href="flutter_liveness_check">flutter_liveness_check</a></li>
       <li><a href="liveness_check_config">liveness_check_config</a></li>
+      <li><a href="liveness_check_controller">liveness_check_controller</a></li>
       <li><a href="liveness_check_errors">liveness_check_errors</a></li>
       <li><a href="liveness_check_screen">liveness_check_screen</a></li>
       <li><a href="liveness_result_screen">liveness_result_screen</a></li>
@@ -808,7 +902,7 @@ LivenessCheckConfig(
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.5
+      1.0.6
   </span>
   
 </footer>
