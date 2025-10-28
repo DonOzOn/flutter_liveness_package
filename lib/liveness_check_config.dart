@@ -183,6 +183,9 @@ class LivenessCheckTheme {
   /// Text color of the retry button.
   final Color? btnTextRetryColor;
 
+  /// Text style for the retry button.
+  final TextStyle? btnRetryTextStyle;
+
   /// Size of the circular preview (0.0 to 1.0 of screen width).
   final double circleSize;
 
@@ -236,6 +239,7 @@ class LivenessCheckTheme {
     this.backgroundColor = Colors.white,
     this.btnRetryBGColor = Colors.blue,
     this.btnTextRetryColor = Colors.white,
+    this.btnRetryTextStyle,
     this.btnRetryHeight,
     this.btnRetryPadding,
     this.btnRetryBorderRadius,
@@ -267,6 +271,7 @@ class LivenessCheckTheme {
     Color? primaryColor,
     Color? btnRetryBGColor,
     Color? btnTextRetryColor,
+    TextStyle? btnRetryTextStyle,
     double? btnRetryHeight,
     EdgeInsets? btnRetryPadding,
     double? btnRetryBorderRadius,
@@ -297,6 +302,7 @@ class LivenessCheckTheme {
       errorColor: errorColor ?? this.errorColor,
       btnRetryBGColor: btnRetryBGColor ?? this.btnRetryBGColor,
       btnTextRetryColor: btnTextRetryColor ?? this.btnTextRetryColor,
+      btnRetryTextStyle: btnRetryTextStyle ?? this.btnRetryTextStyle,
       btnRetryHeight: btnRetryHeight ?? this.btnRetryHeight,
       btnRetryPadding: btnRetryPadding ?? this.btnRetryPadding,
       btnRetryBorderRadius: btnRetryBorderRadius ?? this.btnRetryBorderRadius,
@@ -449,7 +455,8 @@ class PermissionDialogConfig {
   /// Creates a permission dialog configuration.
   const PermissionDialogConfig({
     this.title = 'Camera Permission Required',
-    this.message = 'Camera permission is required for liveness check. Please enable it in settings.',
+    this.message =
+        'Camera permission is required for liveness check. Please enable it in settings.',
     this.cancelButtonText = 'Cancel',
     this.settingsButtonText = 'Open Settings',
   });
@@ -457,11 +464,14 @@ class PermissionDialogConfig {
 
 /// Behavior settings for the liveness check.
 class LivenessCheckSettings {
+  /// Whether to enable blink detection for liveness check.
+  final bool enableBlinkDetection;
+
   /// Number of blinks required to pass the liveness check.
   final int requiredBlinkCount;
 
-  /// Whether a smile is required to pass the liveness check.
-  final bool requireSmile;
+  /// Whether to enable smile detection for liveness check.
+  final bool enableSmileDetection;
 
   /// Whether to show progress indicators during the check.
   final bool showProgress;
@@ -484,10 +494,14 @@ class LivenessCheckSettings {
   /// Vertical position of the circle (0.0 to 1.0).
   final double circlePositionY;
 
+  /// Delay before capturing photo after liveness check passes.
+  final Duration? photoCaptureDelay;
+
   /// Creates liveness check settings.
   const LivenessCheckSettings({
+    this.enableBlinkDetection = true,
     this.requiredBlinkCount = 3,
-    this.requireSmile = false,
+    this.enableSmileDetection = true,
     this.showProgress = true,
     this.autoNavigateOnSuccess = true,
     this.showErrorMessage = true,
@@ -495,5 +509,6 @@ class LivenessCheckSettings {
     this.maxRetryAttempts = 3,
     this.processingTimeout = const Duration(seconds: 30),
     this.circlePositionY = 0.38,
+    this.photoCaptureDelay = const Duration(milliseconds: 0),
   });
 }

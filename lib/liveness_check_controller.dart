@@ -28,11 +28,23 @@ class LivenessCheckController extends ChangeNotifier {
   /// Callback for resetting the liveness state.
   VoidCallback? _onResetState;
 
+  /// Callback for pausing face detection.
+  Future<void> Function()? _onPauseDetection;
+
+  /// Callback for resuming face detection.
+  Future<void> Function()? _onResumeDetection;
+
   /// Whether the camera is currently initialized.
   bool _isInitialized = false;
 
+  /// Whether face detection is currently paused.
+  bool _isPaused = false;
+
   /// Gets the current camera initialization status.
   bool get isInitialized => _isInitialized;
+
+  /// Gets the current pause status.
+  bool get isPaused => _isPaused;
 
   /// Internal method to set initialization status.
   /// Called by LivenessCheckScreen only.
@@ -60,6 +72,28 @@ class LivenessCheckController extends ChangeNotifier {
   /// Called by LivenessCheckScreen only.
   void registerResetCallback(VoidCallback callback) {
     _onResetState = callback;
+  }
+
+  /// Internal method to register pause detection callback.
+  /// Called by LivenessCheckScreen only.
+  void registerPauseCallback(Future<void> Function() callback) {
+    _onPauseDetection = callback;
+  }
+
+  /// Internal method to register resume detection callback.
+  /// Called by LivenessCheckScreen only.
+  void registerResumeCallback(Future<void> Function() callback) {
+    _onResumeDetection = callback;
+  }
+
+  /// Internal method to set pause status.
+  /// Called by LivenessCheckScreen only.
+  // ignore: use_setters_to_change_properties
+  void setPaused(bool value) {
+    if (_isPaused != value) {
+      _isPaused = value;
+      notifyListeners();
+    }
   }
 
   /// Initializes the camera for liveness detection.
@@ -111,11 +145,47 @@ class LivenessCheckController extends ChangeNotifier {
     }
   }
 
+  /// Pauses camera preview and face detection.
+  ///
+  /// This will pause the camera preview and stop processing frames
+  /// for face detection. The camera remains initialized and can be
+  /// resumed later.
+  ///
+  /// Useful when you want to temporarily stop liveness checking
+  /// without disposing the camera.
+  Future<void> pauseDetection() async {
+    if (_onPauseDetection != null) {
+      await _onPauseDetection!();
+    } else {
+      debugPrint(
+        'LivenessCheckController: Pause callback not registered. '
+        'Make sure the controller is attached to LivenessCheckScreen.',
+      );
+    }
+  }
+
+  /// Resumes camera preview and face detection.
+  ///
+  /// This will resume the camera preview and restart processing frames
+  /// for face detection after being paused.
+  Future<void> resumeDetection() async {
+    if (_onResumeDetection != null) {
+      await _onResumeDetection!();
+    } else {
+      debugPrint(
+        'LivenessCheckController: Resume callback not registered. '
+        'Make sure the controller is attached to LivenessCheckScreen.',
+      );
+    }
+  }
+
   @override
   void dispose() {
     _onInitializeCamera = null;
     _onDisposeCamera = null;
     _onResetState = null;
+    _onPauseDetection = null;
+    _onResumeDetection = null;
     super.dispose();
   }
 }

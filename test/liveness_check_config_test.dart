@@ -113,8 +113,9 @@ void main() {
     test('should create settings with default values', () {
       const settings = LivenessCheckSettings();
 
+      expect(settings.enableBlinkDetection, true);
       expect(settings.requiredBlinkCount, 3);
-      expect(settings.requireSmile, false);
+      expect(settings.enableSmileDetection, true);
       expect(settings.showProgress, true);
       expect(settings.autoNavigateOnSuccess, true);
       expect(settings.showErrorMessage, true);
@@ -122,12 +123,14 @@ void main() {
       expect(settings.maxRetryAttempts, 3);
       expect(settings.processingTimeout, const Duration(seconds: 30));
       expect(settings.circlePositionY, 0.38);
+      expect(settings.photoCaptureDelay, const Duration(milliseconds: 0));
     });
 
     test('should create settings with custom values', () {
       const settings = LivenessCheckSettings(
+        enableBlinkDetection: false,
         requiredBlinkCount: 5,
-        requireSmile: true,
+        enableSmileDetection: true,
         showProgress: false,
         autoNavigateOnSuccess: false,
         showErrorMessage: false,
@@ -135,10 +138,12 @@ void main() {
         maxRetryAttempts: 5,
         processingTimeout: Duration(seconds: 60),
         circlePositionY: 0.5,
+        photoCaptureDelay: Duration(seconds: 2),
       );
 
+      expect(settings.enableBlinkDetection, false);
       expect(settings.requiredBlinkCount, 5);
-      expect(settings.requireSmile, true);
+      expect(settings.enableSmileDetection, true);
       expect(settings.showProgress, false);
       expect(settings.autoNavigateOnSuccess, false);
       expect(settings.showErrorMessage, false);
@@ -146,6 +151,7 @@ void main() {
       expect(settings.maxRetryAttempts, 5);
       expect(settings.processingTimeout, const Duration(seconds: 60));
       expect(settings.circlePositionY, 0.5);
+      expect(settings.photoCaptureDelay, const Duration(seconds: 2));
     });
   });
 

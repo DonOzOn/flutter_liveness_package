@@ -266,8 +266,9 @@ void main() {
           home: LivenessCheckScreen(
             config: LivenessCheckConfig(
               settings: LivenessCheckSettings(
+                enableBlinkDetection: true,
                 requiredBlinkCount: 5,
-                requireSmile: true,
+                enableSmileDetection: true,
                 showProgress: false,
                 autoNavigateOnSuccess: false,
                 showErrorMessage: false,
@@ -275,6 +276,7 @@ void main() {
                 maxRetryAttempts: 2,
                 processingTimeout: Duration(seconds: 60),
                 circlePositionY: 0.5,
+                photoCaptureDelay: Duration(milliseconds: 0),
               ),
               status: LivenessStatus.fail,
               callbacks: LivenessCheckCallbacks(
