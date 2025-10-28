@@ -991,7 +991,8 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     final distanceY = faceCenterY - circleCenterY;
     final distance = math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-    final allowedDistance = circleRadius * 0.8;
+    // Increased tolerance for iOS: face must be within 90% of circle radius
+    final allowedDistance = circleRadius * 0.9;
 
     if (distance > allowedDistance) {
       debugPrint(
