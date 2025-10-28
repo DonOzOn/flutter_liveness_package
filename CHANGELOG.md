@@ -1,6 +1,114 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+
+## [1.0.7] - 2025-01-28
+
+### Added
+- **Flexible Detection Modes**: Added `enableBlinkDetection` and `enableSmileDetection` parameters to `LivenessCheckSettings`
+  - Enable or disable blink detection independently
+  - Enable or disable smile detection independently
+  - Both enabled by default for backward compatibility
+  - Uses OR logic: passing either enabled check completes verification
+- **Photo Capture Delay**: Added `photoCaptureDelay` parameter to `LivenessCheckSettings`
+  - Configure delay before capturing photo after liveness verification passes
+  - Default: `Duration(milliseconds: 0)` for immediate capture
+  - Useful for giving users time to prepare for the photo
+- **Pause/Resume Camera Control**: Added pause and resume methods to `LivenessCheckController`
+  - `pauseDetection()`: Pause camera preview and face detection
+  - `resumeDetection()`: Resume camera preview and face detection
+  - `isPaused` getter: Check current pause status
+  - Uses native camera controller methods for efficient resource management
+  - Useful for showing dialogs, instructions, or handling app lifecycle events
+
+### Changed
+- Updated `LivenessCheckSettings` to include new detection control parameters
+- Enhanced `LivenessCheckController` with pause/resume capabilities and status tracking
+- Improved camera resource management with pause/resume instead of dispose/reinitialize
+
+### Removed
+- **BREAKING**: Removed unused `requireSmile` parameter from `LivenessCheckSettings`
+  - Replace with `enableSmileDetection: true/false`
+
+### Migration Guide
+
+#### Update Settings Configuration
+
+**Before:**
+```dart
+LivenessCheckSettings(
+  requiredBlinkCount: 3,
+  requireSmile: false,  // Removed parameter
+)
+```
+
+**After:**
+```dart
+LivenessCheckSettings(
+  enableBlinkDetection: true,   // New: enable/disable blink detection
+  requiredBlinkCount: 3,
+  enableSmileDetection: false,  // New: enable/disable smile detection
+  photoCaptureDelay: Duration(milliseconds: 0),  // New: configurable delay
+)
+```
+
+#### Use Pause/Resume for Better Performance
+
+**Before:**
+```dart
+@override
+void didChangeAppLifecycleState(AppLifecycleState state) {
+  if (state == AppLifecycleState.paused) {
+    controller.disposeCamera();  // Heavy operation
+  } else if (state == AppLifecycleState.resumed) {
+    controller.initializeCamera();  // Heavy operation
+  }
+}
+```
+
+**After:**
+```dart
+@override
+void didChangeAppLifecycleState(AppLifecycleState state) {
+  if (state == AppLifecycleState.paused) {
+    controller.pauseDetection();  // Lightweight, camera stays initialized
+  } else if (state == AppLifecycleState.resumed) {
+    controller.resumeDetection();  // Quick resume
+  }
+}
+```
+
+### Examples
+
+#### Blink-Only Detection
+```dart
+LivenessCheckSettings(
+  enableBlinkDetection: true,
+  requiredBlinkCount: 3,
+  enableSmileDetection: false,  // Disable smile requirement
+)
+```
+
+#### Smile-Only Detection
+```dart
+LivenessCheckSettings(
+  enableBlinkDetection: false,  // Disable blink requirement
+  enableSmileDetection: true,
+  photoCaptureDelay: Duration(milliseconds: 500),  // Wait before capture
+)
+```
+
+#### Pause Detection While Showing Dialog
+```dart
+Future<void> showInstructions() async {
+  await controller.pauseDetection();
+  await showDialog(...);
+  await controller.resumeDetection();
+}
+```
+
+---
+
 ## [1.0.6] - 2025-10-21
 add controller to init and dispose camera and face detect, add button retry custom style
 ## [1.0.5] - 2025-10-02

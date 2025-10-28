@@ -18,6 +18,9 @@ A comprehensive Flutter package for face liveness detection with fully customiza
 - **🎭 Custom Widgets** - Custom bottom widgets and loading overlays
 - **✏️ Font Customization** - Set custom font family for all text elements
 - **🔍 Quality Detection** - Advanced blur and lighting analysis
+- **⏸️ Pause/Resume Control** - Pause and resume camera preview and face detection
+- **🎚️ Flexible Detection Modes** - Enable/disable blink or smile detection independently
+- **⏱️ Photo Capture Delay** - Configurable delay before capturing photo after verification
 
 ## 📋 Table of Contents
 
@@ -175,14 +178,67 @@ LivenessCheckScreen(
 await controller.initializeCamera();  // Start camera + face detector
 await controller.disposeCamera();     // Stop camera and release resources
 controller.resetState();              // Reset blink count and smile status
+await controller.pauseDetection();    // Pause camera preview and face detection
+await controller.resumeDetection();   // Resume camera preview and face detection
 
 // Monitor status
 print(controller.isInitialized);  // Check if camera is ready
+print(controller.isPaused);       // Check if camera is paused
 
 // Listen to changes
 controller.addListener(() {
   print('Camera status: ${controller.isInitialized}');
+  print('Paused: ${controller.isPaused}');
 });
+```
+
+### Pause/Resume Detection
+
+Control camera preview and face detection without disposing the camera:
+
+```dart
+class _MyScreenState extends State<MyScreen> {
+  final controller = LivenessCheckController();
+  bool _showingDialog = false;
+
+  Future<void> _showInstructions() async {
+    // Pause detection while showing instructions
+    await controller.pauseDetection();
+    _showingDialog = true;
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Instructions'),
+        content: Text('Please position your face in the circle and blink 3 times'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Got it'),
+          ),
+        ],
+      ),
+    );
+
+    _showingDialog = false;
+    // Resume detection after dialog closes
+    await controller.resumeDetection();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: LivenessCheckScreen(
+        controller: controller,
+        config: LivenessCheckConfig(...),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showInstructions,
+        child: Icon(Icons.help),
+      ),
+    );
+  }
+}
 ```
 
 ### App Lifecycle Management Example
@@ -207,9 +263,11 @@ class _MyScreenState extends State<MyScreen> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      controller.disposeCamera(); // Save battery
+      // Use pauseDetection to save battery while keeping camera initialized
+      controller.pauseDetection();
     } else if (state == AppLifecycleState.resumed) {
-      controller.initializeCamera(); // Restart camera
+      // Resume detection when app comes back
+      controller.resumeDetection();
     }
   }
 
@@ -377,8 +435,9 @@ LivenessCheckCallbacks(
 ```dart
 LivenessCheckSettings(
   // Liveness Requirements
-  requiredBlinkCount: 3,
-  requireSmile: false,
+  enableBlinkDetection: true,     // Enable/disable blink detection
+  requiredBlinkCount: 3,          // Number of blinks required
+  enableSmileDetection: true,     // Enable/disable smile detection
 
   // UI Controls
   showProgress: true,
@@ -392,6 +451,9 @@ LivenessCheckSettings(
 
   // Layout
   circlePositionY: 0.38, // Vertical position (0.0 to 1.0)
+
+  // Photo Capture
+  photoCaptureDelay: Duration(milliseconds: 0), // Delay before capturing photo
 )
 ```
 
@@ -566,7 +628,53 @@ LivenessCheckScreen(
 )
 ```
 
-### 4. E-commerce KYC
+### 4. Blink-Only Detection (No Smile Required)
+
+```dart
+LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    appBarConfig: const AppBarConfig(
+      title: 'Quick Verification',
+      showBackButton: true,
+    ),
+    settings: const LivenessCheckSettings(
+      enableBlinkDetection: true,     // Enable blink detection
+      requiredBlinkCount: 3,          // Require 3 blinks
+      enableSmileDetection: false,    // Disable smile detection
+      maxRetryAttempts: 3,
+    ),
+    placeholder: 'Please blink your eyes 3 times',
+    callbacks: LivenessCheckCallbacks(
+      onSuccess: () => _handleSuccess(),
+    ),
+  ),
+)
+```
+
+### 5. Smile-Only Detection (No Blinks Required)
+
+```dart
+LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    appBarConfig: const AppBarConfig(
+      title: 'Smile Verification',
+      showBackButton: true,
+    ),
+    settings: const LivenessCheckSettings(
+      enableBlinkDetection: false,    // Disable blink detection
+      enableSmileDetection: true,     // Enable smile detection
+      maxRetryAttempts: 3,
+      photoCaptureDelay: Duration(milliseconds: 500), // Wait 500ms before capture
+    ),
+    placeholder: 'Please smile for the camera',
+    callbacks: LivenessCheckCallbacks(
+      onSuccess: () => _handleSuccess(),
+    ),
+  ),
+)
+```
+
+### 6. E-commerce KYC
 
 ```dart
 LivenessCheckScreen(
@@ -576,9 +684,11 @@ LivenessCheckScreen(
       showBackButton: false, // No back button for KYC
     ),
     settings: const LivenessCheckSettings(
+      enableBlinkDetection: true,
       requiredBlinkCount: 2,
-      requireSmile: true,
+      enableSmileDetection: true,
       maxRetryAttempts: 5,
+      photoCaptureDelay: Duration(milliseconds: 0), // Immediate capture
     ),
     theme: const LivenessCheckTheme(
       primaryColor: Color(0xFFFF6B35),
@@ -594,7 +704,7 @@ LivenessCheckScreen(
 )
 ```
 
-### 5. Custom Loading Widgets
+### 7. Custom Loading Widgets
 
 ```dart
 LivenessCheckScreen(
@@ -651,7 +761,7 @@ LivenessCheckScreen(
 )
 ```
 
-### 6. Custom Permission Dialog
+### 8. Custom Permission Dialog
 
 ```dart
 LivenessCheckScreen(
