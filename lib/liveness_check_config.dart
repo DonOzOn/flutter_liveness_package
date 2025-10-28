@@ -183,6 +183,9 @@ class LivenessCheckTheme {
   /// Text color of the retry button.
   final Color? btnTextRetryColor;
 
+  /// Text style for the retry button.
+  final TextStyle? btnRetryTextStyle;
+
   /// Size of the circular preview (0.0 to 1.0 of screen width).
   final double circleSize;
 
@@ -236,6 +239,7 @@ class LivenessCheckTheme {
     this.backgroundColor = Colors.white,
     this.btnRetryBGColor = Colors.blue,
     this.btnTextRetryColor = Colors.white,
+    this.btnRetryTextStyle,
     this.btnRetryHeight,
     this.btnRetryPadding,
     this.btnRetryBorderRadius,
@@ -267,6 +271,7 @@ class LivenessCheckTheme {
     Color? primaryColor,
     Color? btnRetryBGColor,
     Color? btnTextRetryColor,
+    TextStyle? btnRetryTextStyle,
     double? btnRetryHeight,
     EdgeInsets? btnRetryPadding,
     double? btnRetryBorderRadius,
@@ -297,6 +302,7 @@ class LivenessCheckTheme {
       errorColor: errorColor ?? this.errorColor,
       btnRetryBGColor: btnRetryBGColor ?? this.btnRetryBGColor,
       btnTextRetryColor: btnTextRetryColor ?? this.btnTextRetryColor,
+      btnRetryTextStyle: btnRetryTextStyle ?? this.btnRetryTextStyle,
       btnRetryHeight: btnRetryHeight ?? this.btnRetryHeight,
       btnRetryPadding: btnRetryPadding ?? this.btnRetryPadding,
       btnRetryBorderRadius: btnRetryBorderRadius ?? this.btnRetryBorderRadius,

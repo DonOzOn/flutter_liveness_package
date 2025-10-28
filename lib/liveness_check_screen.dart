@@ -1,15 +1,15 @@
 import 'dart:io';
-import 'dart:typed_data';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter_liveness_check/enhence_light_checker.dart';
-import 'package:flutter_liveness_check/liveness_check_config.dart';
-import 'package:flutter_liveness_check/liveness_check_controller.dart';
-import 'package:flutter_liveness_check/liveness_check_errors.dart';
-import 'package:flutter_liveness_check/widget/dashed_circle_painter.dart';
+import 'enhence_light_checker.dart';
+import 'liveness_check_config.dart';
+import 'liveness_check_controller.dart';
+import 'liveness_check_errors.dart';
+import 'widget/dashed_circle_painter.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image/image.dart' as img;
@@ -585,47 +585,78 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   /// - Measuring the distance between eyes to ensure full face visibility
   /// - Verifying the face covers adequate area of the bounding box
   /// - Checking face size is adequate
+  /// - Uses platform-specific validation for better accuracy
   ///
   /// Returns true if the face is complete with sufficient coverage,
   /// false if the face is partial or too small.
   ///
   /// [face] The detected face from ML Kit to validate
   bool _isFaceComplete(Face face) {
+    // Use platform-specific validation
+    if (Platform.isAndroid) {
+      return _isFaceCompleteAndroid(face);
+    } else {
+      return _isFaceCompleteIOS(face);
+    }
+  }
+
+  /// iOS-specific face completeness validation (current working version)
+  bool _isFaceCompleteIOS(Face face) {
     final landmarks = face.landmarks;
-    final mouthContour = face.contours[FaceContourType.lowerLipBottom];
-    if (mouthContour == null || mouthContour.points.isEmpty) {
-      debugPrint('No mouth contour — possible mask');
+    final boundingBox = face.boundingBox;
+
+    // 0. Bounding box validation (check first)
+    if (boundingBox.width <= 0 || boundingBox.height <= 0) {
+      debugPrint('Face incomplete: Invalid bounding box');
       return false;
     }
 
-    final upperLip = face.contours[FaceContourType.upperLipTop];
-    if ((upperLip == null || upperLip.points.isEmpty) &&
-        (mouthContour.points.isEmpty)) {
-      debugPrint('No lip contours — very likely wearing a mask');
-      return false;
-    }
-
-    // 1. Essential landmarks - eyes and nose (always reliable)
+    // 1. Essential landmarks - eyes, nose, and mouth
     final leftEye = landmarks[FaceLandmarkType.leftEye];
     final rightEye = landmarks[FaceLandmarkType.rightEye];
     final nose = landmarks[FaceLandmarkType.noseBase];
+    final mouthBottom = landmarks[FaceLandmarkType.bottomMouth];
 
     if (leftEye == null || rightEye == null || nose == null) {
       debugPrint('Face incomplete: Missing eye or nose landmarks');
       return false;
     }
 
-    // 2. CRITICAL: Check for mouth landmarks (this catches partial faces)
-    final mouthBottom = landmarks[FaceLandmarkType.bottomMouth];
-
-    // If mouth is missing, face is definitely incomplete
     if (mouthBottom == null) {
       debugPrint(
-          'Face incomplete: Missing mouth landmark - partial face detected');
+        'Face incomplete: Missing mouth landmark - partial face detected',
+      );
       return false;
     }
 
-    // 3. Eye visibility check
+    // 2. Check mouth contours for mask detection
+    final mouthContour = face.contours[FaceContourType.lowerLipBottom];
+    final upperLip = face.contours[FaceContourType.upperLipTop];
+
+    if (mouthContour == null || mouthContour.points.isEmpty) {
+      debugPrint('Face incomplete: No mouth contour — possible mask');
+      return false;
+    }
+
+    if ((upperLip == null || upperLip.points.isEmpty) &&
+        (mouthContour.points.isEmpty)) {
+      debugPrint(
+        'Face incomplete: No lip contours — very likely wearing a mask',
+      );
+      return false;
+    }
+
+    // 3. Nose-to-mouth distance (mask detection)
+    final noseToMouthDistance =
+        (mouthBottom.position.y - nose.position.y).abs();
+    if (noseToMouthDistance < boundingBox.height * 0.1) {
+      debugPrint(
+        'Face incomplete: Mouth too close to nose (${noseToMouthDistance.toStringAsFixed(1)}) — possible mask',
+      );
+      return false;
+    }
+
+    // 4. Eye visibility check
     final leftEyeProb = face.leftEyeOpenProbability;
     final rightEyeProb = face.rightEyeOpenProbability;
 
@@ -635,64 +666,226 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     }
 
     if (leftEyeProb < 0.3 || rightEyeProb < 0.3) {
-      debugPrint('Face incomplete: Eyes appear closed');
+      debugPrint(
+        'Face incomplete: Eyes appear closed (L:${leftEyeProb.toStringAsFixed(2)}, R:${rightEyeProb.toStringAsFixed(2)})',
+      );
       return false;
     }
 
-    // 4. Head pose check (more lenient)
+    // 5. Head pose check (prevent turned/tilted heads)
     if (face.headEulerAngleY != null && face.headEulerAngleY!.abs() > 20) {
       debugPrint(
-          'Face incomplete: Head turned ${face.headEulerAngleY!.toStringAsFixed(1)}°');
+        'Face incomplete: Head turned ${face.headEulerAngleY!.toStringAsFixed(1)}°',
+      );
       return false;
     }
 
     if (face.headEulerAngleZ != null && face.headEulerAngleZ!.abs() > 20) {
       debugPrint(
-          'Face incomplete: Head tilted ${face.headEulerAngleZ!.toStringAsFixed(1)}°');
+        'Face incomplete: Head tilted ${face.headEulerAngleZ!.toStringAsFixed(1)}°',
+      );
       return false;
     }
 
-    // 5. Bounding box validation
-    final boundingBox = face.boundingBox;
-
-    if (boundingBox.width <= 0 || boundingBox.height <= 0) {
-      debugPrint('Face incomplete: Invalid bounding box');
+    // 6. Minimum face size check (works on both platforms)
+    // iOS typically reports smaller dimensions, so use adaptive threshold
+    final minFaceSize = Platform.isIOS ? 120.0 : 150.0;
+    if (boundingBox.width < minFaceSize || boundingBox.height < minFaceSize) {
+      debugPrint(
+        'Face incomplete: Too small (${boundingBox.width.toStringAsFixed(0)}x${boundingBox.height.toStringAsFixed(0)}, min: $minFaceSize)',
+      );
       return false;
     }
 
-    // 6. CRITICAL: Eye-to-mouth vertical distance
-    // This is the KEY check to prevent partial faces
+    // 7. Face aspect ratio (prevent elongated or squashed faces)
+    final faceAspectRatio = boundingBox.width / boundingBox.height;
+    if (faceAspectRatio < 0.5 || faceAspectRatio > 1.1) {
+      debugPrint(
+        'Face incomplete: Unusual aspect ratio (${faceAspectRatio.toStringAsFixed(2)})',
+      );
+      return false;
+    }
+
+    // 8. Eye distance validation (relative to face width)
+    final eyeDistance = (leftEye.position.x - rightEye.position.x).abs();
+    final eyeToFaceRatio = eyeDistance / boundingBox.width;
+
+    if (eyeToFaceRatio < 0.2 || eyeToFaceRatio > 0.55) {
+      debugPrint(
+        'Face incomplete: Eye spacing unusual (${eyeToFaceRatio.toStringAsFixed(2)})',
+      );
+      return false;
+    }
+
+    // 9. Relative positioning checks (works on both platforms)
+    // Calculate positions relative to bounding box (platform-independent)
     final eyesCenterY = (leftEye.position.y + rightEye.position.y) / 2;
     final mouthY = mouthBottom.position.y;
-    final eyeToMouthDistance = (mouthY - eyesCenterY).abs();
 
-    // Eye-to-mouth distance should be at least 25% of face height
+    // Eye-to-mouth distance relative to face height
+    final eyeToMouthDistance = (mouthY - eyesCenterY).abs();
     final eyeToMouthRatio = eyeToMouthDistance / boundingBox.height;
+
     if (eyeToMouthRatio < 0.25) {
       debugPrint(
-          'Face incomplete: Eye-to-mouth distance too small (${eyeToMouthRatio.toStringAsFixed(2)}) - likely partial face');
+        'Face incomplete: Eye-to-mouth distance too small (${eyeToMouthRatio.toStringAsFixed(2)}) - likely partial face',
+      );
       return false;
     }
 
-    // 7. CRITICAL: Ensure mouth is in lower portion
+    // 10. Mouth position relative to bounding box
     final mouthPositionRatio =
         (mouthBottom.position.y - boundingBox.top) / boundingBox.height;
 
-    // Mouth should be in lower portion (more lenient: 55-90%)
-    if (mouthPositionRatio < 0.55) {
+    if (mouthPositionRatio < 0.55 || mouthPositionRatio > 0.95) {
       debugPrint(
-          'Face incomplete: Mouth too high (${mouthPositionRatio.toStringAsFixed(2)}) - partial face detected');
+        'Face incomplete: Mouth position unusual (${mouthPositionRatio.toStringAsFixed(2)}) - partial face',
+      );
       return false;
     }
 
-    // 8. Eye positioning
+    // 11. Eye position relative to bounding box
     final eyePositionRatio =
         (eyesCenterY - boundingBox.top) / boundingBox.height;
 
-    // Eyes should be in upper portion (20-55% - more lenient)
     if (eyePositionRatio < 0.2 || eyePositionRatio > 0.55) {
       debugPrint(
-          'Face incomplete: Eyes mispositioned (${eyePositionRatio.toStringAsFixed(2)})');
+        'Face incomplete: Eyes mispositioned (${eyePositionRatio.toStringAsFixed(2)})',
+      );
+      return false;
+    }
+
+    // 12. Vertical coverage check (ensure landmarks are within bounds)
+    if (eyesCenterY < boundingBox.top + 10 ||
+        mouthY > boundingBox.bottom - 10) {
+      debugPrint('Face incomplete: Face appears cropped at edges');
+      return false;
+    }
+
+    debugPrint(
+      '✓ Face complete (iOS): All checks passed (bbox: ${boundingBox.width.toStringAsFixed(0)}x${boundingBox.height.toStringAsFixed(0)})',
+    );
+    return true;
+  }
+
+  /// Android-specific face completeness validation (stricter checks)
+  bool _isFaceCompleteAndroid(Face face) {
+    final landmarks = face.landmarks;
+    final boundingBox = face.boundingBox;
+
+    // 0. Bounding box validation
+    if (boundingBox.width <= 0 || boundingBox.height <= 0) {
+      debugPrint('[Android] Face incomplete: Invalid bounding box');
+      return false;
+    }
+
+    // 1. CRITICAL: Check ALL essential landmarks including all mouth points
+    final leftEye = landmarks[FaceLandmarkType.leftEye];
+    final rightEye = landmarks[FaceLandmarkType.rightEye];
+    final nose = landmarks[FaceLandmarkType.noseBase];
+    final mouthBottom = landmarks[FaceLandmarkType.bottomMouth];
+    final mouthLeft = landmarks[FaceLandmarkType.leftMouth];
+    final mouthRight = landmarks[FaceLandmarkType.rightMouth];
+
+    if (leftEye == null || rightEye == null || nose == null) {
+      debugPrint('[Android] Face incomplete: Missing eye or nose landmarks');
+      return false;
+    }
+
+    // CRITICAL: All three mouth landmarks MUST exist
+    if (mouthBottom == null || mouthLeft == null || mouthRight == null) {
+      debugPrint(
+        '[Android] Face incomplete: Missing mouth landmarks (bottom: ${mouthBottom != null}, left: ${mouthLeft != null}, right: ${mouthRight != null})',
+      );
+      return false;
+    }
+
+    // 2. CRITICAL: Check mouth contours (Android requires stricter validation)
+    final lowerLipBottom = face.contours[FaceContourType.lowerLipBottom];
+    final upperLipTop = face.contours[FaceContourType.upperLipTop];
+
+    // Require BOTH upper and lower lip contours with minimum points
+    if (lowerLipBottom == null || lowerLipBottom.points.isEmpty) {
+      debugPrint('[Android] Face incomplete: No lower lip contour');
+      return false;
+    }
+
+    if (upperLipTop == null || upperLipTop.points.isEmpty) {
+      debugPrint('[Android] Face incomplete: No upper lip contour');
+      return false;
+    }
+
+    // Verify sufficient contour points (minimum 3 points each)
+    if (lowerLipBottom.points.length < 3 || upperLipTop.points.length < 3) {
+      debugPrint(
+        '[Android] Face incomplete: Insufficient lip points (lower: ${lowerLipBottom.points.length}, upper: ${upperLipTop.points.length})',
+      );
+      return false;
+    }
+
+    // 3. Calculate mouth width using landmarks
+    final mouthWidth = (mouthRight.position.x - mouthLeft.position.x).abs();
+    if (mouthWidth < boundingBox.width * 0.15) {
+      debugPrint(
+        '[Android] Face incomplete: Mouth too narrow (${mouthWidth.toStringAsFixed(1)}, min: ${(boundingBox.width * 0.15).toStringAsFixed(1)})',
+      );
+      return false;
+    }
+
+    // 4. Nose-to-mouth distance (stricter for Android)
+    final noseToMouthDistance =
+        (mouthBottom.position.y - nose.position.y).abs();
+    if (noseToMouthDistance < boundingBox.height * 0.15) {
+      debugPrint(
+        '[Android] Face incomplete: Mouth too close to nose (${noseToMouthDistance.toStringAsFixed(1)}, min: ${(boundingBox.height * 0.15).toStringAsFixed(1)})',
+      );
+      return false;
+    }
+
+    // 5. Eye visibility check
+    final leftEyeProb = face.leftEyeOpenProbability;
+    final rightEyeProb = face.rightEyeOpenProbability;
+
+    if (leftEyeProb == null || rightEyeProb == null) {
+      debugPrint(
+          '[Android] Face incomplete: Eye visibility cannot be determined');
+      return false;
+    }
+
+    if (leftEyeProb < 0.3 || rightEyeProb < 0.3) {
+      debugPrint(
+        '[Android] Face incomplete: Eyes appear closed (L:${leftEyeProb.toStringAsFixed(2)}, R:${rightEyeProb.toStringAsFixed(2)})',
+      );
+      return false;
+    }
+
+    // 6. Head pose check (prevent turned/tilted heads)
+    if (face.headEulerAngleY != null && face.headEulerAngleY!.abs() > 20) {
+      debugPrint(
+          '[Android] Face incomplete: Head turned ${face.headEulerAngleY!.toStringAsFixed(1)}°');
+      return false;
+    }
+
+    if (face.headEulerAngleZ != null && face.headEulerAngleZ!.abs() > 20) {
+      debugPrint(
+          '[Android] Face incomplete: Head tilted ${face.headEulerAngleZ!.toStringAsFixed(1)}°');
+      return false;
+    }
+
+    // 7. Minimum face size
+    final minFaceSize = 150.0;
+    if (boundingBox.width < minFaceSize || boundingBox.height < minFaceSize) {
+      debugPrint(
+        '[Android] Face incomplete: Too small (${boundingBox.width.toStringAsFixed(0)}x${boundingBox.height.toStringAsFixed(0)}, min: $minFaceSize)',
+      );
+      return false;
+    }
+
+    // 8. Face aspect ratio
+    final faceAspectRatio = boundingBox.width / boundingBox.height;
+    if (faceAspectRatio < 0.5 || faceAspectRatio > 1.1) {
+      debugPrint(
+          '[Android] Face incomplete: Unusual aspect ratio (${faceAspectRatio.toStringAsFixed(2)})');
       return false;
     }
 
@@ -700,113 +893,163 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     final eyeDistance = (leftEye.position.x - rightEye.position.x).abs();
     final eyeToFaceRatio = eyeDistance / boundingBox.width;
 
-    // More lenient range
-    if (eyeToFaceRatio < 0.2 || eyeToFaceRatio > 0.55) {
+    if (eyeToFaceRatio < 0.25 || eyeToFaceRatio > 0.55) {
       debugPrint(
-          'Face incomplete: Eye spacing unusual (${eyeToFaceRatio.toStringAsFixed(2)})');
+          '[Android] Face incomplete: Eye spacing unusual (${eyeToFaceRatio.toStringAsFixed(2)})');
       return false;
     }
 
-    // 10. Face aspect ratio (more lenient)
-    final faceAspectRatio = boundingBox.width / boundingBox.height;
+    // 10. Eye-to-mouth distance validation
+    final eyesCenterY = (leftEye.position.y + rightEye.position.y) / 2;
+    final mouthY = mouthBottom.position.y;
+    final eyeToMouthDistance = (mouthY - eyesCenterY).abs();
+    final eyeToMouthRatio = eyeToMouthDistance / boundingBox.height;
 
-    if (faceAspectRatio < 0.5 || faceAspectRatio > 1.1) {
+    if (eyeToMouthRatio < 0.3) {
       debugPrint(
-          'Face incomplete: Unusual aspect ratio (${faceAspectRatio.toStringAsFixed(2)})');
+        '[Android] Face incomplete: Eye-to-mouth distance too small (${eyeToMouthRatio.toStringAsFixed(2)}) - likely partial face',
+      );
       return false;
     }
-    final mouth = landmarks[FaceLandmarkType.bottomMouth];
-    if (mouth == null ||
-        (mouth.position.y - nose.position.y).abs() < boundingBox.height * 0.1) {
-      debugPrint('Possible mask detected — mouth missing or too close to nose');
-      return false;
-    }
-    // 11. Minimum face size (reduced)
-    final minFaceSize = 150.0;
-    if (boundingBox.width < minFaceSize || boundingBox.height < minFaceSize) {
+
+    // 11. Mouth position validation (stricter range for Android)
+    final mouthPositionRatio =
+        (mouthBottom.position.y - boundingBox.top) / boundingBox.height;
+
+    if (mouthPositionRatio < 0.6 || mouthPositionRatio > 0.9) {
       debugPrint(
-          'Face incomplete: Too small (${boundingBox.width.toStringAsFixed(0)}x${boundingBox.height.toStringAsFixed(0)})');
+        '[Android] Face incomplete: Mouth position unusual (${mouthPositionRatio.toStringAsFixed(2)}) - partial face',
+      );
       return false;
     }
-    if (face.boundingBox.height < 120) {
+
+    // 12. Eye position validation
+    final eyePositionRatio =
+        (eyesCenterY - boundingBox.top) / boundingBox.height;
+
+    if (eyePositionRatio < 0.2 || eyePositionRatio > 0.5) {
+      debugPrint(
+          '[Android] Face incomplete: Eyes mispositioned (${eyePositionRatio.toStringAsFixed(2)})');
       return false;
     }
-    // 12. Vertical coverage check - ensures eyes AND mouth fit in frame
-    // This prevents cropped faces at top or bottom
+
+    // 13. Vertical coverage check
     if (eyesCenterY < boundingBox.top + 10 ||
         mouthY > boundingBox.bottom - 10) {
-      debugPrint('Face incomplete: Face appears cropped at edges');
+      debugPrint('[Android] Face incomplete: Face appears cropped at edges');
+      return false;
+    }
+
+    debugPrint(
+      '✓ Face complete (Android): All checks passed (bbox: ${boundingBox.width.toStringAsFixed(0)}x${boundingBox.height.toStringAsFixed(0)})',
+    );
+    return true;
+  }
+
+  /// Validates that the face is centered within the circular preview area.
+  ///
+  /// Uses platform-specific validation for better accuracy.
+  ///
+  /// [face] The detected face from ML Kit to validate positioning
+  bool _isFaceCentered(Face face) {
+    // Use platform-specific validation
+    if (Platform.isAndroid) {
+      return _isFaceCenteredAndroid(face);
+    } else {
+      return _isFaceCenteredIOS(face);
+    }
+  }
+
+  /// iOS-specific face centering validation (current working version)
+  bool _isFaceCenteredIOS(Face face) {
+    if (_currentCameraImage == null) return true; // Skip check if no image
+
+    final imageWidth = _currentCameraImage!.width.toDouble();
+    final imageHeight = _currentCameraImage!.height.toDouble();
+
+    final boundingBox = face.boundingBox;
+    final faceCenterX = boundingBox.left + (boundingBox.width / 2);
+    final faceCenterY = boundingBox.top + (boundingBox.height / 2);
+
+    final circleSize = widget.config.theme.circleSize;
+    final circlePositionY = widget.config.settings.circlePositionY;
+    final sensorOrientation = _cameraController!.description.sensorOrientation;
+
+    double circleCenterX, circleCenterY, circleRadius;
+
+    if (sensorOrientation == 90 || sensorOrientation == 270) {
+      circleCenterX = imageWidth / 2;
+      circleCenterY = imageHeight * circlePositionY;
+      circleRadius = (imageWidth * circleSize) / 2;
+    } else {
+      circleCenterX = imageWidth / 2;
+      circleCenterY = imageHeight * circlePositionY;
+      circleRadius = (imageWidth * circleSize) / 2;
+    }
+
+    final distanceX = faceCenterX - circleCenterX;
+    final distanceY = faceCenterY - circleCenterY;
+    final distance = math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+    final allowedDistance = circleRadius * 0.8;
+
+    if (distance > allowedDistance) {
+      debugPrint(
+          '[iOS] Face not centered: distance ${distance.toStringAsFixed(1)} > allowed ${allowedDistance.toStringAsFixed(1)}');
       return false;
     }
 
     return true;
   }
 
-  /// Validates that the face is centered within the circular preview area.
-  ///
-  /// This method checks if the face center is positioned within the bounds
-  /// of the circular preview overlay on the screen. The circle position and size
-  /// are determined by `circlePositionY` and `circleSize` settings.
-  ///
-  /// Returns true if the face center is within the circle bounds,
-  /// false if the face is outside or too far from the center.
-  ///
-  /// [face] The detected face from ML Kit to validate positioning
-  bool _isFaceCentered(Face face) {
+  /// Android-specific face centering validation (stricter checks)
+  bool _isFaceCenteredAndroid(Face face) {
     if (_currentCameraImage == null) return true; // Skip check if no image
 
-    // Get camera image dimensions
     final imageWidth = _currentCameraImage!.width.toDouble();
     final imageHeight = _currentCameraImage!.height.toDouble();
 
-    // Get face center from bounding box
     final boundingBox = face.boundingBox;
     final faceCenterX = boundingBox.left + (boundingBox.width / 2);
     final faceCenterY = boundingBox.top + (boundingBox.height / 2);
 
-    // Calculate expected circle center and radius in image coordinates
-    // The circle is positioned at circlePositionY on the screen
-    final circleSize = widget.config.theme.circleSize; // Ratio of screen width
-    final circlePositionY =
-        widget.config.settings.circlePositionY; // Ratio of screen height
-
-    // For camera coordinates, we need to account for rotation
-    // Front camera on mobile is typically rotated 90 or 270 degrees
-    // Image coordinates use the sensor orientation
+    final circleSize = widget.config.theme.circleSize;
+    final circlePositionY = widget.config.settings.circlePositionY;
     final sensorOrientation = _cameraController!.description.sensorOrientation;
 
     double circleCenterX, circleCenterY, circleRadius;
 
-    // Account for sensor orientation
     if (sensorOrientation == 90 || sensorOrientation == 270) {
-      // Width and height are swapped in sensor coordinates
-      circleCenterY = imageWidth / 2; // Horizontally centered
-      circleCenterX =
-          imageHeight * circlePositionY; // At specified vertical position
+      circleCenterX = imageWidth / 2;
+      circleCenterY = imageHeight * circlePositionY;
       circleRadius = (imageWidth * circleSize) / 2;
     } else {
-      // Normal orientation
       circleCenterX = imageWidth / 2;
       circleCenterY = imageHeight * circlePositionY;
       circleRadius = (imageWidth * circleSize) / 2;
     }
 
-    // Calculate distance from face center to circle center
     final distanceX = faceCenterX - circleCenterX;
     final distanceY = faceCenterY - circleCenterY;
-    final distance = (distanceX * distanceX + distanceY * distanceY).abs();
-    final distanceSqrt = distance;
+    final distance = math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-    // Allow some tolerance - face center should be within 80% of circle radius
-    final allowedDistance = circleRadius * 0.8;
+    // Android: Stricter tolerance - face must be within 60% of circle radius
+    final allowedDistance = circleRadius * 0.6;
 
-    if (distanceSqrt > (allowedDistance * allowedDistance)) {
+    if (distance > allowedDistance) {
       debugPrint(
-        'Face not centered: distance ${distanceSqrt.toStringAsFixed(1)} > allowed ${(allowedDistance * allowedDistance).toStringAsFixed(1)}',
+        '[Android] Face not centered: distance ${distance.toStringAsFixed(1)} > allowed ${allowedDistance.toStringAsFixed(1)}',
+      );
+      debugPrint(
+        '[Android] Face center: (${faceCenterX.toStringAsFixed(1)}, ${faceCenterY.toStringAsFixed(1)}), '
+        'Circle center: (${circleCenterX.toStringAsFixed(1)}, ${circleCenterY.toStringAsFixed(1)}), '
+        'Sensor orientation: $sensorOrientation°',
       );
       return false;
     }
 
+    debugPrint(
+        '[Android] ✓ Face centered: distance ${distance.toStringAsFixed(1)}/${allowedDistance.toStringAsFixed(1)}');
     return true;
   }
 
@@ -962,12 +1205,14 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
       });
 
       // Delay before capturing photo
-      Future.delayed(widget.config.settings.photoCaptureDelay ?? Duration.zero,
-          () {
-        if (mounted) {
-          _capturePhoto();
-        }
-      });
+      Future.delayed(
+        widget.config.settings.photoCaptureDelay ?? Duration.zero,
+        () {
+          if (mounted) {
+            _capturePhoto();
+          }
+        },
+      );
     } else if (!_livenessCompleted) {
       setState(() {
         _errorMessage = "";
@@ -1409,10 +1654,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
                   backgroundColor: widget.config.theme.btnRetryBGColor,
                   foregroundColor: widget.config.theme.btnTextRetryColor,
                   padding: widget.config.theme.btnRetryPadding ??
-                      const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   minimumSize: widget.config.theme.btnRetryHeight != null
                       ? Size.fromHeight(widget.config.theme.btnRetryHeight!)
                       : const Size.fromHeight(44),
@@ -1424,12 +1666,13 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
                 ),
                 child: Text(
                   widget.config.messages.tryAgainButtonText,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: widget.config.theme.fontFamily,
-                    color: widget.config.theme.btnTextRetryColor,
-                  ),
+                  style: widget.config.theme.btnRetryTextStyle ??
+                      TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: widget.config.theme.fontFamily,
+                        color: widget.config.theme.btnTextRetryColor,
+                      ),
                 ),
               ),
             ),
