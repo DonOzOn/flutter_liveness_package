@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.8] - 2025-10-28
+
+### Fixed
+- **Android Face Detection**: Relaxed face completeness validation for better detection consistency
+  - Reduced mouth width threshold from 0.15 to 0.12 of bounding box width
+  - Reduced nose-to-mouth distance threshold from 0.15 to 0.12 of bounding box height
+  - Made upper lip contour optional (warning only, not critical)
+  - Made mouth left/right landmarks optional, only requiring bottom mouth landmark as critical
+  - Aligned Android validation closer to iOS for more consistent cross-platform behavior
+- **iOS Face Detection**: Enhanced face detection with improved validation logic
+  - Added comprehensive mouth landmark detection
+  - Improved contour point validation for better accuracy
+  - Enhanced face completeness checks for iOS platform
+
+### Added
+- **Custom Button Text Style**: Added `btnRetryTextStyle` parameter to `LivenessCheckTheme`
+  - Customize text style for retry button independently
+  - Provides more granular control over button appearance
+
+### Changed
+- Improved face detection validation to be more consistent across Android and iOS platforms
+- Enhanced debug logging for face validation issues
+
+---
+
 ## [1.0.7] - 2025-01-28
 
 ### Added
