@@ -125,8 +125,11 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     widget.controller?.registerPauseCallback(_pauseDetection);
     widget.controller?.registerResumeCallback(_resumeDetection);
 
-    _initializeCamera();
-    _initializeFaceDetector();
+    // Only initialize camera if status is init (not fail or success)
+    if (widget.config.status == LivenessStatus.init) {
+      _initializeCamera();
+      _initializeFaceDetector();
+    }
   }
 
   @override
