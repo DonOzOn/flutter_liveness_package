@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.8] - 2025-12-09
+## [1.0.9] - 2025-12-09
 
 ### Fixed
 - **Camera Initialization Bug**: Fixed camera turning on when `LivenessStatus.fail` is set on screen initialization
