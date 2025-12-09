@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.8] - 2025-12-09
+
+### Fixed
+- **Camera Initialization Bug**: Fixed camera turning on when `LivenessStatus.fail` is set on screen initialization
+  - Camera and face detector now only initialize when status is `LivenessStatus.init`
+  - Prevents unnecessary camera access and processing when showing failure state
+  - Ensures failure screen displays correctly without camera validation running in background
+
+---
+
 ## [1.0.8] - 2025-10-28
 
 ### Fixed
