@@ -18,7 +18,7 @@ dependencies:
   path_provider: ^2.1.1
   image: ^4.0.17
   device_info_plus: ^9.1.1
-  tflite_flutter: ^0.11.0
+  onnxruntime: ^1.4.1
 
 dev_dependencies:
   flutter_test:
@@ -34,7 +34,7 @@ flutter:
   assets:
     - assets/success.png
     - assets/fail.png
-    - assets/FaceAntiSpoofing.tflite
+    - assets/anti-spoof-mn3.onnx
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/to/asset-from-package

@@ -84,7 +84,7 @@ class _ControllerExampleState extends State<ControllerExample> {
             onTryAgain: () {
               setState(() => _status = LivenessStatus.init);
             },
-            onPhotoTaken: (imagePath) {
+            onPhotoTaken: (imagePath, isReal) {
               debugPrint('Photo saved: $imagePath');
             },
           ),

@@ -26,7 +26,20 @@ All notable changes to this project will be documented in this file.
       ),
     )
     ```
-
+- **Camera Flash Control**: Automatically disables flash on camera initialization
+  - Prevents unwanted flash during face detection on both iOS and Android
+  - Improves user experience in all lighting conditions
+  - Graceful error handling if flash control fails
+- **Configurable Camera Initialization Delay**: New `cameraInitDelay` parameter in `CameraSettings`
+  - Default: 2500ms to ensure camera is fully ready before starting image stream
+  - Prevents race conditions during camera initialization
+  - Configurable per implementation needs
+  - Example:
+    ```dart
+    CameraSettings(
+      cameraInitDelay: 3000, // Custom delay in milliseconds
+    )
+    ```
 ### Improved
 - **Enhanced Face Centering Validation**: Added Euler angle validation for more accurate face positioning
   - Implemented `_isFaceCenteredByEulerAngles` method based on Android native implementation
@@ -36,6 +49,15 @@ All notable changes to this project will be documented in this file.
   - Two-step validation: Euler angles check + platform-specific position validation
   - Improves liveness detection accuracy and prevents spoofing attempts
   - Consistent behavior across Android and iOS platforms
+- **Blur Detection**: Enhanced with ONNX-based Laplacian calculation
+  - Integrated `FaceAntiSpoofingOnnx.calculateLaplacian` for more accurate blur detection
+  - Platform-specific clearness thresholds: Android=700, iOS=600
+  - Laplacian kernel applied on 128x128 grayscale images with threshold of 50
+  - Better debugging output for blur detection scores
+- **Code Quality**: Enhanced formatting and error handling
+  - Improved code formatting and indentation consistency
+  - Better debug logging throughout the detection pipeline
+  - Enhanced error messages for face validation issues
 
 ---
 

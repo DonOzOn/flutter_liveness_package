@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:camera/camera.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image/image.dart' as imglib;
 
 class CameraImageConverter {
@@ -19,7 +20,7 @@ class CameraImageConverter {
         return _convertUsingPlanes(cameraImage);
       }
     } catch (e) {
-      print('Error converting CameraImage: $e');
+      debugPrint('Error converting CameraImage: $e');
       return null;
     }
   }
@@ -151,7 +152,7 @@ class CameraImageConverter {
 
       return byteData?.buffer.asUint8List();
     } catch (e) {
-      print('Error converting CameraImage to bytes: $e');
+      debugPrint('Error converting CameraImage to bytes: $e');
       return null;
     }
   }

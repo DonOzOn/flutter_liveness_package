@@ -83,11 +83,16 @@ class CameraSettings {
   /// Image format group for camera output.
   final ImageFormatGroup? imageFormatGroup;
 
+  /// Delay in milliseconds before starting image stream after camera initialization.
+  /// Default is 2500ms to ensure camera is fully ready.
+  final int cameraInitDelay;
+
   /// Creates camera settings.
   const CameraSettings({
     this.resolutionPreset = ResolutionPreset.high,
     this.enableAudio = false,
     this.imageFormatGroup,
+    this.cameraInitDelay = 2500,
   });
 }
 
@@ -341,8 +346,10 @@ class LivenessCheckCallbacks {
   /// Called when user cancels the liveness check.
   final VoidCallback? onCancel;
 
-  /// Called when photo is captured with the image path.
-  final Function(String imagePath)? onPhotoTaken;
+  /// Called when photo is captured with the image path and anti-spoofing result.
+  /// [imagePath] - Path to the captured photo
+  /// [antiSpoofingPassed] - True if anti-spoofing check passed, false if failed
+  final Function(String imagePath, bool antiSpoofingPassed)? onPhotoTaken;
 
   /// Called during liveness check with progress updates.
   final Function(int blinkCount, bool isSmiling)? onProgressUpdate;

@@ -135,7 +135,7 @@ class _CustomAssetsExampleState extends State<CustomAssetsExample> {
                       ),
                     );
                   },
-                  onPhotoTaken: (imagePath) {
+                  onPhotoTaken: (imagePath, isReal) {
                     debugPrint('Photo captured at: $imagePath');
                   },
                   onProgressUpdate: (blinkCount, isSmiling) {
