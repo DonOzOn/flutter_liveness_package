@@ -94,6 +94,8 @@
       return &#39;Failed to capture photo&#39;;
     case LivenessCheckError.processingTimeout:
       return &#39;Processing timeout. Please try again.&#39;;
+    case LivenessCheckError.eyesClosed:
+      return &#39;Please open your eyes.&#39;;
     case LivenessCheckError.unknownError:
       return &#39;An unknown error occurred&#39;;
   }
@@ -125,7 +127,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.6
+      1.0.10
   </span>
   
 </footer>

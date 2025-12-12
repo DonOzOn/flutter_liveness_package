@@ -2,6 +2,65 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.10] - 2025-12-12
+
+### Added
+- **Eyes Closed Detection**: New customizable error message when eyes are closed during face detection
+  - Added `LivenessCheckError.eyesClosed` error type
+  - Added `eyesClosed` parameter to `LivenessCheckMessages` for custom error text
+  - Added `enableEyesClosedCheck` parameter to `LivenessCheckSettings` to enable/disable this check
+  - Default: enabled (`enableEyesClosedCheck: true`)
+  - Default message: "Please open your eyes."
+  - Automatically skipped when `enableBlinkDetection` is true (blink detection requires eyes to close)
+  - Only active when blink detection is disabled for better user experience
+  - Detected separately before other face completeness checks for better user feedback
+  - Improves user experience by providing specific guidance when eyes are closed
+  - Example usage:
+    ```dart
+    LivenessCheckConfig(
+      settings: LivenessCheckSettings(
+        enableEyesClosedCheck: true,  // Enable/disable eyes closed check
+      ),
+      messages: LivenessCheckMessages(
+        eyesClosed: 'Keep your eyes open during verification',
+      ),
+    )
+    ```
+- **Camera Flash Control**: Automatically disables flash on camera initialization
+  - Prevents unwanted flash during face detection on both iOS and Android
+  - Improves user experience in all lighting conditions
+  - Graceful error handling if flash control fails
+- **Configurable Camera Initialization Delay**: New `cameraInitDelay` parameter in `CameraSettings`
+  - Default: 2500ms to ensure camera is fully ready before starting image stream
+  - Prevents race conditions during camera initialization
+  - Configurable per implementation needs
+  - Example:
+    ```dart
+    CameraSettings(
+      cameraInitDelay: 3000, // Custom delay in milliseconds
+    )
+    ```
+### Improved
+- **Enhanced Face Centering Validation**: Added Euler angle validation for more accurate face positioning
+  - Implemented `_isFaceCenteredByEulerAngles` method based on Android native implementation
+  - Validates head rotation using `headEulerAngleX`, `headEulerAngleY`, and `headEulerAngleZ`
+  - Ensures face is looking straight at camera (within ±5 degrees on all axes)
+  - Prevents tilted or rotated faces from passing validation
+  - Two-step validation: Euler angles check + platform-specific position validation
+  - Improves liveness detection accuracy and prevents spoofing attempts
+  - Consistent behavior across Android and iOS platforms
+- **Blur Detection**: Enhanced with ONNX-based Laplacian calculation
+  - Integrated `FaceAntiSpoofingOnnx.calculateLaplacian` for more accurate blur detection
+  - Platform-specific clearness thresholds: Android=700, iOS=600
+  - Laplacian kernel applied on 128x128 grayscale images with threshold of 50
+  - Better debugging output for blur detection scores
+- **Code Quality**: Enhanced formatting and error handling
+  - Improved code formatting and indentation consistency
+  - Better debug logging throughout the detection pipeline
+  - Enhanced error messages for face validation issues
+
+---
+
 ## [1.0.9] - 2025-12-09
 
 ### Fixed

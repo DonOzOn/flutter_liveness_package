@@ -14,13 +14,15 @@ A comprehensive Flutter package for face liveness detection with fully customiza
 - **📊 Status Management** - Init, success, and fail states with asset replacement
 - **🔄 Retry Logic** - Configurable maximum attempts with callbacks
 - **🌍 Localization Support** - Customizable messages and button text
-- **🎯 Error Handling** - Type-safe error enums with detailed error information
+- **🎯 Error Handling** - Type-safe error enums with detailed error information including eyes closed detection
 - **🎭 Custom Widgets** - Custom bottom widgets and loading overlays
 - **✏️ Font Customization** - Set custom font family for all text elements
 - **🔍 Quality Detection** - Advanced blur and lighting analysis
+- **👁️ Eyes Closed Detection** - Specific error message when eyes are closed during verification
 - **⏸️ Pause/Resume Control** - Pause and resume camera preview and face detection
 - **🎚️ Flexible Detection Modes** - Enable/disable blink or smile detection independently
 - **⏱️ Photo Capture Delay** - Configurable delay before capturing photo after verification
+- **🎯 Enhanced Face Centering** - Euler angle validation ensures face is looking straight at camera
 
 ## 📋 Table of Contents
 
@@ -438,6 +440,8 @@ LivenessCheckSettings(
   enableBlinkDetection: true,     // Enable/disable blink detection
   requiredBlinkCount: 3,          // Number of blinks required
   enableSmileDetection: true,     // Enable/disable smile detection
+  enableEyesClosedCheck: true,    // Enable/disable eyes closed error detection
+                                  // Note: Auto-skipped when enableBlinkDetection is true
 
   // UI Controls
   showProgress: true,
@@ -674,7 +678,35 @@ LivenessCheckScreen(
 )
 ```
 
-### 6. E-commerce KYC
+### 6. Eyes Closed Check (Smile-Only Mode)
+
+```dart
+// Eyes closed check is useful when blink detection is DISABLED
+// Note: Automatically skipped when enableBlinkDetection is true
+LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    appBarConfig: const AppBarConfig(
+      title: 'Smile Verification',
+      showBackButton: true,
+    ),
+    settings: const LivenessCheckSettings(
+      enableBlinkDetection: false,    // Disable blink detection
+      enableSmileDetection: true,     // Enable smile detection
+      enableEyesClosedCheck: true,    // Enable eyes closed check (useful in smile-only mode)
+      maxRetryAttempts: 3,
+    ),
+    messages: const LivenessCheckMessages(
+      eyesClosed: 'Please keep your eyes open',
+    ),
+    placeholder: 'Please smile with your eyes open',
+    callbacks: LivenessCheckCallbacks(
+      onSuccess: () => _handleSuccess(),
+    ),
+  ),
+)
+```
+
+### 7. E-commerce KYC
 
 ```dart
 LivenessCheckScreen(
@@ -827,6 +859,7 @@ enum LivenessCheckError {
   poorLighting,
   photoCaptureFailed,
   processingTimeout,
+  eyesClosed,        // New: Detected when eyes are closed
   unknownError,
 }
 
@@ -850,6 +883,7 @@ const LivenessCheckMessages(
   title: 'Verificación de Vida',
   noFaceDetected: 'No se detectó rostro. Posicione su cara en el círculo.',
   multipleFacesDetected: 'Se detectaron múltiples rostros. Solo una persona.',
+  eyesClosed: 'Por favor, mantenga los ojos abiertos.',  // New
   livenessCheckPassed: '¡Verificación exitosa!',
   tryAgainButtonText: 'Intentar Nuevamente',
 )

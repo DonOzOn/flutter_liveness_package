@@ -38,6 +38,7 @@ class EnhancedQualityDetector {
   /// - Face size analysis
   /// - Landmark stability check
   /// - Laplacian variance calculation (optional based on image format)
+  /// - ONNX-based Laplacian calculation (from FaceAntiSpoofingOnnx)
   static BlurDetectionResult detectBlur(
     CameraImage cameraImage,
     Face face, {
@@ -63,10 +64,10 @@ class EnhancedQualityDetector {
           face.boundingBox,
         );
       }
+      int badConditions = 0;
 
       // NEW: Much more forgiving combination logic
       // Only mark as blurry if MULTIPLE conditions are bad, not just one
-      int badConditions = 0;
 
       if (isSmallFace) badConditions++;
       if (!landmarkStability) badConditions++;
@@ -230,8 +231,8 @@ class EnhancedQualityDetector {
             final left = yBytes[index - 1];
             final right = yBytes[index + 1];
 
-            final laplacian = (4 * center - top - bottom - left - right)
-                .toDouble();
+            final laplacian =
+                (4 * center - top - bottom - left - right).toDouble();
             laplacianValues.add(laplacian.abs()); // Use absolute value
           }
         }
@@ -244,8 +245,7 @@ class EnhancedQualityDetector {
       // Calculate variance
       final mean =
           laplacianValues.reduce((a, b) => a + b) / laplacianValues.length;
-      final variance =
-          laplacianValues
+      final variance = laplacianValues
               .map((x) => math.pow(x - mean, 2))
               .reduce((a, b) => a + b) /
           laplacianValues.length;
@@ -322,7 +322,7 @@ class EnhancedQualityDetector {
     final mean = _calculateAverageBrightness(pixels);
     final variance =
         pixels.map((x) => math.pow(x - mean, 2)).reduce((a, b) => a + b) /
-        pixels.length;
+            pixels.length;
 
     return math.sqrt(variance);
   }

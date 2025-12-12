@@ -83,11 +83,16 @@ class CameraSettings {
   /// Image format group for camera output.
   final ImageFormatGroup? imageFormatGroup;
 
+  /// Delay in milliseconds before starting image stream after camera initialization.
+  /// Default is 2500ms to ensure camera is fully ready.
+  final int cameraInitDelay;
+
   /// Creates camera settings.
   const CameraSettings({
     this.resolutionPreset = ResolutionPreset.high,
     this.enableAudio = false,
     this.imageFormatGroup,
+    this.cameraInitDelay = 2500,
   });
 }
 
@@ -341,8 +346,10 @@ class LivenessCheckCallbacks {
   /// Called when user cancels the liveness check.
   final VoidCallback? onCancel;
 
-  /// Called when photo is captured with the image path.
-  final Function(String imagePath)? onPhotoTaken;
+  /// Called when photo is captured with the image path and anti-spoofing result.
+  /// [imagePath] - Path to the captured photo
+  /// [antiSpoofingPassed] - True if anti-spoofing check passed, false if failed
+  final Function(String imagePath, bool antiSpoofingPassed)? onPhotoTaken;
 
   /// Called during liveness check with progress updates.
   final Function(int blinkCount, bool isSmiling)? onProgressUpdate;
@@ -407,6 +414,15 @@ class LivenessCheckMessages {
   /// Message shown when camera initialization fails.
   final String failedToInitializeCamera;
 
+  /// Message shown when eyes are closed.
+  final String eyesClosed;
+
+  /// Message shown when mask is detected or nose/mouth not visible.
+  final String maskDetected;
+
+  /// Message shown when spoofing is detected (fake face).
+  final String spoofingDetected;
+
   /// Text for the try again button.
   final String tryAgainButtonText;
 
@@ -430,6 +446,9 @@ class LivenessCheckMessages {
     this.failedToCapture = 'Failed to capture photo',
     this.cameraPermissionDenied = 'Camera permission denied',
     this.failedToInitializeCamera = 'Failed to initialize camera',
+    this.eyesClosed = 'Please open your eyes.',
+    this.maskDetected = 'Please remove your mask.',
+    this.spoofingDetected = 'Spoofing detected. Please use a real face.',
     this.tryAgainButtonText = 'Try Again',
     this.permissionDialogConfig = const PermissionDialogConfig(),
   });
@@ -473,6 +492,13 @@ class LivenessCheckSettings {
   /// Whether to enable smile detection for liveness check.
   final bool enableSmileDetection;
 
+  /// Whether to check if eyes are closed and show error message.
+  /// When enabled, shows a specific error when eyes are detected as closed.
+  /// Note: This check is automatically skipped when [enableBlinkDetection] is true,
+  /// as blink detection requires eyes to close. Most useful in smile-only mode.
+  /// Default is true.
+  final bool enableEyesClosedCheck;
+
   /// Whether to show progress indicators during the check.
   final bool showProgress;
 
@@ -502,6 +528,7 @@ class LivenessCheckSettings {
     this.enableBlinkDetection = true,
     this.requiredBlinkCount = 3,
     this.enableSmileDetection = true,
+    this.enableEyesClosedCheck = true,
     this.showProgress = true,
     this.autoNavigateOnSuccess = true,
     this.showErrorMessage = true,
