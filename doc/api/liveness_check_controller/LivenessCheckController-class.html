@@ -152,6 +152,18 @@ controller.disposeCamera();
 
 </dd>
 
+        <dt id="isPaused" class="property">
+  <span class="name"><a href="../liveness_check_controller/LivenessCheckController/isPaused.html">isPaused</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  
+
+</dt>
+<dd>
+  Gets the current pause status.
+  <div class="features"><span class="feature">no setter</span></div>
+
+</dd>
+
         <dt id="runtimeType" class="property inherited">
   <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></span>
   <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Type-class.html">Type</a></span>
@@ -253,6 +265,19 @@ object is not in a usable state and should be discarded (calls to
 
 </dd>
 
+        <dt id="pauseDetection" class="callable">
+  <span class="name"><a href="../liveness_check_controller/LivenessCheckController/pauseDetection.html">pauseDetection</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Pauses camera preview and face detection.
+  
+
+</dd>
+
         <dt id="registerDisposeCallback" class="callable">
   <span class="name"><a href="../liveness_check_controller/LivenessCheckController/registerDisposeCallback.html">registerDisposeCallback</a></span><span class="signature">(<wbr><span class="parameter" id="registerDisposeCallback-param-callback"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/VoidCallback.html">VoidCallback</a></span> <span class="parameter-name">callback</span></span>)
     <span class="returntype parameter">&#8594; void</span>
@@ -281,6 +306,20 @@ Called by LivenessCheckScreen only.
 
 </dd>
 
+        <dt id="registerPauseCallback" class="callable">
+  <span class="name"><a href="../liveness_check_controller/LivenessCheckController/registerPauseCallback.html">registerPauseCallback</a></span><span class="signature">(<wbr><span class="parameter" id="registerPauseCallback-param-callback"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span> <span class="parameter-name">callback</span>()</span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd>
+  Internal method to register pause detection callback.
+Called by LivenessCheckScreen only.
+  
+
+</dd>
+
         <dt id="registerResetCallback" class="callable">
   <span class="name"><a href="../liveness_check_controller/LivenessCheckController/registerResetCallback.html">registerResetCallback</a></span><span class="signature">(<wbr><span class="parameter" id="registerResetCallback-param-callback"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/VoidCallback.html">VoidCallback</a></span> <span class="parameter-name">callback</span></span>)
     <span class="returntype parameter">&#8594; void</span>
@@ -290,6 +329,20 @@ Called by LivenessCheckScreen only.
 </dt>
 <dd>
   Internal method to register state reset callback.
+Called by LivenessCheckScreen only.
+  
+
+</dd>
+
+        <dt id="registerResumeCallback" class="callable">
+  <span class="name"><a href="../liveness_check_controller/LivenessCheckController/registerResumeCallback.html">registerResumeCallback</a></span><span class="signature">(<wbr><span class="parameter" id="registerResumeCallback-param-callback"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span> <span class="parameter-name">callback</span>()</span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd>
+  Internal method to register resume detection callback.
 Called by LivenessCheckScreen only.
   
 
@@ -322,6 +375,19 @@ notified when the object changes.
 
 </dd>
 
+        <dt id="resumeDetection" class="callable">
+  <span class="name"><a href="../liveness_check_controller/LivenessCheckController/resumeDetection.html">resumeDetection</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Resumes camera preview and face detection.
+  
+
+</dd>
+
         <dt id="setInitialized" class="callable">
   <span class="name"><a href="../liveness_check_controller/LivenessCheckController/setInitialized.html">setInitialized</a></span><span class="signature">(<wbr><span class="parameter" id="setInitialized-param-value"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">value</span></span>)
     <span class="returntype parameter">&#8594; void</span>
@@ -331,6 +397,20 @@ notified when the object changes.
 </dt>
 <dd>
   Internal method to set initialization status.
+Called by LivenessCheckScreen only.
+  
+
+</dd>
+
+        <dt id="setPaused" class="callable">
+  <span class="name"><a href="../liveness_check_controller/LivenessCheckController/setPaused.html">setPaused</a></span><span class="signature">(<wbr><span class="parameter" id="setPaused-param-value"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">value</span></span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd>
+  Internal method to set pause status.
 Called by LivenessCheckScreen only.
   
 
@@ -399,7 +479,7 @@ Called by LivenessCheckScreen only.
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.6
+      1.0.10
   </span>
   
 </footer>

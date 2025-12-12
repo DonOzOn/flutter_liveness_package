@@ -1,6 +1,6 @@
 name: flutter_liveness_check
 description: "A comprehensive Flutter package for face liveness detection with ML Kit."
-version: 1.0.9
+version: 1.0.10
 homepage: "https://github.com/DonOzOn/flutter_liveness_package"
 repository: "https://github.com/DonOzOn/flutter_liveness_package"
 issue_tracker: "https://github.com/DonOzOn/flutter_liveness_package/issues"
@@ -13,11 +13,12 @@ dependencies:
   flutter:
     sdk: flutter
   camera: ^0.10.5+5
-  google_mlkit_face_detection: ^0.10.0 
+  google_mlkit_face_detection: ^0.10.0
   permission_handler: ^11.0.1
   path_provider: ^2.1.1
   image: ^4.0.17
-  device_info_plus: ^9.1.1 
+  device_info_plus: ^9.1.1
+  tflite_flutter: ^0.11.0
 
 dev_dependencies:
   flutter_test:
@@ -33,6 +34,7 @@ flutter:
   assets:
     - assets/success.png
     - assets/fail.png
+    - assets/FaceAntiSpoofing.tflite
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/to/asset-from-package

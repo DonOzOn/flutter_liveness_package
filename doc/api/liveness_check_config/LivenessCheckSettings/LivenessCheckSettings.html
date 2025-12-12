@@ -57,8 +57,10 @@
 
     <section class="multi-line-signature">
       const
-      <span class="name ">LivenessCheckSettings</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="-param-requiredBlinkCount"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">requiredBlinkCount</span> = <span class="default-value">3</span>, </span></li>
-<li><span class="parameter" id="-param-requireSmile"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">requireSmile</span> = <span class="default-value">false</span>, </span></li>
+      <span class="name ">LivenessCheckSettings</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="-param-enableBlinkDetection"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">enableBlinkDetection</span> = <span class="default-value">true</span>, </span></li>
+<li><span class="parameter" id="-param-requiredBlinkCount"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">requiredBlinkCount</span> = <span class="default-value">3</span>, </span></li>
+<li><span class="parameter" id="-param-enableSmileDetection"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">enableSmileDetection</span> = <span class="default-value">true</span>, </span></li>
+<li><span class="parameter" id="-param-enableEyesClosedCheck"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">enableEyesClosedCheck</span> = <span class="default-value">true</span>, </span></li>
 <li><span class="parameter" id="-param-showProgress"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showProgress</span> = <span class="default-value">true</span>, </span></li>
 <li><span class="parameter" id="-param-autoNavigateOnSuccess"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">autoNavigateOnSuccess</span> = <span class="default-value">true</span>, </span></li>
 <li><span class="parameter" id="-param-showErrorMessage"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showErrorMessage</span> = <span class="default-value">true</span>, </span></li>
@@ -66,6 +68,7 @@
 <li><span class="parameter" id="-param-maxRetryAttempts"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">maxRetryAttempts</span> = <span class="default-value">3</span>, </span></li>
 <li><span class="parameter" id="-param-processingTimeout"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Duration-class.html">Duration</a></span> <span class="parameter-name">processingTimeout</span> = <span class="default-value">const Duration(seconds: 30)</span>, </span></li>
 <li><span class="parameter" id="-param-circlePositionY"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">circlePositionY</span> = <span class="default-value">0.38</span>, </span></li>
+<li><span class="parameter" id="-param-photoCaptureDelay"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Duration-class.html">Duration</a>?</span> <span class="parameter-name">photoCaptureDelay</span> = <span class="default-value">const Duration(milliseconds: 0)</span>, </span></li>
 </ol>})
     </section>
     
@@ -78,8 +81,10 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">const LivenessCheckSettings({
+  this.enableBlinkDetection = true,
   this.requiredBlinkCount = 3,
-  this.requireSmile = false,
+  this.enableSmileDetection = true,
+  this.enableEyesClosedCheck = true,
   this.showProgress = true,
   this.autoNavigateOnSuccess = true,
   this.showErrorMessage = true,
@@ -87,6 +92,7 @@
   this.maxRetryAttempts = 3,
   this.processingTimeout = const Duration(seconds: 30),
   this.circlePositionY = 0.38,
+  this.photoCaptureDelay = const Duration(milliseconds: 0),
 });</code></pre>
 </section>
 
@@ -115,7 +121,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.6
+      1.0.10
   </span>
   
 </footer>

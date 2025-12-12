@@ -33,6 +33,15 @@ enum LivenessCheckError {
   /// Processing took too long and timed out.
   processingTimeout,
 
+  /// Eyes are closed when they should be open.
+  eyesClosed,
+
+  /// Face is covered by a mask or nose/mouth not visible.
+  maskDetected,
+
+  /// Spoofing detected - fake face (photo, video, mask, etc.)
+  spoofingDetected,
+
   /// An unknown or unexpected error occurred.
   unknownError,
 }
@@ -62,6 +71,12 @@ extension LivenessCheckErrorExtension on LivenessCheckError {
         return 'Failed to capture photo';
       case LivenessCheckError.processingTimeout:
         return 'Processing timeout. Please try again.';
+      case LivenessCheckError.eyesClosed:
+        return 'Please open your eyes.';
+      case LivenessCheckError.maskDetected:
+        return 'Please remove your mask.';
+      case LivenessCheckError.spoofingDetected:
+        return 'Spoofing detected. Please use a real face.';
       case LivenessCheckError.unknownError:
         return 'An unknown error occurred';
     }
@@ -92,6 +107,12 @@ extension LivenessCheckErrorExtension on LivenessCheckError {
         return messages.failedToCapture;
       case LivenessCheckError.processingTimeout:
         return 'Processing timeout. Please try again.';
+      case LivenessCheckError.eyesClosed:
+        return messages.eyesClosed;
+      case LivenessCheckError.maskDetected:
+        return messages.maskDetected;
+      case LivenessCheckError.spoofingDetected:
+        return messages.spoofingDetected;
       case LivenessCheckError.unknownError:
         return 'An unknown error occurred';
     }

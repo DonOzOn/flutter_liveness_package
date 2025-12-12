@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.10] - 2025-12-12
+
+### Added
+- **Eyes Closed Detection**: New customizable error message when eyes are closed during face detection
+  - Added `LivenessCheckError.eyesClosed` error type
+  - Added `eyesClosed` parameter to `LivenessCheckMessages` for custom error text
+  - Added `enableEyesClosedCheck` parameter to `LivenessCheckSettings` to enable/disable this check
+  - Default: enabled (`enableEyesClosedCheck: true`)
+  - Default message: "Please open your eyes."
+  - Automatically skipped when `enableBlinkDetection` is true (blink detection requires eyes to close)
+  - Only active when blink detection is disabled for better user experience
+  - Detected separately before other face completeness checks for better user feedback
+  - Improves user experience by providing specific guidance when eyes are closed
+  - Example usage:
+    ```dart
+    LivenessCheckConfig(
+      settings: LivenessCheckSettings(
+        enableEyesClosedCheck: true,  // Enable/disable eyes closed check
+      ),
+      messages: LivenessCheckMessages(
+        eyesClosed: 'Keep your eyes open during verification',
+      ),
+    )
+    ```
+
+### Improved
+- **Enhanced Face Centering Validation**: Added Euler angle validation for more accurate face positioning
+  - Implemented `_isFaceCenteredByEulerAngles` method based on Android native implementation
+  - Validates head rotation using `headEulerAngleX`, `headEulerAngleY`, and `headEulerAngleZ`
+  - Ensures face is looking straight at camera (within ±5 degrees on all axes)
+  - Prevents tilted or rotated faces from passing validation
+  - Two-step validation: Euler angles check + platform-specific position validation
+  - Improves liveness detection accuracy and prevents spoofing attempts
+  - Consistent behavior across Android and iOS platforms
+
+---
+
 ## [1.0.9] - 2025-12-09
 
 ### Fixed

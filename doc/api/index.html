@@ -59,10 +59,14 @@
 <li><strong>📊 Status Management</strong> - Init, success, and fail states with asset replacement</li>
 <li><strong>🔄 Retry Logic</strong> - Configurable maximum attempts with callbacks</li>
 <li><strong>🌍 Localization Support</strong> - Customizable messages and button text</li>
-<li><strong>🎯 Error Handling</strong> - Type-safe error enums with detailed error information</li>
+<li><strong>🎯 Error Handling</strong> - Type-safe error enums with detailed error information including eyes closed detection</li>
 <li><strong>🎭 Custom Widgets</strong> - Custom bottom widgets and loading overlays</li>
 <li><strong>✏️ Font Customization</strong> - Set custom font family for all text elements</li>
 <li><strong>🔍 Quality Detection</strong> - Advanced blur and lighting analysis</li>
+<li><strong>👁️ Eyes Closed Detection</strong> - Specific error message when eyes are closed during verification</li>
+<li><strong>⏸️ Pause/Resume Control</strong> - Pause and resume camera preview and face detection</li>
+<li><strong>🎚️ Flexible Detection Modes</strong> - Enable/disable blink or smile detection independently</li>
+<li><strong>⏱️ Photo Capture Delay</strong> - Configurable delay before capturing photo after verification</li>
 </ul>
 <h2 id="-table-of-contents">📋 Table of Contents</h2>
 <ul>
@@ -191,14 +195,63 @@ LivenessCheckScreen(
 await controller.initializeCamera();  // Start camera + face detector
 await controller.disposeCamera();     // Stop camera and release resources
 controller.resetState();              // Reset blink count and smile status
+await controller.pauseDetection();    // Pause camera preview and face detection
+await controller.resumeDetection();   // Resume camera preview and face detection
 
 // Monitor status
 print(controller.isInitialized);  // Check if camera is ready
+print(controller.isPaused);       // Check if camera is paused
 
 // Listen to changes
 controller.addListener(() {
   print('Camera status: ${controller.isInitialized}');
+  print('Paused: ${controller.isPaused}');
 });
+</code></pre>
+<h3 id="pauseresume-detection">Pause/Resume Detection</h3>
+<p>Control camera preview and face detection without disposing the camera:</p>
+<pre class="language-dart"><code class="language-dart">class _MyScreenState extends State&lt;MyScreen&gt; {
+  final controller = LivenessCheckController();
+  bool _showingDialog = false;
+
+  Future&lt;void&gt; _showInstructions() async {
+    // Pause detection while showing instructions
+    await controller.pauseDetection();
+    _showingDialog = true;
+
+    await showDialog(
+      context: context,
+      builder: (context) =&gt; AlertDialog(
+        title: Text('Instructions'),
+        content: Text('Please position your face in the circle and blink 3 times'),
+        actions: [
+          TextButton(
+            onPressed: () =&gt; Navigator.pop(context),
+            child: Text('Got it'),
+          ),
+        ],
+      ),
+    );
+
+    _showingDialog = false;
+    // Resume detection after dialog closes
+    await controller.resumeDetection();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: LivenessCheckScreen(
+        controller: controller,
+        config: LivenessCheckConfig(...),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showInstructions,
+        child: Icon(Icons.help),
+      ),
+    );
+  }
+}
 </code></pre>
 <h3 id="app-lifecycle-management-example">App Lifecycle Management Example</h3>
 <pre class="language-dart"><code class="language-dart">class _MyScreenState extends State&lt;MyScreen&gt; with WidgetsBindingObserver {
@@ -220,9 +273,11 @@ controller.addListener(() {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      controller.disposeCamera(); // Save battery
+      // Use pauseDetection to save battery while keeping camera initialized
+      controller.pauseDetection();
     } else if (state == AppLifecycleState.resumed) {
-      controller.initializeCamera(); // Restart camera
+      // Resume detection when app comes back
+      controller.resumeDetection();
     }
   }
 
@@ -373,8 +428,11 @@ controller.addListener(() {
 <h3 id="livenesschecksettings---behavior-configuration">LivenessCheckSettings - Behavior Configuration</h3>
 <pre class="language-dart"><code class="language-dart">LivenessCheckSettings(
   // Liveness Requirements
-  requiredBlinkCount: 3,
-  requireSmile: false,
+  enableBlinkDetection: true,     // Enable/disable blink detection
+  requiredBlinkCount: 3,          // Number of blinks required
+  enableSmileDetection: true,     // Enable/disable smile detection
+  enableEyesClosedCheck: true,    // Enable/disable eyes closed error detection
+                                  // Note: Auto-skipped when enableBlinkDetection is true
 
   // UI Controls
   showProgress: true,
@@ -388,6 +446,9 @@ controller.addListener(() {
 
   // Layout
   circlePositionY: 0.38, // Vertical position (0.0 to 1.0)
+
+  // Photo Capture
+  photoCaptureDelay: Duration(milliseconds: 0), // Delay before capturing photo
 )
 </code></pre>
 <h3 id="livenesscheckmessages---text-customization">LivenessCheckMessages - Text Customization</h3>
@@ -541,7 +602,72 @@ CameraSettings(
   ),
 )
 </code></pre>
-<h3 id="4-e-commerce-kyc">4. E-commerce KYC</h3>
+<h3 id="4-blink-only-detection-no-smile-required">4. Blink-Only Detection (No Smile Required)</h3>
+<pre class="language-dart"><code class="language-dart">LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    appBarConfig: const AppBarConfig(
+      title: 'Quick Verification',
+      showBackButton: true,
+    ),
+    settings: const LivenessCheckSettings(
+      enableBlinkDetection: true,     // Enable blink detection
+      requiredBlinkCount: 3,          // Require 3 blinks
+      enableSmileDetection: false,    // Disable smile detection
+      maxRetryAttempts: 3,
+    ),
+    placeholder: 'Please blink your eyes 3 times',
+    callbacks: LivenessCheckCallbacks(
+      onSuccess: () =&gt; _handleSuccess(),
+    ),
+  ),
+)
+</code></pre>
+<h3 id="5-smile-only-detection-no-blinks-required">5. Smile-Only Detection (No Blinks Required)</h3>
+<pre class="language-dart"><code class="language-dart">LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    appBarConfig: const AppBarConfig(
+      title: 'Smile Verification',
+      showBackButton: true,
+    ),
+    settings: const LivenessCheckSettings(
+      enableBlinkDetection: false,    // Disable blink detection
+      enableSmileDetection: true,     // Enable smile detection
+      maxRetryAttempts: 3,
+      photoCaptureDelay: Duration(milliseconds: 500), // Wait 500ms before capture
+    ),
+    placeholder: 'Please smile for the camera',
+    callbacks: LivenessCheckCallbacks(
+      onSuccess: () =&gt; _handleSuccess(),
+    ),
+  ),
+)
+</code></pre>
+<h3 id="6-eyes-closed-check-smile-only-mode">6. Eyes Closed Check (Smile-Only Mode)</h3>
+<pre class="language-dart"><code class="language-dart">// Eyes closed check is useful when blink detection is DISABLED
+// Note: Automatically skipped when enableBlinkDetection is true
+LivenessCheckScreen(
+  config: LivenessCheckConfig(
+    appBarConfig: const AppBarConfig(
+      title: 'Smile Verification',
+      showBackButton: true,
+    ),
+    settings: const LivenessCheckSettings(
+      enableBlinkDetection: false,    // Disable blink detection
+      enableSmileDetection: true,     // Enable smile detection
+      enableEyesClosedCheck: true,    // Enable eyes closed check (useful in smile-only mode)
+      maxRetryAttempts: 3,
+    ),
+    messages: const LivenessCheckMessages(
+      eyesClosed: 'Please keep your eyes open',
+    ),
+    placeholder: 'Please smile with your eyes open',
+    callbacks: LivenessCheckCallbacks(
+      onSuccess: () =&gt; _handleSuccess(),
+    ),
+  ),
+)
+</code></pre>
+<h3 id="7-e-commerce-kyc">7. E-commerce KYC</h3>
 <pre class="language-dart"><code class="language-dart">LivenessCheckScreen(
   config: LivenessCheckConfig(
     appBarConfig: const AppBarConfig(
@@ -549,9 +675,11 @@ CameraSettings(
       showBackButton: false, // No back button for KYC
     ),
     settings: const LivenessCheckSettings(
+      enableBlinkDetection: true,
       requiredBlinkCount: 2,
-      requireSmile: true,
+      enableSmileDetection: true,
       maxRetryAttempts: 5,
+      photoCaptureDelay: Duration(milliseconds: 0), // Immediate capture
     ),
     theme: const LivenessCheckTheme(
       primaryColor: Color(0xFFFF6B35),
@@ -566,7 +694,7 @@ CameraSettings(
   ),
 )
 </code></pre>
-<h3 id="5-custom-loading-widgets">5. Custom Loading Widgets</h3>
+<h3 id="7-custom-loading-widgets">7. Custom Loading Widgets</h3>
 <pre class="language-dart"><code class="language-dart">LivenessCheckScreen(
   config: LivenessCheckConfig(
     // Custom camera initialization loading (shown while camera starts)
@@ -620,7 +748,7 @@ CameraSettings(
   ),
 )
 </code></pre>
-<h3 id="6-custom-permission-dialog">6. Custom Permission Dialog</h3>
+<h3 id="8-custom-permission-dialog">8. Custom Permission Dialog</h3>
 <pre class="language-dart"><code class="language-dart">LivenessCheckScreen(
   config: LivenessCheckConfig(
     messages: LivenessCheckMessages(
@@ -673,6 +801,7 @@ enum LivenessCheckError {
   poorLighting,
   photoCaptureFailed,
   processingTimeout,
+  eyesClosed,        // New: Detected when eyes are closed
   unknownError,
 }
 
@@ -692,6 +821,7 @@ const LivenessCheckMessages(
   title: 'Verificación de Vida',
   noFaceDetected: 'No se detectó rostro. Posicione su cara en el círculo.',
   multipleFacesDetected: 'Se detectaron múltiples rostros. Solo una persona.',
+  eyesClosed: 'Por favor, mantenga los ojos abiertos.',  // New
   livenessCheckPassed: '¡Verificación exitosa!',
   tryAgainButtonText: 'Intentar Nuevamente',
 )
@@ -902,7 +1032,7 @@ LivenessCheckConfig(
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.6
+      1.0.10
   </span>
   
 </footer>

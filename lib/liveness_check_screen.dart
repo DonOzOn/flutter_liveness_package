@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'enhence_light_checker.dart';
+import 'face_anti_spoofing_detector.dart';
 import 'liveness_check_config.dart';
 import 'liveness_check_controller.dart';
 import 'liveness_check_errors.dart';
@@ -57,6 +58,9 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
   /// Face detector instance for ML Kit face detection
   FaceDetector? _faceDetector;
+
+  /// Anti-spoofing detector instance for fake face detection
+  late FaceAntiSpoofingDetector _antiSpoofingService;
 
   /// Prevents multiple simultaneous face detection operations
   bool _isDetecting = false;
@@ -114,7 +118,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   void initState() {
     super.initState();
     _borderColor = widget.config.theme.borderColor;
-
+    _initializeService();
     // Register controller callbacks
     widget.controller?.registerInitializeCallback(() {
       _initializeCamera();
@@ -129,6 +133,14 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     if (widget.config.status == LivenessStatus.init) {
       _initializeCamera();
       _initializeFaceDetector();
+    }
+  }
+
+  Future<void> _initializeService() async {
+    try {
+      _antiSpoofingService = await FaceAntiSpoofingDetector.create();
+    } catch (e) {
+      print('Failed to initialize anti-spoofing service: $e');
     }
   }
 
@@ -533,6 +545,17 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
           });
         }
 
+        // Check if eyes are closed first (before other face completeness checks)
+        // Only if enableEyesClosedCheck is enabled AND enableBlinkDetection is disabled
+        // (Skip this check when blink detection is enabled, as blinking requires eyes to close)
+        if (widget.config.settings.enableEyesClosedCheck &&
+            !widget.config.settings.enableBlinkDetection &&
+            _areEyesClosed(faces.first)) {
+          _handleError(LivenessCheckError.eyesClosed);
+          _resetLivenessState();
+          return;
+        }
+
         // Check if face is complete (all landmarks visible)
         if (!_isFaceComplete(faces.first)) {
           _handleError(LivenessCheckError.faceNotClear);
@@ -581,6 +604,25 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     _updateLivenessStatus();
   }
 
+  /// Checks if eyes are closed in the detected face.
+  ///
+  /// This method validates eye open probability to determine if eyes are closed.
+  /// Returns true if eyes appear closed (probability < 0.3), false otherwise.
+  ///
+  /// [face] The detected face from ML Kit to check
+  bool _areEyesClosed(Face face) {
+    final leftEyeProb = face.leftEyeOpenProbability;
+    final rightEyeProb = face.rightEyeOpenProbability;
+
+    // If we can't determine eye state, assume they're not closed
+    if (leftEyeProb == null || rightEyeProb == null) {
+      return false;
+    }
+
+    // Consider eyes closed if probability is below threshold
+    return leftEyeProb < 0.3 || rightEyeProb < 0.3;
+  }
+
   /// Validates that a complete face is detected with all essential landmarks.
   ///
   /// This method verifies the face is complete by:
@@ -595,7 +637,28 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   ///
   /// [face] The detected face from ML Kit to validate
   bool _isFaceComplete(Face face) {
-    // Use platform-specific validation
+    // First check face-to-head ratio
+    // Based on Android native implementation
+    if (_currentCameraImage != null) {
+      final imageHeight = _currentCameraImage!.height.toDouble();
+      final faceHeight = face.boundingBox.height;
+      final faceToHeadRatio = faceHeight / imageHeight;
+
+      // Platform-specific ratio thresholds
+      // iOS: More relaxed (0.3 - 0.9) for better detection
+      // Android: Standard (0.5 - 0.8) as per native code
+      final minRatio = Platform.isIOS ? 0.3 : 0.5;
+      final maxRatio = Platform.isIOS ? 0.9 : 0.8;
+
+      if (faceToHeadRatio < minRatio || faceToHeadRatio > maxRatio) {
+        debugPrint('[Face Validation] Face-to-head ratio out of range: '
+            '${faceToHeadRatio.toStringAsFixed(2)} '
+            '(expected: $minRatio-$maxRatio for ${Platform.isIOS ? "iOS" : "Android"})');
+        return false;
+      }
+    }
+
+    // Then use platform-specific validation
     if (Platform.isAndroid) {
       return _isFaceCompleteAndroid(face);
     } else {
@@ -622,6 +685,13 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
     if (leftEye == null || rightEye == null || nose == null) {
       debugPrint('Face incomplete: Missing eye or nose landmarks');
+      return false;
+    }
+
+    // Check for mask detection - if nose or mouth not visible
+    if (nose == null || mouthBottom == null) {
+      debugPrint('Mask detected: Nose or mouth not visible');
+      _handleError(LivenessCheckError.maskDetected);
       return false;
     }
 
@@ -954,12 +1024,47 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   ///
   /// [face] The detected face from ML Kit to validate positioning
   bool _isFaceCentered(Face face) {
-    // Use platform-specific validation
-    if (Platform.isAndroid) {
-      return _isFaceCenteredAndroid(face);
-    } else {
-      return _isFaceCenteredIOS(face);
+    // First check Euler angles (head rotation) - same for both platforms
+    // This ensures the face is looking straight at the camera
+    if (!_isFaceCenteredByEulerAngles(face)) {
+      return false;
     }
+    return true;
+    // Then use platform-specific position validation
+    // if (Platform.isAndroid) {
+    //   return _isFaceCenteredAndroid(face);
+    // } else {
+    //   return _isFaceCenteredIOS(face);
+    // }
+  }
+
+  /// Check if face is centered using Euler angles (head rotation)
+  /// Based on Android native implementation
+  /// Ensures the face is looking straight at the camera (within ±5 degrees)
+  bool _isFaceCenteredByEulerAngles(Face face) {
+    const double eulerThreshold = 5.0;
+
+    final headEulerAngleX = face.headEulerAngleX ?? 0.0;
+    final headEulerAngleY = face.headEulerAngleY ?? 0.0;
+    final headEulerAngleZ = face.headEulerAngleZ ?? 0.0;
+
+    // Check if all Euler angles are within threshold (±5 degrees)
+    final bool isCentered = headEulerAngleX < eulerThreshold &&
+        headEulerAngleY < eulerThreshold &&
+        headEulerAngleX > -eulerThreshold &&
+        headEulerAngleY > -eulerThreshold &&
+        headEulerAngleZ < eulerThreshold &&
+        headEulerAngleZ > -eulerThreshold;
+
+    if (!isCentered) {
+      debugPrint('[Face Center] Head angles out of range: '
+          'X=${headEulerAngleX.toStringAsFixed(1)}° '
+          'Y=${headEulerAngleY.toStringAsFixed(1)}° '
+          'Z=${headEulerAngleZ.toStringAsFixed(1)}° '
+          '(threshold: ±$eulerThreshold°)');
+    }
+
+    return isCentered;
   }
 
   /// iOS-specific face centering validation (current working version)
@@ -1208,27 +1313,58 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
         smileCheckPassed;
 
     if (livenessCheckPassed && !_livenessCompleted) {
-      _livenessCompleted = true;
-      setState(() {
-        _errorMessage = widget.config.messages.livenessCheckPassed;
-        _borderColor = Colors.green;
-      });
-
-      // Delay before capturing photo
-      Future.delayed(
-        widget.config.settings.photoCaptureDelay ?? Duration.zero,
-        () {
-          if (mounted) {
-            _capturePhoto();
+      // Check anti-spoofing before completing liveness
+      if (_currentCameraImage != null) {
+        _antiSpoofingService
+            .antiSpoofing(_currentCameraImage!)
+            .then((resultAnti) {
+          // Score > 0.5 means real face, <= 0.5 means fake/spoofed
+          if (!resultAnti) {
+            debugPrint('[AntiSpoofing] Spoofing detected! Score: $resultAnti');
+            _handleError(LivenessCheckError.spoofingDetected);
+            _resetLivenessState();
+            return;
           }
-        },
-      );
+
+          // Anti-spoofing passed, complete liveness check
+          debugPrint('[AntiSpoofing] Real face detected. Score: $resultAnti');
+          _completeLivenessCheck();
+        }).catchError((error) {
+          // If anti-spoofing fails, just log and continue
+          debugPrint('[AntiSpoofing] Error during check: $error');
+          _completeLivenessCheck();
+        });
+      } else {
+        // Anti-spoofing not available, proceed without it
+        _completeLivenessCheck();
+      }
     } else if (!_livenessCompleted) {
       setState(() {
         _errorMessage = "";
         _borderColor = widget.config.theme.borderColor;
       });
     }
+  }
+
+  /// Complete the liveness check after all validations pass
+  void _completeLivenessCheck() {
+    if (!mounted || _livenessCompleted) return;
+
+    _livenessCompleted = true;
+    setState(() {
+      _errorMessage = widget.config.messages.livenessCheckPassed;
+      _borderColor = Colors.green;
+    });
+
+    // Delay before capturing photo
+    Future.delayed(
+      widget.config.settings.photoCaptureDelay ?? Duration.zero,
+      () {
+        if (mounted) {
+          _capturePhoto();
+        }
+      },
+    );
   }
 
   /// Builds an enhanced error message widget with technical details.
