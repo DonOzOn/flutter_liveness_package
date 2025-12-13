@@ -1,9 +1,10 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
-
+## [1.0.12] - 2025-12-13
+  - Enhance check eye and head strainght , fix take photo twice
+  - Remove event `pauseDetection()`
 ## [1.0.11] - 2025-12-13
-
 ### Added
 - **Eyes Closed Detection**: New customizable error message when eyes are closed during face detection
   - Added `LivenessCheckError.eyesClosed` error type

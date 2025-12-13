@@ -523,6 +523,10 @@ class LivenessCheckSettings {
   /// Delay before capturing photo after liveness check passes.
   final Duration? photoCaptureDelay;
 
+  /// Clearness threshold for anti-spoofing image quality check.
+  /// Higher values require clearer images. Default is 800.
+  final int antiSpoofingClearnessThreshold;
+
   /// Creates liveness check settings.
   const LivenessCheckSettings({
     this.enableBlinkDetection = true,
@@ -537,5 +541,6 @@ class LivenessCheckSettings {
     this.processingTimeout = const Duration(seconds: 30),
     this.circlePositionY = 0.38,
     this.photoCaptureDelay = const Duration(milliseconds: 0),
+    this.antiSpoofingClearnessThreshold = 800,
   });
 }

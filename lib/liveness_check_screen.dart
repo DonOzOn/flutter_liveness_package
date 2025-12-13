@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter_liveness_check/ulti/image_converter.dart';
 import 'package:image/image.dart' as imglib;
 import 'enhence_light_checker.dart';
 import 'liveness_check_config.dart';
@@ -126,7 +127,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     });
     widget.controller?.registerDisposeCallback(_disposeCamera);
     widget.controller?.registerResetCallback(_resetLivenessState);
-    widget.controller?.registerPauseCallback(_pauseDetection);
+    // widget.controller?.registerPauseCallback(_pauseDetection);
     widget.controller?.registerResumeCallback(_resumeDetection);
 
     // Only initialize camera if status is init (not fail or success)
@@ -581,27 +582,27 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
           _resetLivenessState();
           return;
         }
-        // if (_currentCameraImage != null) {
-        //   // Method 4: ONNX-based Laplacian calculation (more accurate blur detection)
-        //   int onnxLaplacianScore = 0;
-        //   bool onnxBlurDetected = false;
-        //   final imgLibImage =
-        //       CameraImageConverter.cameraImageToImage(_currentCameraImage!);
-        //   if (imgLibImage != null) {
-        //     onnxLaplacianScore =
-        //         FaceAntiSpoofingOnnx.calculateLaplacian(imgLibImage);
-        //     onnxBlurDetected =
-        //         onnxLaplacianScore < FaceAntiSpoofingOnnx.clearnessThreshold;
-        //     debugPrint('onnxLaplacianScore : $onnxLaplacianScore');
-        //     debugPrint('onnxBlurDetected: $onnxBlurDetected');
+        if (_currentCameraImage != null) {
+          // Method 4: ONNX-based Laplacian calculation (more accurate blur detection)
+          int onnxLaplacianScore = 0;
+          bool onnxBlurDetected = false;
+          final imgLibImage =
+              CameraImageConverter.cameraImageToImage(_currentCameraImage!);
+          if (imgLibImage != null) {
+            onnxLaplacianScore =
+                FaceAntiSpoofingOnnx.calculateLaplacian(imgLibImage);
+            onnxBlurDetected = onnxLaplacianScore <
+                widget.config.settings.antiSpoofingClearnessThreshold;
+            debugPrint('onnxLaplacianScore : $onnxLaplacianScore');
+            debugPrint('onnxBlurDetected: $onnxBlurDetected');
 
-        //     if (onnxBlurDetected) {
-        //       _handleError(LivenessCheckError.imageBlurry);
-        //       _resetLivenessState();
-        //       return;
-        //     }
-        //   }
-        // }
+            if (onnxBlurDetected) {
+              _handleError(LivenessCheckError.imageBlurry);
+              _resetLivenessState();
+              return;
+            }
+          }
+        }
 
         if (!hasQualityIssue || _poorQualityFrames <= 10) {
           _processSingleFace(faces.first);
@@ -653,7 +654,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     }
 
     // Consider eyes closed if probability is below threshold
-    return leftEyeProb < 0.3 || rightEyeProb < 0.3;
+    return leftEyeProb < 0.35 && rightEyeProb < 0.35;
   }
 
   /// Validates that a complete face is detected with all essential landmarks.
@@ -1063,6 +1064,9 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     // This ensures the face is looking straight at the camera
     if (!_isFaceCenteredByEulerAngles(face) && Platform.isIOS) {
       return false;
+    }
+    if (Platform.isAndroid) {
+      return _isFaceCenteredAndroid(face);
     }
     return true;
     // Then use platform-specific position validation
@@ -1517,9 +1521,10 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
       if (!mounted) return;
 
       // Call photo taken callback
-      _pauseDetection();
 
       final imglib.Image? image = await xfileToImgLib(photo);
+      _pauseDetection(photo);
+
       bool isReal = true;
 
       // Check anti-spoofing before completing liveness
@@ -1961,7 +1966,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   /// This will pause the camera preview and stop processing frames
   /// for face detection. The camera remains initialized.
   /// Captures the last frame to display while paused.
-  Future<void> _pauseDetection() async {
+  Future<void> _pauseDetection(XFile capturedImage) async {
     if (_cameraController != null &&
         _cameraController!.value.isInitialized &&
         !_cameraController!.value.isPreviewPaused) {
@@ -1973,7 +1978,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
         // Take a picture to capture the current frame
         try {
-          final XFile capturedImage = await _cameraController!.takePicture();
+          // final XFile capturedImage = await _cameraController!.takePicture();
           final imageBytes = await capturedImage.readAsBytes();
 
           // Decode and rotate the image to match preview orientation

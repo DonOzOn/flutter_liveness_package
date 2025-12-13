@@ -1,6 +1,6 @@
 name: flutter_liveness_check
 description: "A comprehensive Flutter package for face liveness detection with ML Kit."
-version: 1.0.11
+version: 1.0.12
 homepage: "https://github.com/DonOzOn/flutter_liveness_package"
 repository: "https://github.com/DonOzOn/flutter_liveness_package"
 issue_tracker: "https://github.com/DonOzOn/flutter_liveness_package/issues"

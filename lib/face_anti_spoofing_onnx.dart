@@ -8,14 +8,13 @@ import 'package:onnxruntime/onnxruntime.dart';
 /// ONNX-based Face Anti-Spoofing Service
 /// Uses the anti-spoof-mn3.onnx model for liveness detection
 class FaceAntiSpoofingOnnx {
-  // Threshold for determining if image is clear enough to analyze
-  // Use static getter to allow platform-specific values
-  static int get clearnessThreshold => Platform.isAndroid ? 700 : 600;
+  // Instance variable for configurable clearness threshold
+  final int clearnessThreshold;
 
   // Threshold for liveness score
   // For MobileNet v3 anti-spoof: score > threshold = real face, score <= threshold = fake
   // Platform-specific thresholds using static getters
-  static double get livenessThreshold => 0.7;
+  static double get livenessThreshold => Platform.isIOS ? 0.3 : 0.7;
   static double get spoofThreshold => Platform.isIOS ? 0.98 : 0.9;
   // Laplace threshold for blur detection
   static const _laplaceThreshold = 50;
@@ -24,13 +23,14 @@ class FaceAntiSpoofingOnnx {
   late final OrtSessionOptions _sessionOptions;
 
   /// Creates and initializes the ONNX anti-spoofing service
-  static Future<FaceAntiSpoofingOnnx> create() async {
-    final service = FaceAntiSpoofingOnnx._();
+  /// [clearnessThreshold] - Minimum clearness score for image quality (default: 800)
+  static Future<FaceAntiSpoofingOnnx> create({int clearnessThreshold = 800}) async {
+    final service = FaceAntiSpoofingOnnx._(clearnessThreshold: clearnessThreshold);
     await service._initialize();
     return service;
   }
 
-  FaceAntiSpoofingOnnx._();
+  FaceAntiSpoofingOnnx._({this.clearnessThreshold = 800});
 
   Future<void> _initialize() async {
     // Initialize ONNX Runtime
