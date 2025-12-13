@@ -36,8 +36,9 @@ class FaceAntiSpoofingOnnx {
     // Initialize ONNX Runtime
     OrtEnv.instance.init();
 
-    // Load model from assets
-    final modelBytes = await rootBundle.load('assets/anti-spoof-mn3.onnx');
+    // Load model from assets with package prefix for use as a dependency
+    final modelBytes = await rootBundle
+        .load('packages/flutter_liveness_check/assets/anti-spoof-mn3.onnx');
     final modelData = modelBytes.buffer.asUint8List();
 
     // Create session options
