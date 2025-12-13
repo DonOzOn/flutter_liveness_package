@@ -15,7 +15,7 @@ class FaceAntiSpoofingOnnx {
   // Threshold for liveness score
   // For MobileNet v3 anti-spoof: score > threshold = real face, score <= threshold = fake
   // Platform-specific thresholds using static getters
-  static double get livenessThreshold => Platform.isIOS ? 0.002 : 0.1;
+  static double get livenessThreshold => 0.7;
   static double get spoofThreshold => Platform.isIOS ? 0.98 : 0.9;
   // Laplace threshold for blur detection
   static const _laplaceThreshold = 50;
@@ -37,8 +37,8 @@ class FaceAntiSpoofingOnnx {
     OrtEnv.instance.init();
 
     // Load model from assets with package prefix for use as a dependency
-    final modelBytes = await rootBundle
-        .load('packages/flutter_liveness_check/assets/anti-spoof-mn3.onnx');
+    final modelBytes =
+        await rootBundle.load('packages/flutter_liveness_check/assets/w.onnx');
     final modelData = modelBytes.buffer.asUint8List();
 
     // Create session options
@@ -82,10 +82,10 @@ class FaceAntiSpoofingOnnx {
     final input = _preprocessImage(image);
     final runOptions = OrtRunOptions();
     // Create input tensor
-    // Model expects [1, 3, 128, 128] based on training config (resize = dict(height=128, width=128))
+    // Model expects [1, 3, 256, 256] based on training config (resize = dict(height=256, width=256))
     final inputOrt = OrtValueTensor.createTensorWithDataList(
       input,
-      [1, 3, 128, 128], // Shape: [batch, channels, height, width]
+      [1, 3, 256, 256], // Shape: [batch, channels, height, width]
     );
 
     // Run inference
@@ -115,8 +115,8 @@ class FaceAntiSpoofingOnnx {
     if (outputData[0].length == 2) {
       List<double> out = outputData[0];
       double realProb = out[0];
-      double spoofProb = out[1];
-      if (realProb >= livenessThreshold || spoofProb < spoofThreshold) {
+      // double spoofProb = out[1];
+      if (realProb >= livenessThreshold) {
         isReal = true;
       }
       // Binary classification: [fake_prob, real_prob]
@@ -124,7 +124,35 @@ class FaceAntiSpoofingOnnx {
     } else if (outputData[0].length == 1) {
       // Single score output
       // score = outputData[0][0];
-    } else {
+    } else if (outputData[0].length == 3) {
+      final fakeProb = outputData[0][0]; // Index 0
+      final realProb = outputData[0][1]; // Index 1
+      final unknownProb = outputData[0][2]; // Index 2
+
+      debugPrint(
+          '[ONNX AntiSpoof] Fake: $fakeProb, Real: $realProb, Unknown: $unknownProb');
+
+      // Method 1: Use argmax (like original code)
+      final maxIndex =
+          outputData[0].indexOf(outputData[0].reduce((a, b) => a > b ? a : b));
+
+      if (maxIndex == 1) {
+        isReal = true;
+        debugPrint(
+            '[ONNX AntiSpoof] outputData[0].length == 3 Decision: REAL (argmax = 1)');
+      } else {
+        // Method 2: Fallback - compare real vs fake directly
+        // Use this if argmax doesn't work well
+        if (realProb > fakeProb) {
+          isReal = true;
+          debugPrint(
+              '[ONNX AntiSpoof]outputData[0].length == 3 Decision: REAL (realProb > fakeProb)');
+        } else {
+          debugPrint(
+              '[ONNX AntiSpoof]outputData[0].length == 3 Decision: FAKE');
+        }
+      }
+
       // Multi-class: take max or specific index
       // score = outputData[0].reduce((a, b) => a > b ? a : b);
     }
@@ -138,7 +166,7 @@ class FaceAntiSpoofingOnnx {
 
   /// Calculates Laplacian score to detect image blur
   static int calculateLaplacian(imglib.Image image) {
-    var img = imglib.copyResize(image, width: 128, height: 128);
+    var img = imglib.copyResize(image, width: 256, height: 256);
     img = imglib.grayscale(img);
 
     // Laplacian kernel
@@ -151,8 +179,8 @@ class FaceAntiSpoofingOnnx {
     int size = laplace.length;
     int score = 0;
 
-    for (int x = 0; x < 128 - size + 1; x++) {
-      for (int y = 0; y < 128 - size + 1; y++) {
+    for (int x = 0; x < 256 - size + 1; x++) {
+      for (int y = 0; y < 256 - size + 1; y++) {
         int result = 0;
         for (int i = 0; i < size; i++) {
           for (int j = 0; j < size; j++) {
@@ -175,11 +203,11 @@ class FaceAntiSpoofingOnnx {
   /// Based on training config: img_norm_cfg = dict(mean=[0.5931, 0.4690, 0.4229], std=[0.2471, 0.2214, 0.2157])
   /// Returns Float32List for ONNX Runtime compatibility
   Float32List _preprocessImage(imglib.Image image) {
-    final img = imglib.copyResize(image, width: 128, height: 128);
+    final img = imglib.copyResize(image, width: 256, height: 256);
 
     // Prepare data in CHW format (channels, height, width)
     // Normalization: (pixel/255.0 - mean) / std
-    final data = Float32List(128 * 128 * 3);
+    final data = Float32List(256 * 256 * 3);
     int index = 0;
 
     // Normalization values from training config
@@ -187,24 +215,24 @@ class FaceAntiSpoofingOnnx {
     const std = [0.2471, 0.2214, 0.2157];
 
     // Extract R channel
-    for (int y = 0; y < 128; y++) {
-      for (int x = 0; x < 128; x++) {
+    for (int y = 0; y < 256; y++) {
+      for (int x = 0; x < 256; x++) {
         var pixel = img.getPixel(x, y);
         data[index++] = ((pixel.r / 255.0 - mean[0]) / std[0]);
       }
     }
 
     // Extract G channel
-    for (int y = 0; y < 128; y++) {
-      for (int x = 0; x < 128; x++) {
+    for (int y = 0; y < 256; y++) {
+      for (int x = 0; x < 256; x++) {
         var pixel = img.getPixel(x, y);
         data[index++] = ((pixel.g / 255.0 - mean[1]) / std[1]);
       }
     }
 
     // Extract B channel
-    for (int y = 0; y < 128; y++) {
-      for (int x = 0; x < 128; x++) {
+    for (int y = 0; y < 256; y++) {
+      for (int x = 0; x < 256; x++) {
         var pixel = img.getPixel(x, y);
         data[index++] = ((pixel.b / 255.0 - mean[2]) / std[2]);
       }

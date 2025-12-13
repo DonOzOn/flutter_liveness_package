@@ -35,6 +35,9 @@ flutter:
     - assets/success.png
     - assets/fail.png
     - assets/anti-spoof-mn3.onnx
+    - assets/w.onnx
+   
+    
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/to/asset-from-package

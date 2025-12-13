@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter_liveness_check/ulti/image_converter.dart';
 import 'package:image/image.dart' as imglib;
 import 'enhence_light_checker.dart';
 import 'liveness_check_config.dart';
@@ -113,6 +112,8 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   /// Current retry attempt count
   int _retryAttemptCount = 0;
 
+  late FaceAntiSpoofingOnnx antiSpoofingService;
+
   @override
   void initState() {
     super.initState();
@@ -132,6 +133,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     if (widget.config.status == LivenessStatus.init) {
       _initializeCamera();
       _initializeFaceDetector();
+      _initServices();
     }
   }
 
@@ -165,6 +167,10 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     setState(() {
       _borderColor = widget.config.theme.borderColor;
     });
+  }
+
+  void _initServices() async {
+    antiSpoofingService = await FaceAntiSpoofingOnnx.create();
   }
 
   Future<void> _disposeCamera() async {
@@ -575,27 +581,27 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
           _resetLivenessState();
           return;
         }
-        if (_currentCameraImage != null) {
-          // Method 4: ONNX-based Laplacian calculation (more accurate blur detection)
-          int onnxLaplacianScore = 0;
-          bool onnxBlurDetected = false;
-          final imgLibImage =
-              CameraImageConverter.cameraImageToImage(_currentCameraImage!);
-          if (imgLibImage != null) {
-            onnxLaplacianScore =
-                FaceAntiSpoofingOnnx.calculateLaplacian(imgLibImage);
-            onnxBlurDetected =
-                onnxLaplacianScore < FaceAntiSpoofingOnnx.clearnessThreshold;
-            debugPrint('onnxLaplacianScore : $onnxLaplacianScore');
-            debugPrint('onnxBlurDetected: $onnxBlurDetected');
+        // if (_currentCameraImage != null) {
+        //   // Method 4: ONNX-based Laplacian calculation (more accurate blur detection)
+        //   int onnxLaplacianScore = 0;
+        //   bool onnxBlurDetected = false;
+        //   final imgLibImage =
+        //       CameraImageConverter.cameraImageToImage(_currentCameraImage!);
+        //   if (imgLibImage != null) {
+        //     onnxLaplacianScore =
+        //         FaceAntiSpoofingOnnx.calculateLaplacian(imgLibImage);
+        //     onnxBlurDetected =
+        //         onnxLaplacianScore < FaceAntiSpoofingOnnx.clearnessThreshold;
+        //     debugPrint('onnxLaplacianScore : $onnxLaplacianScore');
+        //     debugPrint('onnxBlurDetected: $onnxBlurDetected');
 
-            if (onnxBlurDetected) {
-              _handleError(LivenessCheckError.imageBlurry);
-              _resetLivenessState();
-              return;
-            }
-          }
-        }
+        //     if (onnxBlurDetected) {
+        //       _handleError(LivenessCheckError.imageBlurry);
+        //       _resetLivenessState();
+        //       return;
+        //     }
+        //   }
+        // }
 
         if (!hasQualityIssue || _poorQualityFrames <= 10) {
           _processSingleFace(faces.first);
@@ -1055,7 +1061,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   bool _isFaceCentered(Face face) {
     // First check Euler angles (head rotation) - same for both platforms
     // This ensures the face is looking straight at the camera
-    if (!_isFaceCenteredByEulerAngles(face)) {
+    if (!_isFaceCenteredByEulerAngles(face) && Platform.isIOS) {
       return false;
     }
     return true;
@@ -1426,7 +1432,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
       _errorMessage = widget.config.messages.livenessCheckPassed;
       _borderColor = Colors.green;
     });
-
+    widget.config.callbacks?.onSuccess?.call();
     // Delay before capturing photo
     Future.delayed(
       widget.config.settings.photoCaptureDelay ?? Duration.zero,
@@ -1511,6 +1517,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
       if (!mounted) return;
 
       // Call photo taken callback
+      _pauseDetection();
 
       final imglib.Image? image = await xfileToImgLib(photo);
       bool isReal = true;
@@ -1519,12 +1526,12 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
       if (image != null) {
         // Test FaceAntiSpoofingOnnx (new ONNX-based implementation)
         try {
-          final antiSpoofingService = await FaceAntiSpoofingOnnx.create();
           debugPrint('[FaceAntiSpoofing] ===== Start Anti-Spoofing Test =====');
           // Get final anti-spoofing result
           isReal = await antiSpoofingService.antiSpoofing(
             image,
           );
+
           debugPrint(
             '[FaceAntiSpoofing] Final result: ${isReal ? "PASS (real face)" : "FAIL (spoofing detected)"}',
           );
