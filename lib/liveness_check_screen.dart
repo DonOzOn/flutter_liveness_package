@@ -678,11 +678,15 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
       final faceHeight = face.boundingBox.height;
       final faceToHeadRatio = faceHeight / imageHeight;
 
-      // Platform-specific ratio thresholds
-      // iOS: More relaxed (0.3 - 0.9) for better detection
-      // Android: Standard (0.5 - 0.8) as per native code
-      final minRatio = Platform.isIOS ? 0.3 : 0.5;
-      final maxRatio = Platform.isIOS ? 0.9 : 0.8;
+      // Platform-specific ratio thresholds with configurable overrides
+      // iOS defaults: 0.3 - 0.9 (more relaxed)
+      // Android defaults: 0.5 - 0.8 (stricter)
+      final minRatio = Platform.isIOS
+          ? (widget.config.settings.faceToHeadRatioMinIOS ?? 0.3)
+          : (widget.config.settings.faceToHeadRatioMinAndroid ?? 0.5);
+      final maxRatio = Platform.isIOS
+          ? (widget.config.settings.faceToHeadRatioMaxIOS ?? 0.9)
+          : (widget.config.settings.faceToHeadRatioMaxAndroid ?? 0.8);
 
       if (faceToHeadRatio < minRatio || faceToHeadRatio > maxRatio) {
         debugPrint(
@@ -1009,10 +1013,10 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     final eyeToMouthDistance = (mouthY - eyesCenterY).abs();
     final eyeToMouthRatio = eyeToMouthDistance / boundingBox.height;
 
-    if (eyeToMouthRatio < 0.27) {
-      // Relaxed from 0.3 to 0.27
+    final minEyeToMouthRatio = widget.config.settings.eyeToMouthRatioMin ?? 0.27;
+    if (eyeToMouthRatio < minEyeToMouthRatio) {
       debugPrint(
-        '[Android] Face incomplete: Eye-to-mouth distance too small (${eyeToMouthRatio.toStringAsFixed(2)}) - likely partial face',
+        '[Android] Face incomplete: Eye-to-mouth distance too small (${eyeToMouthRatio.toStringAsFixed(2)} < $minEyeToMouthRatio) - likely partial face',
       );
       return false;
     }
@@ -1021,10 +1025,11 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     final mouthPositionRatio =
         (mouthBottom.position.y - boundingBox.top) / boundingBox.height;
 
-    if (mouthPositionRatio < 0.57 || mouthPositionRatio > 0.92) {
-      // Relaxed from 0.6-0.9 to 0.57-0.92
+    final minMouthPosition = widget.config.settings.mouthPositionRatioMin ?? 0.57;
+    final maxMouthPosition = widget.config.settings.mouthPositionRatioMax ?? 0.92;
+    if (mouthPositionRatio < minMouthPosition || mouthPositionRatio > maxMouthPosition) {
       debugPrint(
-        '[Android] Face incomplete: Mouth position unusual (${mouthPositionRatio.toStringAsFixed(2)}) - partial face',
+        '[Android] Face incomplete: Mouth position unusual (${mouthPositionRatio.toStringAsFixed(2)}, expected: $minMouthPosition-$maxMouthPosition) - partial face',
       );
       return false;
     }
@@ -1033,10 +1038,11 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     final eyePositionRatio =
         (eyesCenterY - boundingBox.top) / boundingBox.height;
 
-    if (eyePositionRatio < 0.2 || eyePositionRatio > 0.52) {
-      // Relaxed from 0.5 to 0.52
+    final minEyePosition = widget.config.settings.eyePositionRatioMin ?? 0.2;
+    final maxEyePosition = widget.config.settings.eyePositionRatioMax ?? 0.52;
+    if (eyePositionRatio < minEyePosition || eyePositionRatio > maxEyePosition) {
       debugPrint(
-        '[Android] Face incomplete: Eyes mispositioned (${eyePositionRatio.toStringAsFixed(2)})',
+        '[Android] Face incomplete: Eyes mispositioned (${eyePositionRatio.toStringAsFixed(2)}, expected: $minEyePosition-$maxEyePosition)',
       );
       return false;
     }
@@ -1062,12 +1068,12 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
   bool _isFaceCentered(Face face) {
     // First check Euler angles (head rotation) - same for both platforms
     // This ensures the face is looking straight at the camera
-    if (!_isFaceCenteredByEulerAngles(face) && Platform.isIOS) {
+    if (!_isFaceCenteredByEulerAngles(face)) {
       return false;
     }
-    if (Platform.isAndroid) {
-      return _isFaceCenteredAndroid(face);
-    }
+    // if (Platform.isAndroid) {
+    //   return _isFaceCenteredAndroid(face);
+    // }
     return true;
     // Then use platform-specific position validation
     // if (Platform.isAndroid) {
@@ -1079,15 +1085,18 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
   /// Check if face is centered using Euler angles (head rotation)
   /// Based on Android native implementation
-  /// Ensures the face is looking straight at the camera (within ±5 degrees)
+  /// Platform-specific thresholds can be configured via settings
   bool _isFaceCenteredByEulerAngles(Face face) {
-    const double eulerThreshold = 5.0;
+    // Get threshold from config or use platform-specific defaults
+    final double eulerThreshold = Platform.isIOS
+        ? (widget.config.settings.eulerAngleThresholdIOS ?? 5.0)
+        : (widget.config.settings.eulerAngleThresholdAndroid ?? 6.0);
 
     final headEulerAngleX = face.headEulerAngleX ?? 0.0;
     final headEulerAngleY = face.headEulerAngleY ?? 0.0;
     final headEulerAngleZ = face.headEulerAngleZ ?? 0.0;
 
-    // Check if all Euler angles are within threshold (±5 degrees)
+    // Check if all Euler angles are within threshold
     final bool isCentered = headEulerAngleX < eulerThreshold &&
         headEulerAngleY < eulerThreshold &&
         headEulerAngleX > -eulerThreshold &&
@@ -1101,7 +1110,7 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
         'X=${headEulerAngleX.toStringAsFixed(1)}° '
         'Y=${headEulerAngleY.toStringAsFixed(1)}° '
         'Z=${headEulerAngleZ.toStringAsFixed(1)}° '
-        '(threshold: ±$eulerThreshold°)',
+        '(threshold: ±$eulerThreshold° for ${Platform.isIOS ? "iOS" : "Android"})',
       );
     }
 
@@ -1200,12 +1209,12 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
     final distance = math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-    // Allow some tolerance - face center should be within 60% of circle radius
+    // More strict tolerance for Android - face center must be within 60% of circle radius
     final allowedDistance = circleRadius * 0.6;
 
     if (distance > allowedDistance) {
       debugPrint(
-        'Face not centered: distance ${distance.toStringAsFixed(1)} > allowed ${allowedDistance.toStringAsFixed(1)}',
+        '[Android] Face not centered: distance ${distance.toStringAsFixed(1)} > allowed ${allowedDistance.toStringAsFixed(1)}',
       );
       return false;
     }

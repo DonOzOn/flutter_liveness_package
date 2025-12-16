@@ -1,6 +1,65 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+
+## [1.0.13] - 2025-12-16
+
+### Added
+- **Configurable Face Validation Thresholds**: Added comprehensive configuration options for fine-tuning face detection parameters
+  - `eulerAngleThresholdIOS` / `eulerAngleThresholdAndroid`: Configure head rotation tolerance (defaults: iOS 5°, Android 10°)
+  - `faceToHeadRatioMinIOS` / `faceToHeadRatioMaxIOS`: Configure face size ratio for iOS (defaults: 0.3 - 0.9)
+  - `faceToHeadRatioMinAndroid` / `faceToHeadRatioMaxAndroid`: Configure face size ratio for Android (defaults: 0.5 - 0.8)
+  - `eyeToMouthRatioMin`: Configure minimum eye-to-mouth distance ratio (default: 0.27)
+  - `mouthPositionRatioMin` / `mouthPositionRatioMax`: Configure mouth vertical position (defaults: 0.57 - 0.92)
+  - `eyePositionRatioMin` / `eyePositionRatioMax`: Configure eyes vertical position (defaults: 0.2 - 0.52)
+  - `antiSpoofingClearnessThreshold`: Configure image clearness threshold for anti-spoofing (default: 800)
+  - All thresholds are optional with sensible platform-specific defaults
+  - Provides full control over detection strictness for both iOS and Android
+  - Example usage:
+    ```dart
+    LivenessCheckSettings(
+      eulerAngleThresholdIOS: 5.0,      // Strict for iOS
+      eulerAngleThresholdAndroid: 10.0,  // More relaxed for Android
+      faceToHeadRatioMinAndroid: 0.5,
+      faceToHeadRatioMaxAndroid: 0.8,
+      eyeToMouthRatioMin: 0.27,
+      antiSpoofingClearnessThreshold: 800,
+    )
+    ```
+
+### Improved
+- **Platform-Specific Euler Angle Thresholds**: Enhanced face centering validation with different strictness levels
+  - iOS: More strict at ±5 degrees for better accuracy
+  - Android: More relaxed at ±10 degrees for easier face detection
+  - Now fully configurable via settings
+  - Better debug output showing platform and threshold values
+- **Android Face Centering**: Made face centering more strict for better accuracy
+  - Reduced tolerance from 90% to 60% of circle radius
+  - Requires more precise face positioning within the guide circle
+  - Improves overall detection quality on Android devices
+- **Anti-Spoofing Asset Loading**: Fixed asset path for package deployment
+  - Updated ONNX model path to use `packages/flutter_liveness_check/` prefix
+  - Ensures anti-spoofing model loads correctly when package is used as a dependency
+  - Consistent with other package assets (success.png, fail.png)
+
+### Fixed
+- **NV21 Camera Image Conversion**: Fixed crash on Android devices using NV21 image format
+  - Added dedicated `_convertNV21ToImage` method for NV21 format handling
+  - NV21 uses 2 planes (Y + interleaved VU) instead of 3 separate planes (Y, U, V)
+  - Properly handles interleaved UV plane structure
+  - Fixed RangeError when accessing non-existent third plane
+  - Adds debug logging for plane structure analysis
+  - Supports both NV21 and YUV420 formats dynamically
+
+### Technical Details
+- All new threshold parameters are nullable in `LivenessCheckSettings`
+- Face validation methods use config values with null-coalescing to defaults
+- Enhanced debug logging includes configured threshold values
+- Platform-specific defaults ensure optimal behavior without configuration
+- Backward compatible - existing code works without changes
+
+---
+
 ## [1.0.12] - 2025-12-13
   - Enhance check eye and head strainght , fix take photo twice
   - Remove event `pauseDetection()`

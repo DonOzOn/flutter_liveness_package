@@ -527,6 +527,37 @@ class LivenessCheckSettings {
   /// Higher values require clearer images. Default is 800.
   final int antiSpoofingClearnessThreshold;
 
+  /// Euler angle threshold for face centering validation (in degrees).
+  /// Determines how much head rotation is allowed.
+  /// iOS default: 5.0 degrees, Android default: 10.0 degrees.
+  /// Lower values are more strict, higher values are more lenient.
+  final double? eulerAngleThresholdIOS;
+  final double? eulerAngleThresholdAndroid;
+
+  /// Face-to-head ratio thresholds (face height / image height).
+  /// Controls how much of the image the face should occupy.
+  /// iOS defaults: min 0.3, max 0.9 (more relaxed)
+  /// Android defaults: min 0.5, max 0.8 (stricter)
+  final double? faceToHeadRatioMinIOS;
+  final double? faceToHeadRatioMaxIOS;
+  final double? faceToHeadRatioMinAndroid;
+  final double? faceToHeadRatioMaxAndroid;
+
+  /// Eye-to-mouth ratio threshold for Android face validation.
+  /// Minimum ratio of eye-to-mouth distance to face height.
+  /// Default: 0.27. Lower values are more strict.
+  final double? eyeToMouthRatioMin;
+
+  /// Mouth position ratio thresholds for Android (position in face bounding box).
+  /// Default: min 0.57, max 0.92
+  final double? mouthPositionRatioMin;
+  final double? mouthPositionRatioMax;
+
+  /// Eye position ratio thresholds for Android (position in face bounding box).
+  /// Default: min 0.2, max 0.52
+  final double? eyePositionRatioMin;
+  final double? eyePositionRatioMax;
+
   /// Creates liveness check settings.
   const LivenessCheckSettings({
     this.enableBlinkDetection = true,
@@ -542,5 +573,16 @@ class LivenessCheckSettings {
     this.circlePositionY = 0.38,
     this.photoCaptureDelay = const Duration(milliseconds: 0),
     this.antiSpoofingClearnessThreshold = 800,
+    this.eulerAngleThresholdIOS = 5.0,
+    this.eulerAngleThresholdAndroid = 6.0,
+    this.faceToHeadRatioMinIOS,
+    this.faceToHeadRatioMaxIOS,
+    this.faceToHeadRatioMinAndroid,
+    this.faceToHeadRatioMaxAndroid,
+    this.eyeToMouthRatioMin,
+    this.mouthPositionRatioMin,
+    this.mouthPositionRatioMax,
+    this.eyePositionRatioMin,
+    this.eyePositionRatioMax,
   });
 }
