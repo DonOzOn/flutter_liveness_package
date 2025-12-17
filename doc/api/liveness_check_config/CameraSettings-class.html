@@ -67,7 +67,7 @@
     <h2>Constructors</h2>
     <dl class="constructor-summary-list">
         <dt id="CameraSettings" class="callable">
-          <span class="name"><a href="../liveness_check_config/CameraSettings/CameraSettings.html">CameraSettings</a></span><span class="signature">({<span class="parameter" id="-param-resolutionPreset"><span class="type-annotation"><a href="https://pub.dev/documentation/camera_platform_interface/2.11.0/camera_platform_interface/ResolutionPreset.html">ResolutionPreset</a>?</span> <span class="parameter-name">resolutionPreset</span> = <span class="default-value">ResolutionPreset.high</span>, </span><span class="parameter" id="-param-enableAudio"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">enableAudio</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-imageFormatGroup"><span class="type-annotation"><a href="https://pub.dev/documentation/camera_platform_interface/2.11.0/camera_platform_interface/ImageFormatGroup.html">ImageFormatGroup</a>?</span> <span class="parameter-name">imageFormatGroup</span></span>})</span>
+          <span class="name"><a href="../liveness_check_config/CameraSettings/CameraSettings.html">CameraSettings</a></span><span class="signature">({<span class="parameter" id="-param-resolutionPreset"><span class="type-annotation"><a href="https://pub.dev/documentation/camera_platform_interface/2.11.0/camera_platform_interface/ResolutionPreset.html">ResolutionPreset</a>?</span> <span class="parameter-name">resolutionPreset</span> = <span class="default-value">ResolutionPreset.high</span>, </span><span class="parameter" id="-param-enableAudio"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">enableAudio</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-imageFormatGroup"><span class="type-annotation"><a href="https://pub.dev/documentation/camera_platform_interface/2.11.0/camera_platform_interface/ImageFormatGroup.html">ImageFormatGroup</a>?</span> <span class="parameter-name">imageFormatGroup</span>, </span><span class="parameter" id="-param-cameraInitDelay"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">cameraInitDelay</span> = <span class="default-value">2500</span></span>})</span>
         </dt>
         <dd>
           Creates camera settings.
@@ -81,6 +81,19 @@
       id="instance-properties">
     <h2>Properties</h2>
     <dl class="properties">
+        <dt id="cameraInitDelay" class="property">
+  <span class="name"><a href="../liveness_check_config/CameraSettings/cameraInitDelay.html">cameraInitDelay</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+  
+
+</dt>
+<dd>
+  Delay in milliseconds before starting image stream after camera initialization.
+Default is 2500ms to ensure camera is fully ready.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
         <dt id="enableAudio" class="property">
   <span class="name"><a href="../liveness_check_config/CameraSettings/enableAudio.html">enableAudio</a></span>
   <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span>
@@ -226,7 +239,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.10
+      1.0.14
   </span>
   
 </footer>

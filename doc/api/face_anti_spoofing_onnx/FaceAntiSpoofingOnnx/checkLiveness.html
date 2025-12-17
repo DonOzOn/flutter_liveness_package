@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the checkLiveness method from the FaceAntiSpoofingOnnx class, for the Dart programming language.">
+  <title>checkLiveness method - FaceAntiSpoofingOnnx class - face_anti_spoofing_onnx library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">flutter_liveness_check</a></li>
+    <li><a href="../../face_anti_spoofing_onnx">face_anti_spoofing_onnx.dart</a></li>
+    <li><a href="../../face_anti_spoofing_onnx/FaceAntiSpoofingOnnx-class.html">FaceAntiSpoofingOnnx</a></li>
+    <li class="self-crumb">checkLiveness method</li>
+  </ol>
+  <div class="self-name">checkLiveness</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="face_anti_spoofing_onnx&#47;FaceAntiSpoofingOnnx-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">checkLiveness</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>&gt;</span></span>
+<span class="name ">checkLiveness</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="checkLiveness-param-image"><span class="type-annotation"><a href="https://pub.dev/documentation/image/4.5.4/image/Image-class.html">Image</a></span> <span class="parameter-name">image</span></span></li>
+</ol>)
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Runs the ONNX model to get liveness score
+Returns a score between 0 and 1, where higher = more likely to be real</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;bool&gt; checkLiveness(imglib.Image image) async {
+  &#47;&#47; Preprocess image to model input format
+  final input = _preprocessImage(image);
+  final runOptions = OrtRunOptions();
+  &#47;&#47; Create input tensor
+  &#47;&#47; Model expects [1, 3, 256, 256] based on training config (resize = dict(height=256, width=256))
+  final inputOrt = OrtValueTensor.createTensorWithDataList(
+    input,
+    [1, 3, 256, 256], &#47;&#47; Shape: [batch, channels, height, width]
+  );
+
+  &#47;&#47; Run inference
+  final inputs = {_session.inputNames.first: inputOrt};
+  final outputs = await _session.runAsync(
+    runOptions,
+    inputs,
+  );
+
+  &#47;&#47; Get output
+  final outputTensor = outputs?.first;
+  if (outputTensor == null) {
+    throw Exception(&#39;No output from model&#39;);
+  }
+
+  &#47;&#47; Extract score from output
+  final outputData = outputTensor.value as List&lt;List&lt;double&gt;&gt;;
+  debugPrint(&#39;[ONNX AntiSpoof] Raw output: $outputData&#39;);
+  debugPrint(
+      &#39;[ONNX AntiSpoof] outputData[0].length: ${outputData[0].length}&#39;);
+
+  &#47;&#47; The output format depends on your model
+  &#47;&#47; Common formats:
+  &#47;&#47; 1. [batch, 2] - probabilities for [fake, real]
+  &#47;&#47; 2. [batch, 1] - single confidence score
+  bool isReal = false;
+  if (outputData[0].length == 2) {
+    List&lt;double&gt; out = outputData[0];
+    double realProb = out[0];
+    &#47;&#47; double spoofProb = out[1];
+    if (realProb &gt;= livenessThreshold) {
+      isReal = true;
+    }
+    &#47;&#47; Binary classification: [fake_prob, real_prob]
+    &#47;&#47; score = spoofProb; &#47;&#47; Real face probability
+  } else if (outputData[0].length == 1) {
+    &#47;&#47; Single score output
+    &#47;&#47; score = outputData[0][0];
+  } else if (outputData[0].length == 3) {
+    final fakeProb = outputData[0][0]; &#47;&#47; Index 0
+    final realProb = outputData[0][1]; &#47;&#47; Index 1
+    final unknownProb = outputData[0][2]; &#47;&#47; Index 2
+
+    debugPrint(
+        &#39;[ONNX AntiSpoof] Fake: $fakeProb, Real: $realProb, Unknown: $unknownProb&#39;);
+
+    &#47;&#47; Method 1: Use argmax (like original code)
+    final maxIndex =
+        outputData[0].indexOf(outputData[0].reduce((a, b) =&gt; a &gt; b ? a : b));
+
+    if (maxIndex == 1) {
+      isReal = true;
+      debugPrint(
+          &#39;[ONNX AntiSpoof] outputData[0].length == 3 Decision: REAL (argmax = 1)&#39;);
+    } else {
+      &#47;&#47; Method 2: Fallback - compare real vs fake directly
+      &#47;&#47; Use this if argmax doesn&#39;t work well
+      if (realProb &gt; fakeProb) {
+        isReal = true;
+        debugPrint(
+            &#39;[ONNX AntiSpoof]outputData[0].length == 3 Decision: REAL (realProb &gt; fakeProb)&#39;);
+      } else {
+        debugPrint(
+            &#39;[ONNX AntiSpoof]outputData[0].length == 3 Decision: FAKE&#39;);
+      }
+    }
+
+    &#47;&#47; Multi-class: take max or specific index
+    &#47;&#47; score = outputData[0].reduce((a, b) =&gt; a &gt; b ? a : b);
+  }
+
+  &#47;&#47; Release resources
+  inputOrt.release();
+  outputTensor.release();
+  runOptions.release();
+  return isReal;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">flutter_liveness_check</a></li>
+    <li><a href="../../face_anti_spoofing_onnx">face_anti_spoofing_onnx</a></li>
+    <li><a href="../../face_anti_spoofing_onnx/FaceAntiSpoofingOnnx-class.html">FaceAntiSpoofingOnnx</a></li>
+    <li class="self-crumb">checkLiveness method</li>
+</ol>
+
+    <h5>FaceAntiSpoofingOnnx class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    flutter_liveness_check
+      1.0.14
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

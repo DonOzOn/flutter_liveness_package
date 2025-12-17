@@ -76,6 +76,7 @@ Returns a <a href="../../enhence_light_checker/BlurDetectionResult-class.html">B
 <li>Face size analysis</li>
 <li>Landmark stability check</li>
 <li>Laplacian variance calculation (optional based on image format)</li>
+<li>ONNX-based Laplacian calculation (from FaceAntiSpoofingOnnx)</li>
 </ul>
 </section>
 
@@ -108,10 +109,10 @@ Returns a <a href="../../enhence_light_checker/BlurDetectionResult-class.html">B
         face.boundingBox,
       );
     }
+    int badConditions = 0;
 
     &#47;&#47; NEW: Much more forgiving combination logic
     &#47;&#47; Only mark as blurry if MULTIPLE conditions are bad, not just one
-    int badConditions = 0;
 
     if (isSmallFace) badConditions++;
     if (!landmarkStability) badConditions++;
@@ -183,7 +184,7 @@ Returns a <a href="../../enhence_light_checker/BlurDetectionResult-class.html">B
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.10
+      1.0.14
   </span>
   
 </footer>

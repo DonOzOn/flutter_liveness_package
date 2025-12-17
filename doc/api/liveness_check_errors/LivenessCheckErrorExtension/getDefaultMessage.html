@@ -96,6 +96,10 @@
       return &#39;Processing timeout. Please try again.&#39;;
     case LivenessCheckError.eyesClosed:
       return &#39;Please open your eyes.&#39;;
+    case LivenessCheckError.maskDetected:
+      return &#39;Please remove your mask.&#39;;
+    case LivenessCheckError.spoofingDetected:
+      return &#39;Spoofing detected. Please use a real face.&#39;;
     case LivenessCheckError.unknownError:
       return &#39;An unknown error occurred&#39;;
   }
@@ -127,7 +131,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.10
+      1.0.14
   </span>
   
 </footer>

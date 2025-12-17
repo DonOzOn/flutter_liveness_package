@@ -69,6 +69,20 @@
 <li><span class="parameter" id="-param-processingTimeout"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Duration-class.html">Duration</a></span> <span class="parameter-name">processingTimeout</span> = <span class="default-value">const Duration(seconds: 30)</span>, </span></li>
 <li><span class="parameter" id="-param-circlePositionY"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">circlePositionY</span> = <span class="default-value">0.38</span>, </span></li>
 <li><span class="parameter" id="-param-photoCaptureDelay"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Duration-class.html">Duration</a>?</span> <span class="parameter-name">photoCaptureDelay</span> = <span class="default-value">const Duration(milliseconds: 0)</span>, </span></li>
+<li><span class="parameter" id="-param-antiSpoofingClearnessThreshold"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">antiSpoofingClearnessThreshold</span> = <span class="default-value">800</span>, </span></li>
+<li><span class="parameter" id="-param-eulerAngleThresholdIOS"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">eulerAngleThresholdIOS</span> = <span class="default-value">5.0</span>, </span></li>
+<li><span class="parameter" id="-param-eulerAngleThresholdAndroid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">eulerAngleThresholdAndroid</span> = <span class="default-value">6.0</span>, </span></li>
+<li><span class="parameter" id="-param-faceToHeadRatioMinIOS"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">faceToHeadRatioMinIOS</span>, </span></li>
+<li><span class="parameter" id="-param-faceToHeadRatioMaxIOS"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">faceToHeadRatioMaxIOS</span>, </span></li>
+<li><span class="parameter" id="-param-faceToHeadRatioMinAndroid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">faceToHeadRatioMinAndroid</span>, </span></li>
+<li><span class="parameter" id="-param-faceToHeadRatioMaxAndroid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">faceToHeadRatioMaxAndroid</span>, </span></li>
+<li><span class="parameter" id="-param-eyeToMouthRatioMin"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">eyeToMouthRatioMin</span>, </span></li>
+<li><span class="parameter" id="-param-mouthPositionRatioMin"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">mouthPositionRatioMin</span>, </span></li>
+<li><span class="parameter" id="-param-mouthPositionRatioMax"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">mouthPositionRatioMax</span>, </span></li>
+<li><span class="parameter" id="-param-eyePositionRatioMin"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">eyePositionRatioMin</span>, </span></li>
+<li><span class="parameter" id="-param-eyePositionRatioMax"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">eyePositionRatioMax</span>, </span></li>
+<li><span class="parameter" id="-param-errorMessageMargin"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">errorMessageMargin</span> = <span class="default-value">80.0</span>, </span></li>
+<li><span class="parameter" id="-param-errorMessageTopPadding"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">errorMessageTopPadding</span> = <span class="default-value">0.0</span>, </span></li>
 </ol>})
     </section>
     
@@ -93,6 +107,20 @@
   this.processingTimeout = const Duration(seconds: 30),
   this.circlePositionY = 0.38,
   this.photoCaptureDelay = const Duration(milliseconds: 0),
+  this.antiSpoofingClearnessThreshold = 800,
+  this.eulerAngleThresholdIOS = 5.0,
+  this.eulerAngleThresholdAndroid = 6.0,
+  this.faceToHeadRatioMinIOS,
+  this.faceToHeadRatioMaxIOS,
+  this.faceToHeadRatioMinAndroid,
+  this.faceToHeadRatioMaxAndroid,
+  this.eyeToMouthRatioMin,
+  this.mouthPositionRatioMin,
+  this.mouthPositionRatioMax,
+  this.eyePositionRatioMin,
+  this.eyePositionRatioMax,
+  this.errorMessageMargin = 80.0,
+  this.errorMessageTopPadding = 0.0,
 });</code></pre>
 </section>
 
@@ -121,7 +149,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.10
+      1.0.14
   </span>
   
 </footer>

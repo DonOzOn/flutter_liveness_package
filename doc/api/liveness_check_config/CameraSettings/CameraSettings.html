@@ -60,6 +60,7 @@
       <span class="name ">CameraSettings</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="-param-resolutionPreset"><span class="type-annotation"><a href="https://pub.dev/documentation/camera_platform_interface/2.11.0/camera_platform_interface/ResolutionPreset.html">ResolutionPreset</a>?</span> <span class="parameter-name">resolutionPreset</span> = <span class="default-value">ResolutionPreset.high</span>, </span></li>
 <li><span class="parameter" id="-param-enableAudio"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">enableAudio</span> = <span class="default-value">false</span>, </span></li>
 <li><span class="parameter" id="-param-imageFormatGroup"><span class="type-annotation"><a href="https://pub.dev/documentation/camera_platform_interface/2.11.0/camera_platform_interface/ImageFormatGroup.html">ImageFormatGroup</a>?</span> <span class="parameter-name">imageFormatGroup</span>, </span></li>
+<li><span class="parameter" id="-param-cameraInitDelay"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">cameraInitDelay</span> = <span class="default-value">2500</span>, </span></li>
 </ol>})
     </section>
     
@@ -75,6 +76,7 @@
   this.resolutionPreset = ResolutionPreset.high,
   this.enableAudio = false,
   this.imageFormatGroup,
+  this.cameraInitDelay = 2500,
 });</code></pre>
 </section>
 
@@ -103,7 +105,7 @@
 <footer>
   <span class="no-break">
     flutter_liveness_check
-      1.0.10
+      1.0.14
   </span>
   
 </footer>
