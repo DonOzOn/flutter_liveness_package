@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.14] - 2025-12-17
+- **Configurable Error Message Spacing**: Added two parameters for fine-tuning error message positioning and layout
+  - `errorMessageMargin`: Controls spacing between error message container and camera circle (default: 80 pixels)
+  - `errorMessageTopPadding`: Adds extra spacing above the error message text inside the container (default: 0 pixels)
+  - Allows fine-tuning of UI layout for different screen sizes and designs
+  - Example:
+    ```dart
+    LivenessCheckSettings(
+      errorMessageMargin: 100.0,       // Increase spacing above circle
+      errorMessageTopPadding: 20.0,    // Add spacing above text
+    )
+    ```
+    
 ## [1.0.13] - 2025-12-16
 
 ### Added

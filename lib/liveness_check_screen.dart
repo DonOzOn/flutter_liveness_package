@@ -1013,7 +1013,8 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     final eyeToMouthDistance = (mouthY - eyesCenterY).abs();
     final eyeToMouthRatio = eyeToMouthDistance / boundingBox.height;
 
-    final minEyeToMouthRatio = widget.config.settings.eyeToMouthRatioMin ?? 0.27;
+    final minEyeToMouthRatio =
+        widget.config.settings.eyeToMouthRatioMin ?? 0.27;
     if (eyeToMouthRatio < minEyeToMouthRatio) {
       debugPrint(
         '[Android] Face incomplete: Eye-to-mouth distance too small (${eyeToMouthRatio.toStringAsFixed(2)} < $minEyeToMouthRatio) - likely partial face',
@@ -1025,9 +1026,12 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     final mouthPositionRatio =
         (mouthBottom.position.y - boundingBox.top) / boundingBox.height;
 
-    final minMouthPosition = widget.config.settings.mouthPositionRatioMin ?? 0.57;
-    final maxMouthPosition = widget.config.settings.mouthPositionRatioMax ?? 0.92;
-    if (mouthPositionRatio < minMouthPosition || mouthPositionRatio > maxMouthPosition) {
+    final minMouthPosition =
+        widget.config.settings.mouthPositionRatioMin ?? 0.57;
+    final maxMouthPosition =
+        widget.config.settings.mouthPositionRatioMax ?? 0.92;
+    if (mouthPositionRatio < minMouthPosition ||
+        mouthPositionRatio > maxMouthPosition) {
       debugPrint(
         '[Android] Face incomplete: Mouth position unusual (${mouthPositionRatio.toStringAsFixed(2)}, expected: $minMouthPosition-$maxMouthPosition) - partial face',
       );
@@ -1040,7 +1044,8 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
     final minEyePosition = widget.config.settings.eyePositionRatioMin ?? 0.2;
     final maxEyePosition = widget.config.settings.eyePositionRatioMax ?? 0.52;
-    if (eyePositionRatio < minEyePosition || eyePositionRatio > maxEyePosition) {
+    if (eyePositionRatio < minEyePosition ||
+        eyePositionRatio > maxEyePosition) {
       debugPrint(
         '[Android] Face incomplete: Eyes mispositioned (${eyePositionRatio.toStringAsFixed(2)}, expected: $minEyePosition-$maxEyePosition)',
       );
@@ -1475,6 +1480,9 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
+              // Top spacing above error message
+              if (widget.config.settings.errorMessageTopPadding > 0)
+                SizedBox(height: widget.config.settings.errorMessageTopPadding),
               // Main error message
               Text(
                 _errorMessage,
@@ -1696,11 +1704,10 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     if (_borderColor == widget.config.theme.successColor) {
       return widget.config.theme.successTextStyle ??
           TextStyle(
-            fontSize: 16,
-            color: widget.config.theme.successColor.withValues(alpha: 0.8),
-            fontWeight: FontWeight.w500,
-            fontFamily: widget.config.theme.fontFamily,
-          );
+              fontSize: 16,
+              color: widget.config.theme.successColor.withValues(alpha: 0.8),
+              fontWeight: FontWeight.w500,
+              fontFamily: widget.config.theme.fontFamily);
     } else if (_borderColor == widget.config.theme.errorColor) {
       return widget.config.theme.errorTextStyle ??
           TextStyle(
@@ -1887,7 +1894,8 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
 
         // Instructions and error messages
         Positioned(
-          bottom: size.height * widget.config.settings.circlePositionY - 80,
+          bottom: size.height * widget.config.settings.circlePositionY -
+              widget.config.settings.errorMessageMargin,
           left: 20,
           right: 20,
           child: Column(

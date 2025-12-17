@@ -558,6 +558,16 @@ class LivenessCheckSettings {
   final double? eyePositionRatioMin;
   final double? eyePositionRatioMax;
 
+  /// Margin/spacing between error message and the camera circle (in pixels).
+  /// Controls how far above the circle the error message appears.
+  /// Default: 80 pixels.
+  final double errorMessageMargin;
+
+  /// Top padding/spacing above the error message text (in pixels).
+  /// Adds extra space between the container border and the text.
+  /// Default: 0 pixels.
+  final double errorMessageTopPadding;
+
   /// Creates liveness check settings.
   const LivenessCheckSettings({
     this.enableBlinkDetection = true,
@@ -584,5 +594,7 @@ class LivenessCheckSettings {
     this.mouthPositionRatioMax,
     this.eyePositionRatioMin,
     this.eyePositionRatioMax,
+    this.errorMessageMargin = 80.0,
+    this.errorMessageTopPadding = 0.0,
   });
 }
