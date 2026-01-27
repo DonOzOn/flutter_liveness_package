@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.15] - 2025-01-27
+
+### Fixed
+- **Blink Detection Reset Bug**: Fixed issue where eye blink counter was always reset to zero during blink detection
+  - Face completeness check (`_isFaceComplete`) is now skipped when `enableBlinkDetection` is enabled
+  - Previously, closing eyes during a blink would trigger `_resetLivenessState()`, resetting the blink counter
+  - Blink detection now works correctly without interference from face completeness validation
+
+- **Liveness Check Logic**: Fixed liveness verification logic to properly handle all detection mode combinations
+  - **Previous behavior**: Used OR logic where passing any enabled check would complete verification
+  - **New behavior**: Properly validates based on enabled detection modes:
+    | Blink Enabled | Smile Enabled | Requirement |
+    |---------------|---------------|-------------|
+    | ✓ | ✗ | Blink check only |
+    | ✗ | ✓ | Smile check only |
+    | ✓ | ✓ | Both must pass |
+    | ✗ | ✗ | Pass immediately |
+  - When both blink and smile detection are enabled, both checks must now pass (AND logic instead of OR)
+
 ## [1.0.14] - 2025-12-17
 - **Configurable Error Message Spacing**: Added two parameters for fine-tuning error message positioning and layout
   - `errorMessageMargin`: Controls spacing between error message container and camera circle (default: 80 pixels)

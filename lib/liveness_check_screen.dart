@@ -570,7 +570,10 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
         }
 
         // Check if face is complete (all landmarks visible)
-        if (!_isFaceComplete(faces.first)) {
+        // Skip this check when blink detection is enabled, as blinking may cause
+        // face landmarks (eyes) to appear incomplete, which would reset the blink counter
+        if (!widget.config.settings.enableBlinkDetection &&
+            !_isFaceComplete(faces.first)) {
           _handleError(LivenessCheckError.faceNotClear);
           _resetLivenessState();
           return;
@@ -1363,12 +1366,24 @@ class _LivenessCheckScreenState extends State<LivenessCheckScreen> {
     bool smileCheckPassed =
         widget.config.settings.enableSmileDetection && _isSmiling;
 
-    // Pass if ANY enabled check succeeds (OR logic, same as before)
-    // If both are disabled, pass immediately
-    bool livenessCheckPassed = (!widget.config.settings.enableBlinkDetection &&
-            !widget.config.settings.enableSmileDetection) ||
-        blinkCheckPassed ||
-        smileCheckPassed;
+    // Liveness check scenarios:
+    // 1. Blink enabled, smile disabled → only blink check needs to pass
+    // 2. Smile enabled, blink disabled → only smile check needs to pass
+    // 3. Both enabled → both checks need to pass
+    // 4. Both disabled → liveness check passes immediately
+    bool livenessCheckPassed =
+        (widget.config.settings.enableBlinkDetection &&
+                !widget.config.settings.enableSmileDetection &&
+                blinkCheckPassed) ||
+            (widget.config.settings.enableSmileDetection &&
+                !widget.config.settings.enableBlinkDetection &&
+                smileCheckPassed) ||
+            (widget.config.settings.enableBlinkDetection &&
+                widget.config.settings.enableSmileDetection &&
+                blinkCheckPassed &&
+                smileCheckPassed) ||
+            (!widget.config.settings.enableBlinkDetection &&
+                !widget.config.settings.enableSmileDetection);
 
     if (livenessCheckPassed && !_livenessCompleted) {
       _completeLivenessCheck();
